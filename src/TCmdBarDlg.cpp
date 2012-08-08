@@ -8,6 +8,8 @@
 #include "TMenuData.h"
 #include "TCmdUtil.h"
 #include "DlgSort.h"
+#include "ruDefine.h"
+#include "RegWorks\RegWorks.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -271,6 +273,8 @@ LRESULT CTCmdBarDlg::OnUserRButtonDown(WPARAM wp, LPARAM lp)
 
     GetCursorPos(&point);
     menu.CreatePopupMenu(); 
+	menu.AppendMenu(MF_STRING, 105, L"오른쪽에 추가");
+	menu.AppendMenu(MF_STRING, 106, L"아래에 추가");
     menu.AppendMenu(MF_STRING, 100, L"수정");
 	menu.AppendMenu(MF_STRING, 101, L"삭제");
     menu.AppendMenu(MF_STRING, 104, L"토탈커맨드창에 달라붙기");
@@ -289,12 +293,12 @@ LRESULT CTCmdBarDlg::OnUserRButtonDown(WPARAM wp, LPARAM lp)
         PostQuitMessage(1);
         return 1;
     }
-    if(104 == iCmd)
+    else if(104 == iCmd)
     {
       bGlue = !bGlue;
       WritePrivateProfileString(L"main", L"bGlue", Int2Str(bGlue), INI_FILE);
     }    
-    if(100 == iCmd)
+    else if(100 == iCmd)
     {    
         CRect rc;
         m_bar.GetItemRect(iIndex, &rc);
@@ -307,7 +311,7 @@ LRESULT CTCmdBarDlg::OnUserRButtonDown(WPARAM wp, LPARAM lp)
         }
     }
     //삭제
-    if(101 == iCmd)
+    else if(101 == iCmd)
     {
         //iIndex가 삭제될 것이다..
         CString sSubkey = g_arButtonData[iIndex].sSubkey;
@@ -325,10 +329,77 @@ LRESULT CTCmdBarDlg::OnUserRButtonDown(WPARAM wp, LPARAM lp)
         LoadIni(&m_bar);
         RecalSize(false);
     }
-    if(103 == iCmd)
+    else if(103 == iCmd)
     {
         ShellExecute(m_hWnd, _T("open"), dsRunningPath(L"TCmdBar.txt"), NULL, NULL, SW_MAXIMIZE);
     }
+	else if( 105 == iCmd )
+	{
+		CPoint pt;
+		GetCursorPos(&pt);
+		CRect rc(pt.x, pt.y, pt.x, pt.y);
+
+		int iTotalSize = GetPrivateProfileInt(L"main", L"size",0,INI_FILE);
+
+		/**
+		 *	iIndex오른쪽에 새로운 버튼을 추가한다
+		 * 
+		 *  iIndex뒤의 폴더정보를 한 칸씩 뒤로 저장한다.
+		 */    
+		if(iIndex >=0 && iTotalSize>0)
+		{        
+			for(int i=iTotalSize-1 ; i>=iIndex+1; i--)
+			{
+				dsSectionToSection(Int2Str(i), Int2Str(i+1), INI_FILE, false);
+			}
+		}
+	    
+		int iNewIndex = iIndex+1;
+		if(iTotalSize ==0)
+			iNewIndex = 0;
+	    
+		//< 새 버튼의 정보를 ini에 쓴다.
+		CDSIni ini(Int2Str(iNewIndex), INI_FILE);
+		ini.WriteStr(L"sFolderPath", g_sDropFolderPath);
+		int rpos = g_sDropFolderPath.ReverseFind(L'\\');
+		CString sText = g_sDropFolderPath.Mid(rpos+1);
+		ini.WriteStr(L"sButtonText", sText);
+		ini.WriteStr(L"subkey", GetSubkey());
+
+		//< 전체 버튼 사이즈를 갱신한다.
+		ini.Init(L"main", INI_FILE);
+		ini.WriteInt(L"size", iTotalSize+1);
+	    
+		/**
+		 *  이미 저장한 버튼에 대한 수정창을 띄운다.	
+		 */
+		CDlgConfigFolder dlg(iNewIndex, rc);
+		if(dlg.DoModal()== IDOK)
+		{
+			LoadIni(&m_bar);
+			RecalSize(false);
+		}else
+		{
+			// 수정창을 취소했다면 다시 버튼정보를 ini에서 지운다.
+			//
+			for(int i=iNewIndex+1; i<=iTotalSize+1; i++ )
+			{
+				dsSectionToSection(Int2Str(i), Int2Str(i-1), INI_FILE, false );
+			}
+			ini.WriteInt(L"size", iTotalSize);
+		}
+	}
+	else if ( 106 == iCmd )
+	{
+		CPoint pt;
+		GetCursorPos(&pt);
+		CRect rc(pt.x, pt.y, pt.x, pt.y);
+		if(AddSubMenu(iIndex, L"", rc))
+        {
+            LoadIni(&m_bar);
+            RecalSize(false);
+        }
+	}
     return 1;
 }
 
@@ -553,7 +624,7 @@ void CTCmdBarDlg::OnTimer(UINT nIDEvent)
     HWND hWnd = ::GetForegroundWindow();
     TCHAR szClass[MAX_PATH];
     GetClassName(hWnd, szClass, MAX_PATH);
-    if(_tcsicmp(szClass, L"ttotal_cmd") == 0)
+    if(_tcsicmp(szClass, REGEDIT_CLASSNAME) == 0)
     {  
         /*
          *	토커바가 토커에 달라붙어 움직여야 한다면 위치를 찾아서 이동시킨다.
@@ -593,7 +664,14 @@ void CTCmdBarDlg::OnTimer(UINT nIDEvent)
          *	활성창이 포커바가 아니거나, 최소화 되어 있으면 바를 숨긴다.
          */
         if(hWnd != m_hWnd || ::IsIconic(hWnd))
+		{
             _Hide();
+		}
+		else if ( RegWorks::FindRegEdit() == NULL )
+		{
+			ShowWindow(SW_HIDE);
+		}
+
     }
     
 	CDialog::OnTimer(nIDEvent);
@@ -760,7 +838,7 @@ bool CTCmdBarDlg::ShowSubfolder(int iIndex, bool bRightButton)
  */
 void CTCmdBarDlg::WriteGluePosition()
 {
-    HWND hWndCmd = ::FindWindow(L"TTOTAL_CMD", NULL);
+    HWND hWndCmd = ::FindWindow(REGEDIT_CLASSNAME, NULL);
     if(hWndCmd && !::IsIconic(hWndCmd))
     {        
         CRect rc;

@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "TCmdBar.h"
 #include "TCmdUtil.h"
+#include "RegWorks\RegWorks.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -76,32 +77,7 @@ BOOL CALLBACK EnumWindowsProc(          HWND hwnd,
  */
 void TCMD_SendPath(CString sPath) 
 {
-    HWND hWndCmd = ::FindWindow(L"TTOTAL_CMD", NULL);
-    if(!hWndCmd)
-        return;
-
-    HWND hWndCombo =0;
-    EnumChildWindows(hWndCmd, EnumWindowsProc, (LPARAM)&hWndCombo);
-    if(!hWndCombo)
-        return;
-    
-    HWND hWndEdit = FindWindowEx(hWndCombo, NULL, L"EDIT", NULL);
-    if(!hWndEdit)
-        return;
-
-    
-    CEdit *pEdit = (CEdit*)CWnd::FromHandle(hWndEdit);
-    if(pEdit)
-    {
-	    pEdit->SetSel(0, -1);
-	    pEdit->ReplaceSel("cd "+sPath);
-
-        pEdit->SendMessage(WM_KEYDOWN, VK_RETURN, 0);
-        Sleep(10);
-        pEdit->SendMessage(WM_KEYUP, VK_RETURN, 0);
-
-        ::SetForegroundWindow(hWndCmd);
-    }	
+	RegWorks::Lookup(sPath, L"");
 }
 
 
