@@ -94,7 +94,7 @@ void TMenuData_OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct
     //  폰트를 없다면 일단 생성하지..
     //
     CFontEx MenuFont;
-    MenuFont.CreatePointFont_2(d._iSize>0 ? d._iSize : 90, d._bBold?true:false, "굴림체");
+    MenuFont.CreatePointFont_2(d._iSize>0 ? d._iSize : 90, d._bBold?true:false, L"굴림체");
 	dc.SelectObject(&MenuFont);
 
 	//메뉴 스트링을 메뉴이름과 단축키로 분리하여 얻어온다.
@@ -222,7 +222,7 @@ void TMenuData_OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
     //  폰트를 없다면 일단 생성하지..
     //
     CFontEx MenuFont;
-    MenuFont.CreatePointFont_2(d._iSize>0 ? d._iSize : 90, d._bBold?true:false, "굴림체");
+    MenuFont.CreatePointFont_2(d._iSize>0 ? d._iSize : 90, d._bBold?true:false, L"굴림체");
 	CFont* pFont = dc.SelectObject(&MenuFont);    
 
 	CRect rcText = rcItem;

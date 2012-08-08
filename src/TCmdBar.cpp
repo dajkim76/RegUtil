@@ -43,9 +43,9 @@ CTCmdBarApp theApp;
 BOOL CTCmdBarApp::InitInstance()
 {
 
-    if(!dsOneInstance("totalcommand_folderbar_mutex"))
+    if(!dsOneInstance(L"regutil_mutex"))
     {
-        AfxMessageBox("토탈 커맨더 폴더바 프로그램이 이미 실행중입니다.", MB_ICONWARNING);
+        AfxMessageBox(L"토탈 커맨더 폴더바 프로그램이 이미 실행중입니다.", MB_ICONWARNING);
         return FALSE;
     }
 

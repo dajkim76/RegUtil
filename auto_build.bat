@@ -1,4 +1,4 @@
-"%VS71COMNTOOLS%/../IDE/devenv" "src_TCmdBar/TCmdBar.sln" /rebuild "Release"
+"%VS90COMNTOOLS%/../IDE/devenv" "src/RegUtil.sln" /rebuild "Release"
 @echo off
 if not "%ERRORLEVEL%" == "0" goto ERROR
 @echo on

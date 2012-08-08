@@ -32,7 +32,7 @@ TCmdUtil::~TCmdUtil()
  */
 void	TCMD_SendID(UINT uiCmd)
 {
-	HWND hWnd = FindWindow("TTOTAL_CMD", NULL);
+	HWND hWnd = FindWindow(L"TTOTAL_CMD", NULL);
 	if(hWnd != NULL)
 	{
 		SendMessage(hWnd, 1075/*WM_USER+xx*/,uiCmd, 0);
@@ -48,11 +48,11 @@ BOOL CALLBACK EnumWindowsProc(          HWND hwnd,
 {
     TCHAR szClass[MAX_PATH];
     GetClassName(hwnd, szClass, MAX_PATH);
-    if( CString(szClass).CompareNoCase("tcombobox") == 0
-        || CString(szClass).CompareNoCase("TMyComboBox.UnicodeClass") == 0 
-        || CString(szClass).CompareNoCase("TMyComboBox") == 0 )
+    if( CString(szClass).CompareNoCase(L"tcombobox") == 0
+        || CString(szClass).CompareNoCase(L"TMyComboBox.UnicodeClass") == 0 
+        || CString(szClass).CompareNoCase(L"TMyComboBox") == 0 )
     {
-        HWND hWndEdit = FindWindowEx(hwnd, NULL, "EDIT", NULL);
+        HWND hWndEdit = FindWindowEx(hwnd, NULL, L"EDIT", NULL);
         if(hWndEdit)
         {
             //Edit콘트롤에 아무것도 없는 것만을 처리하도록 한다. 
@@ -76,7 +76,7 @@ BOOL CALLBACK EnumWindowsProc(          HWND hwnd,
  */
 void TCMD_SendPath(CString sPath) 
 {
-    HWND hWndCmd = ::FindWindow("TTOTAL_CMD", NULL);
+    HWND hWndCmd = ::FindWindow(L"TTOTAL_CMD", NULL);
     if(!hWndCmd)
         return;
 
@@ -85,7 +85,7 @@ void TCMD_SendPath(CString sPath)
     if(!hWndCombo)
         return;
     
-    HWND hWndEdit = FindWindowEx(hWndCombo, NULL, "EDIT", NULL);
+    HWND hWndEdit = FindWindowEx(hWndCombo, NULL, L"EDIT", NULL);
     if(!hWndEdit)
         return;
 
@@ -128,16 +128,16 @@ CString GetSubkey()
         {
             int iRand = rand();
             iRand %= 26;
-            iRand += 'a';
+            iRand += L'a';
             CString s;
-            s.Format("%c", iRand);
+            s.Format(L"%c", iRand);
             sKey += s;
         }
     }else
 	{
 		//wchar_t
 		//WCHAR
-		unsigned char*		szBuffer;
+		RPC_WSTR		szBuffer;
 		if(RPC_S_OK == UuidToString((struct _GUID*)&uuid, &szBuffer))
 		{
             sKey = (TCHAR*)szBuffer;
@@ -165,7 +165,7 @@ void GetSubFolders(CString sFolderSectionKey, CStringArray& arKey, CStringArray 
     CDSIni  ini(sFolderSectionKey, SUBFOLDERINI_FILE);
     for(int i=0;i<_arKey.GetSize();i++)
     {
-        CString sData = ini.GetStr(_arKey[i], "");
+        CString sData = ini.GetStr(_arKey[i], L"");
 
         //  데이타가 있어야만 유효하다
         if( sData.GetLength() > 0)
@@ -174,7 +174,7 @@ void GetSubFolders(CString sFolderSectionKey, CStringArray& arKey, CStringArray 
             arData.Add(sData);
 
             //꾸미기 정보를 로드한다.
-            CDSIni  ini2(sFolderSectionKey+"E", SUBFOLDERINI_FILE);
+            CDSIni  ini2(sFolderSectionKey + L"E", SUBFOLDERINI_FILE);
             CString sExt = ini2.GetStr(_arKey[i]);
             arExt.Add(sExt);
         }
@@ -186,11 +186,11 @@ void GetSubFolders(CString sFolderSectionKey, CStringArray& arKey, CStringArray 
  */
 void    LoadIni(CToolBar * pBar)
 {
-    int iSize = GetPrivateProfileInt("main", "size", 0, INI_FILE);
+    int iSize = GetPrivateProfileInt(L"main", L"size", 0, INI_FILE);
     if(0 == iSize)
     {
         pBar->SetButtons(NULL, 1);
-        pBar->SetButtonText(0, "여기에 폴더를 드랍하시오, Ctrl+드래그로 바를 이동 시킵니다.");
+        pBar->SetButtonText(0, L"여기에 폴더를 드랍하시오, Ctrl+드래그로 바를 이동 시킵니다.");
         pBar->SetButtonInfo(0, 99, TBBS_AUTOSIZE | TBBS_BUTTON  ,1);        
         return;
     }
@@ -205,19 +205,19 @@ void    LoadIni(CToolBar * pBar)
         CDSIni  ini(s, INI_FILE);
         
         CButtonData   ButtonData;
-        ButtonData.iCommand = ini.GetInt("iCommand", 0);
-        ButtonData.sButtonText = ini.GetStr("sButtonText", "");
-        ButtonData.sFolderPath = ini.GetStr("sFolderPath", "");
-        ButtonData.sSubkey =     ini.GetStr("subkey","");
+        ButtonData.iCommand = ini.GetInt(L"iCommand", 0);
+        ButtonData.sButtonText = ini.GetStr(L"sButtonText", L"");
+        ButtonData.sFolderPath = ini.GetStr(L"sFolderPath", L"");
+        ButtonData.sSubkey =     ini.GetStr(L"subkey", L"");
         if(ButtonData.sSubkey.IsEmpty())
         {
             ButtonData.sSubkey = GetSubkey();
-            ini.WriteStr("subkey", ButtonData.sSubkey);
+            ini.WriteStr(L"subkey", ButtonData.sSubkey);
         }
 
         if(ButtonData.iCommand == 0 && ButtonData.sFolderPath.IsEmpty())
         {
-            AfxMessageBox("ini 파일에 오류가 있습니다.");
+            AfxMessageBox(L"ini 파일에 오류가 있습니다.");
             continue;
         }       
 

@@ -159,9 +159,9 @@ BOOL CTCmdBarDlg::OnInitDialog()
     //  
     LoadIni(&m_bar);
     RecalSize(true);   
-    if(INI_INT("bTray", 1) == 1)
+    //if(INI_INT("bTray", 1) == 1)
     {    
-        m_tray.Create(this, "토탈커맨드 폴더바 1.8", m_hIcon);
+        m_tray.Create(this, L"RegUtil 0.9", m_hIcon);
     }
     SetTimer(101, 50, NULL);
     ShowWindow(SW_HIDE);
@@ -271,13 +271,13 @@ LRESULT CTCmdBarDlg::OnUserRButtonDown(WPARAM wp, LPARAM lp)
 
     GetCursorPos(&point);
     menu.CreatePopupMenu(); 
-    menu.AppendMenu(MF_STRING, 100, "수정");
-    menu.AppendMenu(MF_STRING, 101, "삭제");
-    menu.AppendMenu(MF_STRING, 104, "토탈커맨드창에 달라붙기");
-    menu.AppendMenu(MF_STRING, 103, "도움말");
-    menu.AppendMenu(MF_STRING, 102, "토탈커맨드 폴더바 종료");
+    menu.AppendMenu(MF_STRING, 100, L"수정");
+	menu.AppendMenu(MF_STRING, 101, L"삭제");
+    menu.AppendMenu(MF_STRING, 104, L"토탈커맨드창에 달라붙기");
+    menu.AppendMenu(MF_STRING, 103, L"도움말");
+	menu.AppendMenu(MF_STRING, 102, L"토탈커맨드 폴더바 종료");
 
-    int bGlue = GetPrivateProfileInt("main", "bGlue", 1, INI_FILE);
+    int bGlue = GetPrivateProfileInt(L"main", L"bGlue", 1, INI_FILE);
     if(bGlue) 
         menu.CheckMenuItem(104, MF_BYCOMMAND | MF_CHECKED);
     int iCmd = menu.TrackPopupMenu( TPM_LEFTALIGN | TPM_RETURNCMD, point.x, point.y,this, NULL);        
@@ -292,7 +292,7 @@ LRESULT CTCmdBarDlg::OnUserRButtonDown(WPARAM wp, LPARAM lp)
     if(104 == iCmd)
     {
       bGlue = !bGlue;
-      WritePrivateProfileString("main", "bGlue", Int2Str(bGlue), INI_FILE);
+      WritePrivateProfileString(L"main", L"bGlue", Int2Str(bGlue), INI_FILE);
     }    
     if(100 == iCmd)
     {    
@@ -313,21 +313,21 @@ LRESULT CTCmdBarDlg::OnUserRButtonDown(WPARAM wp, LPARAM lp)
         CString sSubkey = g_arButtonData[iIndex].sSubkey;
         WritePrivateProfileString(sSubkey,NULL,NULL,SUBFOLDERINI_FILE);
 
-        int iTotalSize = INI_INT("size", 0);
+        int iTotalSize = INI_INT(L"size", 0);
         if(iTotalSize > 0)
         {        
             for(int i=iIndex+1; i<=iTotalSize-1; i++ )
             {
                 dsSectionToSection(Int2Str(i), Int2Str(i-1), INI_FILE, false );
             }
-            WritePrivateProfileString("main","size",Int2Str(iTotalSize-1), INI_FILE);
+            WritePrivateProfileString(L"main",L"size",Int2Str(iTotalSize-1), INI_FILE);
         }
         LoadIni(&m_bar);
         RecalSize(false);
     }
     if(103 == iCmd)
     {
-        ShellExecute(m_hWnd, _T("open"), dsRunningPath("TCmdBar.txt"), NULL, NULL, SW_MAXIMIZE);
+        ShellExecute(m_hWnd, _T("open"), dsRunningPath(L"TCmdBar.txt"), NULL, NULL, SW_MAXIMIZE);
     }
     return 1;
 }
@@ -346,8 +346,8 @@ void CTCmdBarDlg::RecalSize(bool bLoadPos)
     int iy = 0;
     if(bLoadPos)
     {    
-        ix = GetPrivateProfileInt("main", "x", 100, INI_FILE);
-        iy = GetPrivateProfileInt("main", "y", 100, INI_FILE);
+        ix = GetPrivateProfileInt(L"main", L"x", 100, INI_FILE);
+        iy = GetPrivateProfileInt(L"main", L"y", 100, INI_FILE);
     }
     
     SetWindowPos(&wndTopMost ,ix,
@@ -376,7 +376,7 @@ LRESULT CTCmdBarDlg::OnUserDropFiles(WPARAM wp, LPARAM lp)
     m_bar.GetItemRect(iIndex, &rc);
     m_bar.ClientToScreen(&rc);
 
-    int iTotalSize = GetPrivateProfileInt("main","size",0,INI_FILE);
+    int iTotalSize = GetPrivateProfileInt(L"main", L"size",0,INI_FILE);
     /**
      *	적어도 하나의 버튼이 있다면 옆에 넣을지 팝업메뉴에 넣을지를 결정할 수 있다.
      */
@@ -386,8 +386,8 @@ LRESULT CTCmdBarDlg::OnUserDropFiles(WPARAM wp, LPARAM lp)
         GetCursorPos(&pt);
         CMenu mnuPopup;
         mnuPopup.CreatePopupMenu();
-        mnuPopup.AppendMenu(MF_STRING, 1, (char*)"옆에 버튼으로 추가");
-        mnuPopup.AppendMenu(MF_STRING, 2, (char*)"아래 메뉴로 추가");
+        mnuPopup.AppendMenu(MF_STRING, 1, (TCHAR*)L"옆에 버튼으로 추가");
+        mnuPopup.AppendMenu(MF_STRING, 2, (TCHAR*)L"아래 메뉴로 추가");
         int iCmd = mnuPopup.TrackPopupMenu(TPM_RETURNCMD, pt.x, pt.y, this, NULL);
         if(0 == iCmd)
             return 0;
@@ -426,15 +426,15 @@ LRESULT CTCmdBarDlg::OnUserDropFiles(WPARAM wp, LPARAM lp)
     
     //< 새 버튼의 정보를 ini에 쓴다.
     CDSIni ini(Int2Str(iNewIndex), INI_FILE);
-    ini.WriteStr("sFolderPath", g_sDropFolderPath);
-    int rpos = g_sDropFolderPath.ReverseFind('\\');
+    ini.WriteStr(L"sFolderPath", g_sDropFolderPath);
+    int rpos = g_sDropFolderPath.ReverseFind(L'\\');
     CString sText = g_sDropFolderPath.Mid(rpos+1);
-    ini.WriteStr("sButtonText", sText);
-    ini.WriteStr("subkey", GetSubkey());
+    ini.WriteStr(L"sButtonText", sText);
+    ini.WriteStr(L"subkey", GetSubkey());
 
     //< 전체 버튼 사이즈를 갱신한다.
-    ini.Init("main", INI_FILE);
-    ini.WriteInt("size", iTotalSize+1);
+    ini.Init(L"main", INI_FILE);
+    ini.WriteInt(L"size", iTotalSize+1);
     
     /**
      *  이미 저장한 버튼에 대한 수정창을 띄운다.	
@@ -452,7 +452,7 @@ LRESULT CTCmdBarDlg::OnUserDropFiles(WPARAM wp, LPARAM lp)
         {
             dsSectionToSection(Int2Str(i), Int2Str(i-1), INI_FILE, false );
         }
-        ini.WriteInt("size", iTotalSize);
+        ini.WriteInt(L"size", iTotalSize);
     }
     return 1;
 }
@@ -462,7 +462,7 @@ LRESULT CTCmdBarDlg::OnUserDropFiles(WPARAM wp, LPARAM lp)
  */
 LRESULT CTCmdBarDlg::OnUserTrayCreated(WPARAM wp, LPARAM  lp)
 {
-    if(INI_INT("bTray", 1) == 1)
+    if(INI_INT(L"bTray", 1) == 1)
         m_tray.ShowIcon();
     return 1;
 }
@@ -490,8 +490,8 @@ LRESULT CTCmdBarDlg::OnUserOnTray(WPARAM wp, LPARAM lp)
         
         CMenu menu;
         menu.CreatePopupMenu(); 
-        menu.AppendMenu(MF_STRING, IDM_ABOUTBOX, "정보");   //1 
-        menu.AppendMenu(MF_STRING, IDOK, "토탈커맨드 폴더바 종료");   //1         
+        menu.AppendMenu(MF_STRING, IDM_ABOUTBOX, L"정보");   //1 
+        menu.AppendMenu(MF_STRING, IDOK, L"토탈커맨드 폴더바 종료");   //1         
         menu.TrackPopupMenu( TPM_LEFTALIGN, point.x, point.y,this, NULL);        
         PostMessage(WM_NULL, 0, 0);
     }
@@ -553,16 +553,16 @@ void CTCmdBarDlg::OnTimer(UINT nIDEvent)
     HWND hWnd = ::GetForegroundWindow();
     TCHAR szClass[MAX_PATH];
     GetClassName(hWnd, szClass, MAX_PATH);
-    if(stricmp(szClass, "ttotal_cmd") == 0)
+    if(_tcsicmp(szClass, L"ttotal_cmd") == 0)
     {  
         /*
          *	토커바가 토커에 달라붙어 움직여야 한다면 위치를 찾아서 이동시킨다.
          */
-        int bGlue = GetPrivateProfileInt("main", "bGlue", 1, INI_FILE);    
+        int bGlue = GetPrivateProfileInt(L"main", L"bGlue", 1, INI_FILE);    
         if(bGlue && !::IsIconic(hWnd))
         {           
-            int gx = GetPrivateProfileInt("main", "iGlueX", 100, INI_FILE);
-            int gy = GetPrivateProfileInt("main", "iGlueY", 100, INI_FILE);
+            int gx = GetPrivateProfileInt(L"main", L"iGlueX", 100, INI_FILE);
+            int gy = GetPrivateProfileInt(L"main", L"iGlueY", 100, INI_FILE);
 
             CRect rc;
             ::GetWindowRect(hWnd, &rc);
@@ -612,7 +612,7 @@ bool CTCmdBarDlg::AddSubMenu(int iIndex, CString sPath, CRect rc)
 {
     CString s = Int2Str(iIndex);
     CDSIni  ini(s, INI_FILE);
-    CString sSection = ini.GetStr("subkey", "");
+    CString sSection = ini.GetStr(L"subkey", L"");
     CDSIni subIni(sSection, SUBFOLDERINI_FILE);
     int iSubIndex = -1;
     /**
@@ -620,7 +620,7 @@ bool CTCmdBarDlg::AddSubMenu(int iIndex, CString sPath, CRect rc)
      */
     for(int i=0;i<20;i++)
     {
-        CString sFirst = subIni.GetStr(Int2Str(i), "")   ;
+        CString sFirst = subIni.GetStr(Int2Str(i), L"")   ;
         if(sFirst.IsEmpty()) 
         {
             iSubIndex = i;
@@ -688,7 +688,7 @@ bool CTCmdBarDlg::ShowSubfolder(int iIndex, bool bRightButton)
             for(int i=0;i<ar.GetSize(); i++)
             {
                 CString s = ar[i];
-                s = s.Left ( s.Find("|") );
+                s = s.Left ( s.Find(L"|") );
                 TMenuData data;
                 data._sText = s;
                 data._iHeight = 20;                
@@ -697,16 +697,16 @@ bool CTCmdBarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 				TMenuData_Parse(sExt, data);
                 
                 TMenuData_Set(i+1, data);
-				if(s == "-")
-					mnuPopup.AppendMenu(MF_SEPARATOR|MF_OWNERDRAW, 0, (char*)NULL);
+				if(s == L"-")
+					mnuPopup.AppendMenu(MF_SEPARATOR|MF_OWNERDRAW, 0, (TCHAR*)NULL);
 				else
-					mnuPopup.AppendMenu(MF_STRING|MF_OWNERDRAW, i+1, (char*)NULL);
+					mnuPopup.AppendMenu(MF_STRING|MF_OWNERDRAW, i+1, (TCHAR*)NULL);
                 if(i == ar.GetSize()-1)
                 {
                     TMenuData d2;
-                    d2._sText = "[순서/삭제/제목변경]";
+                    d2._sText = L"[순서/삭제/제목변경]";
                     TMenuData_Set(1000, d2);
-                    mnuPopup.AppendMenu(MF_STRING|MF_OWNERDRAW, 1000, (char*)NULL);
+                    mnuPopup.AppendMenu(MF_STRING|MF_OWNERDRAW, 1000, (TCHAR*)NULL);
                 }
             }
 
@@ -737,14 +737,14 @@ bool CTCmdBarDlg::ShowSubfolder(int iIndex, bool bRightButton)
                      *	Ctrl과 같이 선택하면 그 아이템을 삭제한다.
                      */
                     CDSIni ini (item.sSubkey, SUBFOLDERINI_FILE);
-                    int iKey = atoi(arKey.GetAt(iRetCmd-1));
-                    ini.WriteStr(Int2Str(iKey), ""); //1 2[s] 3[s] 4[s]
+                    int iKey = _ttoi(arKey.GetAt(iRetCmd-1));
+                    ini.WriteStr(Int2Str(iKey), L""); //1 2[s] 3[s] 4[s]
                     LoadIni(&m_bar);
                     RecalSize(false);
                 }else
                 {                
                     CString sData = ar.GetAt(iRetCmd-1);
-                    sData = sData.Mid( sData.ReverseFind('|') + 1);
+                    sData = sData.Mid( sData.ReverseFind(L'|') + 1);
                     TCMD_SendPath( sData );    
                 }
             }            
@@ -760,7 +760,7 @@ bool CTCmdBarDlg::ShowSubfolder(int iIndex, bool bRightButton)
  */
 void CTCmdBarDlg::WriteGluePosition()
 {
-    HWND hWndCmd = ::FindWindow("TTOTAL_CMD", NULL);
+    HWND hWndCmd = ::FindWindow(L"TTOTAL_CMD", NULL);
     if(hWndCmd && !::IsIconic(hWndCmd))
     {        
         CRect rc;
@@ -770,8 +770,8 @@ void CTCmdBarDlg::WriteGluePosition()
         int gx = rcMy.left - rc.left;
         int gy = rcMy.top - rc.top;
 
-        WritePrivateProfileString("main", "iGlueX", Int2Str(gx), INI_FILE);
-        WritePrivateProfileString("main", "iGlueY", Int2Str(gy), INI_FILE);
+        WritePrivateProfileString(L"main", L"iGlueX", Int2Str(gx), INI_FILE);
+        WritePrivateProfileString(L"main", L"iGlueY", Int2Str(gy), INI_FILE);
     }    
 
 }

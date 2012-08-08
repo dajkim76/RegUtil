@@ -49,10 +49,10 @@ BOOL CDlgConfigFolder::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
-    CDSIni ini(Int2Str(_iIndex), dsRunningPath("TCmdbar.ini"));
-    SetDlgItemText(CEDIT_TEXT,  ini.GetStr("sButtonText", ""));
-    SetDlgItemText(CEDIT_ID,  ini.GetStr("iCommand", ""));
-    SetDlgItemText(CEDIT_PATH,  ini.GetStr("sFolderPath", ""));
+    CDSIni ini(Int2Str(_iIndex), dsRunningPath(L"TCmdbar.ini"));
+    SetDlgItemText(CEDIT_TEXT,  ini.GetStr(L"sButtonText", L""));
+    SetDlgItemText(CEDIT_ID,  ini.GetStr(L"iCommand", L""));
+    SetDlgItemText(CEDIT_PATH,  ini.GetStr(L"sFolderPath", L""));
 
 	GetDlgItem(IDC_STATIC_3)->ShowWindow(SW_HIDE);
 
@@ -95,18 +95,18 @@ BOOL CDlgConfigFolder::OnInitDialog()
 
 void CDlgConfigFolder::OnOK() 
 {		
-    CDSIni ini(Int2Str(_iIndex), dsRunningPath("TCmdbar.ini"));
+    CDSIni ini(Int2Str(_iIndex), dsRunningPath(L"TCmdbar.ini"));
     CString s;
     
     GetDlgItemText(CEDIT_TEXT, s);
-    ini.WriteStr("sButtonText", s);
+    ini.WriteStr(L"sButtonText", s);
 
     
     GetDlgItemText(CEDIT_ID, s);
-    ini.WriteStr("iCommand", s);
+    ini.WriteStr(L"iCommand", s);
 
     GetDlgItemText(CEDIT_PATH,  s);
-    ini.WriteStr("sFolderPath", s);
+    ini.WriteStr(L"sFolderPath", s);
 
 	CDialog::OnOK();
 }
@@ -159,17 +159,17 @@ BOOL CDlgConfigFolder_Sub::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	CDSIni ini(_sFolderKey, dsRunningPath("SubFolder2.ini"));
-	CString sData = ini.GetStr(Int2Str(_iSubIndex), "");
+	CDSIni ini(_sFolderKey, dsRunningPath(L"SubFolder2.ini"));
+	CString sData = ini.GetStr(Int2Str(_iSubIndex), L"");
 	if(sData.GetLength())
 	{
-		int pos = sData.Find("|");
+		int pos = sData.Find(L"|");
 		SetDlgItemText(CEDIT_TEXT, sData.Left(pos) );
 		SetDlgItemText(CEDIT_PATH, sData.Mid(pos+1) );
 	}
 	else
 	{
-		CString s = _sTargetPath.Mid( _sTargetPath.ReverseFind('\\')+1);
+		CString s = _sTargetPath.Mid( _sTargetPath.ReverseFind(L'\\')+1);
 		SetDlgItemText(CEDIT_TEXT, s );
 		GetDlgItem(CEDIT_ID)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_STATIC_2)->ShowWindow(SW_HIDE);
@@ -186,12 +186,12 @@ BOOL CDlgConfigFolder_Sub::OnInitDialog()
     MyEn(FALSE);
 
 	CString sDefault;
-	CDSIni ini2(_sFolderKey+"E", dsRunningPath("SubFolder2.ini"));
-	CString sDisplay = ini2.GetStr(Int2Str(_iSubIndex), "-1");
-	if(sDisplay=="-1")
+	CDSIni ini2(_sFolderKey + L"E", dsRunningPath(L"SubFolder2.ini"));
+	CString sDisplay = ini2.GetStr(Int2Str(_iSubIndex), L"-1");
+	if(sDisplay == L"-1")
 	{
-		CDSIni cfg("main", dsRunningPath("tcmdbar.ini"));
-		sDefault = cfg.GetStr("default");
+		CDSIni cfg(L"main", dsRunningPath(L"tcmdbar.ini"));
+		sDefault = cfg.GetStr(L"default");
 	}else
 		sDefault = sDisplay;
 	if(sDefault.GetLength() > 0)
@@ -294,15 +294,15 @@ BOOL	dsGetSectionKeys(CStringArray & aKeys, LPCTSTR szSection, LPCTSTR szPath)
 
 void CDlgConfigFolder_Sub::OnOK() 
 {		
-    CDSIni ini(_sFolderKey, dsRunningPath("SubFolder2.ini"));
+    CDSIni ini(_sFolderKey, dsRunningPath(L"SubFolder2.ini"));
     CString sPath;    
     CString sName;
-    int i;
+//    int i;
     GetDlgItemText(CEDIT_TEXT, sName);
 	_sTitle = sName;
-	if(sName.Find(",")>=0)
+	if(sName.Find(L",")>=0)
 	{
-		AfxMessageBox("제목으로 , 문자를 사용할 수 없습니다.");
+		AfxMessageBox(L"제목으로 , 문자를 사용할 수 없습니다.");
 		return;
 	}
     //ini.WriteStr("sButtonText", s);
@@ -313,7 +313,7 @@ void CDlgConfigFolder_Sub::OnOK()
 	_sTargetPath = sPath;
     //ini.WriteStr("sFolderPath", s);
 
-    CString sData = sName + "|" + sPath;
+    CString sData = sName + L"|" + sPath;
     ini.WriteStr(Int2Str(_iSubIndex), NULL);    //먼저 해당것을 지운다..
     
     /*CStringArray arKeys, arValue;
@@ -334,15 +334,15 @@ void CDlgConfigFolder_Sub::OnOK()
     }*/
 
 	BOOL bDefault = ((CButton*)GetDlgItem(CHK_DEFAULT))->GetCheck();
-	CDSIni cfg("main", dsRunningPath("tcmdbar.ini"));
+	CDSIni cfg(L"main", dsRunningPath(L"tcmdbar.ini"));
 
-    CDSIni ini2(_sFolderKey+"E", dsRunningPath("SubFolder2.ini"));    
+    CDSIni ini2(_sFolderKey + L"E", dsRunningPath(L"SubFolder2.ini"));    
     CString sExt = Int2Str(_iSubIndex);
     if( ! ((CButton*)GetDlgItem(CCHK_USE))->GetCheck() )
     {
-        ini2.WriteStr(sExt, "");
+        ini2.WriteStr(sExt, L"");
 		if(bDefault)
-			cfg.WriteStr("default","");
+			cfg.WriteStr(L"default", L"");
     }else
     {
         //진하게..
@@ -353,7 +353,7 @@ void CDlgConfigFolder_Sub::OnOK()
         {
             CString s;
              ((CComboBox*)GetDlgItem(IDC_COMBO_SIZE))->GetLBText(iCur, s);
-            iSize = atoi(s);
+            iSize = _ttoi(s);
         }
         int iHeight=-1;
         iCur = ((CComboBox*)GetDlgItem(IDC_COMBO_HEIGHT))->GetCurSel();
@@ -361,17 +361,17 @@ void CDlgConfigFolder_Sub::OnOK()
         {
             CString s;
             ((CComboBox*)GetDlgItem(IDC_COMBO_HEIGHT))->GetLBText(iCur, s);
-            iHeight = atoi(s);
+            iHeight = _ttoi(s);
         }
         COLORREF col1 = st1.b ? st1.col : -1;
         COLORREF col2 = st2.b ? st2.col : -1;
 
 
         CString sExtVal;
-        sExtVal.Format("%d|%d|%d|%d|%d", bBold, iSize, iHeight, col1, col2);
+        sExtVal.Format(L"%d|%d|%d|%d|%d", bBold, iSize, iHeight, col1, col2);
         ini2.WriteStr(sExt, sExtVal);
 		if(bDefault)
-			cfg.WriteStr("default",sExtVal);
+			cfg.WriteStr(L"default",sExtVal);
     }
 
 	CDialog::OnOK();
@@ -385,11 +385,11 @@ void TMenuData_Parse(CString sExt, TMenuData&data)
     CString s[5];
     for(int i=0; i<5; i++)
         AfxExtractSubString(s[i],  sExt, i, '|');
-    if(s[0] =="1") data._bBold = true; else data._bBold = false;
-    if(s[1] == "-1") data._iSize = -1; else data._iSize = atoi( s[1]) * 10;
-    if(s[2] == "-1") data._iHeight = -1; else data._iHeight = atoi( s[2]);
-    if(s[3] == "-1") data._colBg = -1; else data._colBg = atol( s[3]);
-    if(s[4] == "-1") data._colText = -1; else data._colText = atol( s[4]);
+    if(s[0] == L"1") data._bBold = true; else data._bBold = false;
+    if(s[1] == L"-1") data._iSize = -1; else data._iSize = _ttoi( s[1]) * 10;
+    if(s[2] == L"-1") data._iHeight = -1; else data._iHeight = _ttoi( s[2]);
+    if(s[3] == L"-1") data._colBg = -1; else data._colBg = _ttoi( s[3]);
+    if(s[4] == L"-1") data._colText = -1; else data._colText = _ttoi( s[4]);
 }
 
 void CDlgConfigFolder_Sub::OnCol1()

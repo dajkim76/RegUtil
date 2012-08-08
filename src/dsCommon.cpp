@@ -34,7 +34,7 @@ CString dsRunningPath( LPCTSTR szFileName )
 	if(NULL == szFileName)
 		return s_sDir ;
 	
-	return s_sDir + "\\"  + szFileName;
+	return s_sDir + L"\\"  + szFileName;
 } 
 
 
@@ -64,7 +64,7 @@ BOOL dsOneInstance(LPCTSTR szMutextName)
 */
 bool dsLockWorkStation() 
 {
-	HMODULE hMod = LoadLibrary("User32.dll");
+	HMODULE hMod = LoadLibrary(L"User32.dll");
 	if(NULL == hMod)
 		return false;
 	typedef BOOL (WINAPI *func_LockWorkStation)(void);
@@ -334,13 +334,13 @@ void dsWndPosState(BOOL bLoad, HWND hWnd, LPCTSTR szIniFile, LPCTSTR szSection)
 	if(bLoad)	
 	{
 		TCHAR sz[1024];
-		int bZoomed = GetPrivateProfileInt(szSection, "__bZoomed", 0, szIniFile);
+		int bZoomed = GetPrivateProfileInt(szSection, L"__bZoomed", 0, szIniFile);
 		if(bZoomed)
 		{
 			ShowWindow(hWnd, SW_MAXIMIZE);
 		}else
 		{
-			GetPrivateProfileString(szSection, "__rcPosition", "", sz, 1024, szIniFile);
+			GetPrivateProfileString(szSection, L"__rcPosition", L"", sz, 1024, szIniFile);
 			if( _tcslen(sz) != 0)
 			{
 				CString s[4];
@@ -359,9 +359,9 @@ void dsWndPosState(BOOL bLoad, HWND hWnd, LPCTSTR szIniFile, LPCTSTR szSection)
 		RECT rc;
 		GetWindowRect(hWnd, &rc);
 		CString s;
-		s.Format("%d,%d,%d,%d", rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top);
-		WritePrivateProfileString(szSection, "__rcPosition", s, szIniFile);
-		s.Format("%d", ::IsZoomed(hWnd));
-		WritePrivateProfileString(szSection, "__bZoomed"		, s, szIniFile);
+		s.Format(L"%d,%d,%d,%d", rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top);
+		WritePrivateProfileString(szSection, L"__rcPosition", s, szIniFile);
+		s.Format(L"%d", ::IsZoomed(hWnd));
+		WritePrivateProfileString(szSection, L"__bZoomed"		, s, szIniFile);
 	}
 }

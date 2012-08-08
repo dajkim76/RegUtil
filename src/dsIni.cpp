@@ -74,7 +74,7 @@ void    dsSectionToSection(LPCTSTR szSecFrom,
     dsGetSectionKeys(arKeys, szSecFrom, szIniPath);    
     for(i=0;i<arKeys.GetSize(); i++)
     {
-        GetPrivateProfileString(szSecFrom, arKeys[i], "", szBuffer, 10240, szIniPath);
+        GetPrivateProfileString(szSecFrom, arKeys[i], L"", szBuffer, 10240, szIniPath);
         arDatas.Add(szBuffer);
     }
 

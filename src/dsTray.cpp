@@ -51,7 +51,7 @@ BOOL CDSTray::Create(CWnd* pWnd, LPCTSTR szToolTip, HICON icon, bool bDefaultSho
 	m_pParent = pWnd;
 
   
-    PCSTR pstrOwnerClass = ::AfxRegisterWndClass(0);
+    PCTSTR pstrOwnerClass = ::AfxRegisterWndClass(0);
     
     BOOL bWndCreated = CWnd::CreateEx(
                       0,

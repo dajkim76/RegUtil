@@ -25,9 +25,9 @@ void    TCMD_SendPath(CString sPath)  ;         ///< 패스를 토커에 전달해서 패스
 
 CString GetSubkey();                            ///< GUID를 생성해서 고유의 ini섹션키를 얻는다.
 
-#define INI_FILE                dsRunningPath("TCmdBar.ini")
-#define INI_INT(x,d)            GetPrivateProfileInt("main", x, d, INI_FILE)
-#define SUBFOLDERINI_FILE       dsRunningPath("SubFolder2.ini")
+#define INI_FILE                dsRunningPath(L"TCmdBar.ini")
+#define INI_INT(x,d)            GetPrivateProfileInt(L"main", x, d, INI_FILE)
+#define SUBFOLDERINI_FILE       dsRunningPath(L"SubFolder2.ini")
 
 class  CButtonData
 {

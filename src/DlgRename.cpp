@@ -57,7 +57,7 @@ void CDlgRename::OnOK()
 	GetDlgItemText(IDC_EDIT1, _s);
     if(_s.IsEmpty())
     {
-        AfxMessageBox("비어있습니다.");
+        AfxMessageBox(L"비어있습니다.");
         return;
     }
 	

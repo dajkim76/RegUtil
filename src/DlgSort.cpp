@@ -56,21 +56,21 @@ BOOL CDlgSort::OnInitDialog()
 
     CenterWindow(GetDesktopWindow());
 
-    _list.InsertColumn(0,"폴더명", LVCFMT_LEFT, 300);
-    _list.InsertColumn(1,"", LVCFMT_LEFT, 0);
+    _list.InsertColumn(0, L"폴더명", LVCFMT_LEFT, 300);
+    _list.InsertColumn(1, L"", LVCFMT_LEFT, 0);
 	
     CStringArray arKeys;
-    dsGetSectionKeys(arKeys,  _sSection, dsRunningPath("SubFolder2.ini"));
-    CDSIni ini(_sSection,                  dsRunningPath("SubFolder2.ini"));
+    dsGetSectionKeys(arKeys,  _sSection, dsRunningPath(L"SubFolder2.ini"));
+    CDSIni ini(_sSection,                  dsRunningPath(L"SubFolder2.ini"));
     int iListIndex = 0;
     for(int i=0;i<arKeys.GetSize(); i++)
     {
         CString sData = ini.GetStr(arKeys[i]);
         if(sData.IsEmpty()) continue;
-        int pos = sData.Find("|");
+        int pos = sData.Find(L"|");
         CString sTitle = sData.Left(pos);
         _list.InsertItem(iListIndex, sTitle);
-        _list.SetItemText(iListIndex, 1, arKeys[i]+","+ sData);
+        _list.SetItemText(iListIndex, 1, arKeys[i] + L"," + sData);
         iListIndex++;
     }
     
@@ -84,7 +84,7 @@ int CDlgSort::getIndex()
     POSITION pos = _list.GetFirstSelectedItemPosition();
     if( ! pos)
     {
-        AfxMessageBox("먼저 선택하세요..");
+        AfxMessageBox(L"먼저 선택하세요..");
         return -1;
     }
     return _list.GetNextSelectedItem(pos);
@@ -130,20 +130,20 @@ void CDlgSort::OnDown()
 
 void CDlgSort::OnOK() 
 {
-	CDSIni ini(_sSection, dsRunningPath("SubFolder2.ini"));
+	CDSIni ini(_sSection, dsRunningPath(L"SubFolder2.ini"));
 	ini.ClearSection(_sSection);
     for(int i=0;i<_list.GetItemCount();i++)
     {
         CString s = _list.GetItemText(i, 1);
-        CString s0 = s.Left( s.Find(",") );
-        CString s1 = s.Mid( s.Find(",") + 1);
+        CString s0 = s.Left( s.Find(L",") );
+        CString s1 = s.Mid( s.Find(L",") + 1);
 
         CString d0,d1;
-        d0 = s1.Left( s1.Find("|"));
-        d1 = s1.Mid( s1.Find("|")+1);
+        d0 = s1.Left( s1.Find(L"|"));
+        d1 = s1.Mid( s1.Find(L"|")+1);
 
         CString t1 = _list.GetItemText(i, 0);
-        ini.WriteStr(s0, t1 + "|" + d1);
+        ini.WriteStr(s0, t1 + L"|" + d1);
     }
 	CDialog::OnOK();
 }
@@ -174,21 +174,21 @@ void CDlgSort::OnRename()
 */
 
 	CString sKey = _list.GetItemText(index, 1);
-	if(sKey.Find(",") > 0)
+	if(sKey.Find(L",") > 0)
 	{
-		sKey = sKey.Left( sKey.Find(",") );
+		sKey = sKey.Left( sKey.Find(L",") );
 	}
 	CRect rc;
 	GetWindowRect(&rc);
 	int iHeight = rc.Height();
 	rc.top -= iHeight;
 	rc.bottom -= iHeight;
-	CDlgConfigFolder_Sub dlg(rc, atoi(sKey), _sSection, "", this );
+	CDlgConfigFolder_Sub dlg(rc, _ttoi(sKey), _sSection, L"", this );
 	if(dlg.DoModal() == IDOK)
 	{
 		_list.SetItemText(index, 0, dlg._sTitle);
 		CString sData;
-		sData.Format("%d,%s|%s", atoi(sKey), dlg._sTitle, dlg._sTargetPath);
+		sData.Format(L"%d,%s|%s", _ttoi(sKey), dlg._sTitle, dlg._sTargetPath);
 		_list.SetItemText(index, 1, sData);
 	}
 

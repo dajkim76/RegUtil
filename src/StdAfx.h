@@ -27,7 +27,7 @@
 template<class T>
 inline CString Int2Str(T  i )
 {
-    CString s; s.Format("%d", i); return s;
+    CString s; s.Format(L"%d", i); return s;
 }
 
 //{{AFX_INSERT_LOCATION}}
