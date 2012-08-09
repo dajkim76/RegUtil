@@ -54,43 +54,16 @@ namespace
 
 		bool IsValid() { return (remoteBuffer_ != NULL) && (treeview_ != NULL) ; }
 
-		void Locate(_KeyRoot root, CString path, CString name)
+		void Locate(CString path, CString name)
 		{
-			OpenKey(root, path, name.IsEmpty());
-			if ( name.GetLength() )
+			if ( OpenKey(path, name.IsEmpty()) )
 			{
-				Sleep(100);
-				OpenValue(name);
+				if ( name.GetLength() )
+				{
+					Sleep(100);
+					OpenValue(name);
+				}
 			}
-		}
-
-		void Locate(CString fullpath, CString name)
-		{
-			OpenKey(fullpath, name.IsEmpty());
-			if ( name.GetLength() )
-			{
-				Sleep(100);
-				OpenValue(name);
-			}
-		}
-
-		bool OpenKey(_KeyRoot root, CString path, bool isSelect)
-		{
-			ATLASSERT(IsValid());
-			ATLASSERT(KeyRoot::toText(root).GetLength());
-			ATLASSERT(path.GetLength());
-			if( path.IsEmpty() || IsValid() == false )
-			{
-				return false;
-			}
-
-			CString fullpath = KeyRoot::toText(root);
-			if( path.GetAt(0) == L'\\' )
-				fullpath += path;
-			else
-				fullpath += L"\\" + path;
-
-			return OpenKey(fullpath, isSelect);
 		}
 
 		bool OpenKey(CString fullpath, bool isSelect)
@@ -106,12 +79,14 @@ namespace
 				while( key.GetLength() )
 				{
 					tvItem = FindKey(tvItem, key);
-					if( tvItem )
+					if( tvItem == NULL )
 					{
-						SendMessage(treeview_, TVM_SELECTITEM, TVGN_CARET, (LPARAM)tvItem);
-						SendMessage(treeview_, WM_KEYDOWN, VK_RIGHT, 0);
-						SendMessage(treeview_, WM_KEYUP, VK_RIGHT, 0);
+						return false;
 					}
+
+					SendMessage(treeview_, TVM_SELECTITEM, TVGN_CARET, (LPARAM)tvItem);
+					SendMessage(treeview_, WM_KEYDOWN, VK_RIGHT, 0);
+					SendMessage(treeview_, WM_KEYUP, VK_RIGHT, 0);
 
 					key = fullpath.Tokenize(L"\\", start);
 				}
@@ -325,7 +300,7 @@ KeyRoot::type KeyRoot::toType( CString root )
 	}
 	else
 	{
-		ATLASSERT(0);
+		_ASSERT_EXPR(0, __S(L"invalid root: %s ", root));
 		return UNKNOWN;
 	}
 }
@@ -409,22 +384,27 @@ void RegWorks::LaunchRegEditor(bool waitIdle)
 
 bool RegWorks::Lookup( _KeyRoot root, CString path, CString name )
 {
-	HWND hEditor = RequireRegEditorHanlde();
-	if( hEditor )
+	ATLASSERT(KeyRoot::toText(root).GetLength());
+	ATLASSERT(path.GetLength());
+	if( path.IsEmpty() )
 	{
-		RegEditLocator locator(hEditor);
-		if( locator.IsValid())
-		{
-			locator.Locate(root, path, name);
-			return true;
-		}
+		return false;
 	}
 
-	return false;
+	CString fullpath = KeyRoot::toText(root);
+	if( path.GetAt(0) != L'\\' )
+	{
+		fullpath += L"\\";
+	}
+	fullpath += path;
+
+	return Lookup(fullpath, name);
 }
 
 bool RegWorks::Lookup( CString fullpath, CString name )
 {
+	_Touch(fullpath);
+
 	HWND hEditor = RequireRegEditorHanlde();
 	if( hEditor )
 	{
@@ -454,4 +434,24 @@ HWND RegWorks::RequireRegEditorHanlde()
 		Sleep(100);
 	}
 	return hwnd;
+}
+
+void RegWorks::_Touch( CString& path )
+{
+	// hklm\\Sof... ==> HKEY_LOCAL_MACHINE\\Soft...
+	path.Trim();
+	path.Replace(L"\\\\", L"\\");
+
+	int pos = path.Find(L'\\');
+	if( pos > 0 )
+	{
+		CString root = path.Left(pos);
+		CString key = path.Mid(pos + 1);
+		_KeyRoot keyId = KeyRoot::toType(root);
+		if( keyId != KeyRoot::UNKNOWN )
+		{
+			root = KeyRoot::toText(keyId);
+			path = root + L"\\" + key;
+		}
+	}
 }
