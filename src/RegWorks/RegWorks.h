@@ -32,5 +32,5 @@ public:
 	static bool Lookup(CString fullpath, CString name);
 
 protected:
-	static void _Touch(CString& path);
+	static void _Validate(CString& path);
 };

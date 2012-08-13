@@ -45,7 +45,7 @@ BOOL CTCmdBarApp::InitInstance()
 
     if(!dsOneInstance(L"regutil_mutex"))
     {
-        AfxMessageBox(L"토탈 커맨더 폴더바 프로그램이 이미 실행중입니다.", MB_ICONWARNING);
+        AfxMessageBox(L"EasyRegistry 프로그램이 이미 실행중입니다.", MB_ICONWARNING);
         return FALSE;
     }
 

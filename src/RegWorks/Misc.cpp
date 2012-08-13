@@ -1,16 +1,6 @@
 #include "stdafx.h"
 #include "Misc.h"
 
-Misc::Misc(void)
-{
-}
-
-Misc::~Misc(void)
-{
-}
-
-
-
 DWORD ExecuteWait(LPCTSTR szFileName, int nShow, LPCTSTR szDir, LPCTSTR szParameter)
 {
 	SHELLEXECUTEINFO shExIf;

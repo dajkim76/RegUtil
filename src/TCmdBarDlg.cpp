@@ -163,7 +163,7 @@ BOOL CTCmdBarDlg::OnInitDialog()
     RecalSize(true);   
     //if(INI_INT("bTray", 1) == 1)
     {    
-        m_tray.Create(this, L"RegUtil 0.9", m_hIcon);
+        m_tray.Create(this, L"EasyRegistry 1.0", m_hIcon);
     }
     SetTimer(101, 50, NULL);
     ShowWindow(SW_HIDE);
@@ -277,9 +277,9 @@ LRESULT CTCmdBarDlg::OnUserRButtonDown(WPARAM wp, LPARAM lp)
 	menu.AppendMenu(MF_STRING, 106, L"아래에 추가");
     menu.AppendMenu(MF_STRING, 100, L"수정");
 	menu.AppendMenu(MF_STRING, 101, L"삭제");
-    menu.AppendMenu(MF_STRING, 104, L"토탈커맨드창에 달라붙기");
+    menu.AppendMenu(MF_STRING, 104, L"RegEdit창에 달라붙기");
     menu.AppendMenu(MF_STRING, 103, L"도움말");
-	menu.AppendMenu(MF_STRING, 102, L"토탈커맨드 폴더바 종료");
+	menu.AppendMenu(MF_STRING, 102, L"EasyRegistry 종료");
 
     int bGlue = GetPrivateProfileInt(L"main", L"bGlue", 1, INI_FILE);
     if(bGlue) 
@@ -562,7 +562,7 @@ LRESULT CTCmdBarDlg::OnUserOnTray(WPARAM wp, LPARAM lp)
         CMenu menu;
         menu.CreatePopupMenu(); 
         menu.AppendMenu(MF_STRING, IDM_ABOUTBOX, L"정보");   //1 
-        menu.AppendMenu(MF_STRING, IDOK, L"토탈커맨드 폴더바 종료");   //1         
+        menu.AppendMenu(MF_STRING, IDOK, L"EasyRegistry 종료");   //1         
         menu.TrackPopupMenu( TPM_LEFTALIGN, point.x, point.y,this, NULL);        
         PostMessage(WM_NULL, 0, 0);
     }

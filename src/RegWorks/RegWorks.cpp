@@ -403,7 +403,7 @@ bool RegWorks::Lookup( _KeyRoot root, CString path, CString name )
 
 bool RegWorks::Lookup( CString fullpath, CString name )
 {
-	_Touch(fullpath);
+	_Validate(fullpath);
 
 	HWND hEditor = RequireRegEditorHanlde();
 	if( hEditor )
@@ -436,7 +436,7 @@ HWND RegWorks::RequireRegEditorHanlde()
 	return hwnd;
 }
 
-void RegWorks::_Touch( CString& path )
+void RegWorks::_Validate( CString& path )
 {
 	// hklm\\Sof... ==> HKEY_LOCAL_MACHINE\\Soft...
 	path.Trim();

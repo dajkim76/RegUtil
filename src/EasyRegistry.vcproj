@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="RegUtil"
+	Name="EasyRegistry"
 	ProjectGUID="{FF32624C-36AA-4E95-A451-060BDC488036}"
 	RootNamespace="RegUtil"
 	Keyword="MFCProj"
@@ -168,9 +168,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\Bin\RegUtil_D.exe"
+				OutputFile="..\Bin\EasyRegistry_D.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				UACExecutionLevel="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/TCmdBar_D.pdb"
 				SubSystem="2"
