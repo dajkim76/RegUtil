@@ -348,6 +348,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "옵션",                          ID_OPTION
         MENUITEM "주소로 바로 이동하기",                 ID_JUMPTOREG
+        MENUITEM "레지스트리 편집기 실행",                ID_RUN_EDITOR
         MENUITEM "EasyRegistry 종료",             IDOK
     END
 END

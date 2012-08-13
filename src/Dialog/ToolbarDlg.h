@@ -73,6 +73,7 @@ public:
 	afx_msg void OnJumptoreg();
 	afx_msg void OnOption();
 	afx_msg void OnHelp();
+	afx_msg void OnRunEditor();
 };
 
 //{{AFX_INSERT_LOCATION}}

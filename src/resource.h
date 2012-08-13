@@ -37,7 +37,6 @@
 #define IDC_BUTTON3                     1016
 #define IDC_CHECK_GLUE                  1016
 #define IDC_BUTTON4                     1017
-#define IDC_CHECK2                      1017
 #define IDC_CHECK_LAUNCHER              1017
 #define BTN_SEP                         1019
 #define ID_TRAY_32773                   32773
@@ -47,13 +46,15 @@
 #define ID_TRAY_32777                   32777
 #define ID_OPTION                       32778
 #define ID_TRAY_32779                   32779
+#define ID_TRAY_32780                   32780
+#define ID_RUN_EDITOR                   32781
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        142
-#define _APS_NEXT_COMMAND_VALUE         32780
+#define _APS_NEXT_COMMAND_VALUE         32782
 #define _APS_NEXT_CONTROL_VALUE         1018
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

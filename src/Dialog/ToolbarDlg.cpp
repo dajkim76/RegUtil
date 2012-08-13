@@ -113,6 +113,7 @@ BEGIN_MESSAGE_MAP(CToolbarDlg, CDialog)
 	ON_COMMAND(ID_JUMPTOREG, &CToolbarDlg::OnJumptoreg)
 	ON_COMMAND(ID_OPTION, &CToolbarDlg::OnOption)
 	ON_COMMAND(ID_HELP, &CToolbarDlg::OnHelp)
+	ON_COMMAND(ID_RUN_EDITOR, &CToolbarDlg::OnRunEditor)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1118,4 +1119,9 @@ void CToolbarDlg::OnOption()
 void CToolbarDlg::OnHelp()
 {
 	ShellExecute(m_hWnd, _T("open"), _ModulePath(L"EasyRegistry.txt"), NULL, NULL, SW_NORMAL);	
+}
+
+void CToolbarDlg::OnRunEditor()
+{
+	ShellExecute(m_hWnd, _T("open"), L"regedit.exe", NULL, NULL, SW_NORMAL);
 }
