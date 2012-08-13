@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "TCmdBar.h"
+#include "EasyRegistry.h"
 #include "StaticEx.h"
 
 #ifdef _DEBUG

@@ -11,13 +11,6 @@
 
 #include <afxtempl.h>
 
-class TCmdUtil  
-{
-public:
-	TCmdUtil();
-	virtual ~TCmdUtil();
-
-};
 
 void	TCMD_SendID(UINT uiCmd)    ;            ///< 700부터 시작하는 UserMenuID(토탈커맨드에 정의됨)
 void    TCMD_SendPath(CString sPath)  ;         ///< 패스를 토커에 전달해서 패스를 변겨하게 한다.

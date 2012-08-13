@@ -2,11 +2,11 @@
 //
 
 #include "stdafx.h"
-#include "TCmdBar.h"
+#include "EasyRegistry.h"
 #include "Dialog/ToolbarDlg.h"
 #include "Dialog/DlgConfigFolder.h"
-#include "Toolbar/TMenuData.h"
-#include "Toolbar/TCmdUtil.h"
+#include "Toolbar/MenuData.h"
+#include "Toolbar/ToolbarUtil.h"
 #include "Dialog/DlgSort.h"
 #include "RegWorks\RegWorks.h"
 
@@ -766,7 +766,7 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
             {
                 CString s = ar[i];
                 s = s.Left ( s.Find(L"|") );
-                TMenuData data;
+                MenuData data;
                 data._sText = s;
                 data._iHeight = 20;                
                 CString sExt = arExt[i];
@@ -780,7 +780,7 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 					mnuPopup.AppendMenu(MF_STRING|MF_OWNERDRAW, i+1, (TCHAR*)NULL);
                 if(i == ar.GetSize()-1)
                 {
-                    TMenuData d2;
+                    MenuData d2;
                     d2._sText = L"[순서/삭제/제목변경]";
                     TMenuData_Set(1000, d2);
                     mnuPopup.AppendMenu(MF_STRING|MF_OWNERDRAW, 1000, (TCHAR*)NULL);

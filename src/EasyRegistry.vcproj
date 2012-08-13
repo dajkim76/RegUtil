@@ -213,6 +213,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\_Define.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Util\Common.cpp"
 				>
 				<FileConfiguration
@@ -305,6 +309,33 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\EasyRegistry.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\EasyRegistry.rc"
+				>
+			</File>
+			<File
 				RelativePath=".\Toolbar\FolderToolbar.cpp"
 				>
 				<FileConfiguration
@@ -351,15 +382,34 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Toolbar\MenuData.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\RegWorks\Misc.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\RegWorks\RegWorks.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ruDefine.cpp"
 				>
 			</File>
 			<File
@@ -411,80 +461,30 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="TCmdBar.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="TCmdBar.rc"
-				>
-			</File>
-			<File
-				RelativePath=".\Toolbar\TCmdUtil.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Toolbar\TMenuData.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\Dialog\ToolbarDlg.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Toolbar\ToolbarUtil.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -535,6 +535,10 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath=".\_Define.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Util\Common.h"
 				>
 			</File>
@@ -551,11 +555,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EasyRegistry.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Toolbar\FolderToolbar.h"
 				>
 			</File>
 			<File
 				RelativePath=".\Util\Ini.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Toolbar\MenuData.h"
 				>
 			</File>
 			<File
@@ -571,10 +583,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ruDefine.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Util\StaticEx.h"
 				>
 			</File>
@@ -583,19 +591,11 @@
 				>
 			</File>
 			<File
-				RelativePath="TCmdBar.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Toolbar\TCmdUtil.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Toolbar\TMenuData.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Dialog\ToolbarDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Toolbar\ToolbarUtil.h"
 				>
 			</File>
 			<File

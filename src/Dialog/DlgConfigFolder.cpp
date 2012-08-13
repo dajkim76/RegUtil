@@ -2,11 +2,11 @@
 //
 
 #include "stdafx.h"
-#include "TCmdBar.h"
+#include "EasyRegistry.h"
 #include "DlgConfigFolder.h"
 //#include <dsIni.h>
 //#include <dsUtil.h>
-#include "toolbar/TMenuData.h"
+#include "toolbar/MenuData.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -196,7 +196,7 @@ BOOL CDlgConfigFolder_Sub::OnInitDialog()
 		sDefault = sDisplay;
 	if(sDefault.GetLength() > 0)
 	{
-		TMenuData md;
+		MenuData md;
 		TMenuData_Parse(sDefault, md);
 		CheckDlgButton(CCHK_USE, BST_CHECKED);
 		MyEn(TRUE); //내부 콘트롤을 Enable 시킨다.
@@ -377,7 +377,7 @@ void CDlgConfigFolder_Sub::OnOK()
 	CDialog::OnOK();
 }
 
-void TMenuData_Parse(CString sExt, TMenuData&data)
+void TMenuData_Parse(CString sExt, MenuData&data)
 {
     if(sExt.IsEmpty())
         return;

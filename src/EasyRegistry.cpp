@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "TCmdBar.h"
+#include "EasyRegistry.h"
 #include "Dialog/ToolbarDlg.h"
 //#include <dsUtil.h>
 
@@ -13,10 +13,10 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CTCmdBarApp
+// CEasyRegistryApp
 
-BEGIN_MESSAGE_MAP(CTCmdBarApp, CWinApp)
-	//{{AFX_MSG_MAP(CTCmdBarApp)
+BEGIN_MESSAGE_MAP(CEasyRegistryApp, CWinApp)
+	//{{AFX_MSG_MAP(CEasyRegistryApp)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
 		//    DO NOT EDIT what you see in these blocks of generated code!
 	//}}AFX_MSG
@@ -24,23 +24,23 @@ BEGIN_MESSAGE_MAP(CTCmdBarApp, CWinApp)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CTCmdBarApp construction
+// CEasyRegistryApp construction
 
-CTCmdBarApp::CTCmdBarApp()
+CEasyRegistryApp::CEasyRegistryApp()
 {
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// The one and only CTCmdBarApp object
+// The one and only CEasyRegistryApp object
 
-CTCmdBarApp theApp;
+CEasyRegistryApp theApp;
 
 /////////////////////////////////////////////////////////////////////////////
-// CTCmdBarApp initialization
+// CEasyRegistryApp initialization
 
-BOOL CTCmdBarApp::InitInstance()
+BOOL CEasyRegistryApp::InitInstance()
 {
 
     if(!dsOneInstance(L"regutil_mutex"))

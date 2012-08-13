@@ -3,8 +3,8 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "TCmdBar.h"
-#include "TMenuData.h"
+#include "EasyRegistry.h"
+#include "MenuData.h"
 #include <map>
 using namespace std;
 
@@ -16,16 +16,16 @@ using namespace std;
  *  데이타 크기도 작기때문에 포인터를 사용하지 않고, 객체를 그냥 집어넣어서 관리한다.
  *  동적할당하지 않기 때문에 프로그램 종료와 동시에 메모리도 잘 해제된다.
  */
-typedef map<UINT, TMenuData> TMenuDataMap;
+typedef map<UINT, MenuData> TMenuDataMap;
 TMenuDataMap  g_MenuDataMap;
-void        TMenuData_Set(UINT nID, TMenuData data)
+void        TMenuData_Set(UINT nID, MenuData data)
 {
     g_MenuDataMap[nID] = data;
 }
 
-bool   TMenuData_Get(UINT nID, TMenuData& data)
+bool   TMenuData_Get(UINT nID, MenuData& data)
 {
-    map<UINT, TMenuData> ::iterator iter = g_MenuDataMap.find(nID);
+    map<UINT, MenuData> ::iterator iter = g_MenuDataMap.find(nID);
     if(iter  == g_MenuDataMap.end())
         return false;
     data = iter->second;
@@ -38,7 +38,7 @@ void   TMenuData_Clear()
 }
 
 
-TMenuData::~TMenuData()
+MenuData::~MenuData()
 {
 
 }
@@ -82,7 +82,7 @@ void TMenuData_OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct
 		return ;
 	}
     
-    TMenuData d ;
+    MenuData d ;
     if(!TMenuData_Get(nID, d))
         ASSERT(0);
 
@@ -169,7 +169,7 @@ void TMenuData_OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 		return;		
 	}
 
-    TMenuData d ;
+    MenuData d ;
     if(!TMenuData_Get(nID, d))
         ASSERT(0);
 	

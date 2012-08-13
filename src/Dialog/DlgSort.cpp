@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "TCmdBar.h"
+#include "EasyRegistry.h"
 #include "DlgSort.h"
 #include "DlgRename.h"
 #include "DlgConfigFolder.h"

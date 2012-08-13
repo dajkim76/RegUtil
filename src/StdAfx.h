@@ -24,7 +24,7 @@
 #include "util/Ini.h"
 #include "util/Common.h"
 #include "util/Tray.h"
-#include "ruDefine.h"
+#include "_Define.h"
 
 template<class T>
 inline CString Int2Str(T  i )

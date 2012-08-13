@@ -19,10 +19,10 @@
 // See TCmdBar.cpp for the implementation of this class
 //
 
-class CTCmdBarApp : public CWinApp
+class CEasyRegistryApp : public CWinApp
 {
 public:
-	CTCmdBarApp();
+	CEasyRegistryApp();
 
 // Overrides
 	// ClassWizard generated virtual function overrides

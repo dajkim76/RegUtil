@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "ruDefine.h"
 #include <strsafe.h>
 
 CString __S( LPCWSTR pszFormat, ...)

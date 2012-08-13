@@ -9,7 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class TMenuData  
+class MenuData  
 {
 public:
     int             _iSize;   //높이..
@@ -18,7 +18,7 @@ public:
     COLORREF        _colText;   //글자색
     COLORREF        _colBg;     //배경색
     bool            _bBold;     //진하게
-	TMenuData()
+	MenuData()
     {
         _bBold = false;
         _iHeight = 18;
@@ -27,13 +27,13 @@ public:
         _iSize = -1;
         _iHeight = -1;
     }
-	virtual ~TMenuData();
+	virtual ~MenuData();
 };
 
 
 void TMenuData_OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct)  ;
 void TMenuData_OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct) ;
-void TMenuData_Set(UINT nID, TMenuData data) ;
+void TMenuData_Set(UINT nID, MenuData data) ;
 void TMenuData_Clear();
-void TMenuData_Parse(CString sExt, TMenuData&data);
+void TMenuData_Parse(CString sExt, MenuData&data);
 #endif // !defined(AFX_TMENUDATA_H__D40D22CC_382F_42BB_AA99_4ADD4CB63391__INCLUDED_)

@@ -3,8 +3,8 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "TCmdBar.h"
-#include "TCmdUtil.h"
+#include "EasyRegistry.h"
+#include "ToolbarUtil.h"
 #include "RegWorks\RegWorks.h"
 
 #ifdef _DEBUG
@@ -16,16 +16,6 @@ static char THIS_FILE[]=__FILE__;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-
-TCmdUtil::TCmdUtil()
-{
-
-}
-
-TCmdUtil::~TCmdUtil()
-{
-
-}
 
 
 /**
