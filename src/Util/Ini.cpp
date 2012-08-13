@@ -1,5 +1,5 @@
 #include	"stdafx.h"
-#include	"dsIni.h"
+#include	"Ini.h"
 
 
 

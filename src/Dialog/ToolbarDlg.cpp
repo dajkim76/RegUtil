@@ -3,12 +3,11 @@
 
 #include "stdafx.h"
 #include "TCmdBar.h"
-#include "TCmdBarDlg.h"
-#include "DlgConfigFolder.h"
-#include "TMenuData.h"
-#include "TCmdUtil.h"
-#include "DlgSort.h"
-#include "ruDefine.h"
+#include "Dialog/ToolbarDlg.h"
+#include "Dialog/DlgConfigFolder.h"
+#include "Toolbar/TMenuData.h"
+#include "Toolbar/TCmdUtil.h"
+#include "Dialog/DlgSort.h"
 #include "RegWorks\RegWorks.h"
 
 #ifdef _DEBUG
@@ -66,8 +65,8 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CTCmdBarDlg dialog
 
-CTCmdBarDlg::CTCmdBarDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CTCmdBarDlg::IDD, pParent)
+CToolbarDlg::CToolbarDlg(CWnd* pParent /*=NULL*/)
+	: CDialog(CToolbarDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CTCmdBarDlg)
 		// NOTE: the ClassWizard will add member initialization here
@@ -76,7 +75,7 @@ CTCmdBarDlg::CTCmdBarDlg(CWnd* pParent /*=NULL*/)
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
-void CTCmdBarDlg::DoDataExchange(CDataExchange* pDX)
+void CToolbarDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CTCmdBarDlg)
@@ -91,7 +90,7 @@ void CTCmdBarDlg::DoDataExchange(CDataExchange* pDX)
  */
 const UINT WM_TRAYCREATED = RegisterWindowMessage(_T("TaskbarCreated"));
 
-BEGIN_MESSAGE_MAP(CTCmdBarDlg, CDialog)
+BEGIN_MESSAGE_MAP(CToolbarDlg, CDialog)
 	//{{AFX_MSG_MAP(CTCmdBarDlg)
     ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
@@ -115,7 +114,7 @@ END_MESSAGE_MAP()
 // CTCmdBarDlg message handlers
 
 
-BOOL CTCmdBarDlg::OnInitDialog()
+BOOL CToolbarDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -169,12 +168,12 @@ BOOL CTCmdBarDlg::OnInitDialog()
     ShowWindow(SW_HIDE);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
-void CTCmdBarDlg::OnAbout()
+void CToolbarDlg::OnAbout()
 {
 		CAboutDlg dlgAbout;
 		dlgAbout.DoModal();
 }
-void CTCmdBarDlg::OnSysCommand(UINT nID, LPARAM lParam)
+void CToolbarDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
 	{
@@ -191,7 +190,7 @@ void CTCmdBarDlg::OnSysCommand(UINT nID, LPARAM lParam)
 //  to draw the icon.  For MFC applications using the document/view model,
 //  this is automatically done for you by the framework.
 
-void CTCmdBarDlg::OnPaint() 
+void CToolbarDlg::OnPaint() 
 {
 	if (IsIconic())
 	{
@@ -218,12 +217,12 @@ void CTCmdBarDlg::OnPaint()
 
 // The system calls this to obtain the cursor to display while the user drags
 //  the minimized window.
-HCURSOR CTCmdBarDlg::OnQueryDragIcon()
+HCURSOR CToolbarDlg::OnQueryDragIcon()
 {
 	return (HCURSOR) m_hIcon;
 }
 
-BOOL CTCmdBarDlg::PreTranslateMessage(MSG* pMsg) 
+BOOL CToolbarDlg::PreTranslateMessage(MSG* pMsg) 
 {
     /*
      *	사용자 마우스 Ctrl과 마우스 왼쪽을 누르면 창을 움직이게 한다.
@@ -244,13 +243,13 @@ BOOL CTCmdBarDlg::PreTranslateMessage(MSG* pMsg)
 /**
  *	왼쪽 클릭했을 때 
  */
-void CTCmdBarDlg::OnButtonCommandRange(UINT ids)
+void CToolbarDlg::OnButtonCommandRange(UINT ids)
 {
     int iIndex = ids - 100;
     ShowSubfolder(iIndex, false);
 }   
 
-LRESULT CTCmdBarDlg::OnUserRButtonDown(WPARAM wp, LPARAM lp)
+LRESULT CToolbarDlg::OnUserRButtonDown(WPARAM wp, LPARAM lp)
 {
     int iIndex = (INT)wp;
     int bCtrl = (INT)lp;
@@ -331,7 +330,7 @@ LRESULT CTCmdBarDlg::OnUserRButtonDown(WPARAM wp, LPARAM lp)
     }
     else if(103 == iCmd)
     {
-        ShellExecute(m_hWnd, _T("open"), dsRunningPath(L"TCmdBar.txt"), NULL, NULL, SW_MAXIMIZE);
+        ShellExecute(m_hWnd, _T("open"), dsRunningPath(L"EasyRegistry.txt"), NULL, NULL, SW_MAXIMIZE);
     }
 	else if( 105 == iCmd )
 	{
@@ -403,7 +402,7 @@ LRESULT CTCmdBarDlg::OnUserRButtonDown(WPARAM wp, LPARAM lp)
     return 1;
 }
 
-void CTCmdBarDlg::RecalSize(bool bLoadPos)
+void CToolbarDlg::RecalSize(bool bLoadPos)
 {
     /// Resize Dialog & Toolbar
     //  
@@ -438,7 +437,7 @@ void CTCmdBarDlg::RecalSize(bool bLoadPos)
  * @param   lp      wp와 동일
  * @return
  */
-LRESULT CTCmdBarDlg::OnUserDropFiles(WPARAM wp, LPARAM lp)
+LRESULT CToolbarDlg::OnUserDropFiles(WPARAM wp, LPARAM lp)
 {   
     SetForegroundWindow();
     //드랍된 버튼 index
@@ -531,7 +530,7 @@ LRESULT CTCmdBarDlg::OnUserDropFiles(WPARAM wp, LPARAM lp)
 /**
  *	    태스크바가 소멸됬다 생성되면 다시 보이게 한다.
  */
-LRESULT CTCmdBarDlg::OnUserTrayCreated(WPARAM wp, LPARAM  lp)
+LRESULT CToolbarDlg::OnUserTrayCreated(WPARAM wp, LPARAM  lp)
 {
     if(INI_INT(L"bTray", 1) == 1)
         m_tray.ShowIcon();
@@ -546,12 +545,12 @@ LRESULT CTCmdBarDlg::OnUserTrayCreated(WPARAM wp, LPARAM  lp)
  */
 LRESULT CMyTray::OnCallback(WPARAM wp, LPARAM lp)
 {
-    return ((CTCmdBarDlg*)m_pParent)->OnUserOnTray(wp,lp);
+    return ((CToolbarDlg*)m_pParent)->OnUserOnTray(wp,lp);
 }
 /**
  *	     트레이에서 마우스 클릭이나 우클릭시에 팝업메뉴를 띄우기
  */
-LRESULT CTCmdBarDlg::OnUserOnTray(WPARAM wp, LPARAM lp)
+LRESULT CToolbarDlg::OnUserOnTray(WPARAM wp, LPARAM lp)
 {
     if(lp == WM_LBUTTONUP || lp == WM_RBUTTONUP)
     {        
@@ -572,7 +571,7 @@ LRESULT CTCmdBarDlg::OnUserOnTray(WPARAM wp, LPARAM lp)
 /**
  *	    종료시에 위치를 저장합니다..
  */
-void CTCmdBarDlg::OnDestroy() 
+void CToolbarDlg::OnDestroy() 
 {
     CWindowRect rc(this);    
     CDSIni ini(_T("main"), INI_FILE);
@@ -585,7 +584,7 @@ void CTCmdBarDlg::OnDestroy()
 /**
  *	폴더바를 숨긴다.
  */
-void CTCmdBarDlg::_Hide()
+void CToolbarDlg::_Hide()
 {
     if( ::IsWindowVisible(m_hWnd))
     {
@@ -602,7 +601,7 @@ void CTCmdBarDlg::_Hide()
 }
 
 
-void CTCmdBarDlg::OnTimer(UINT nIDEvent) 
+void CToolbarDlg::OnTimer(UINT nIDEvent) 
 {
     static BOOL s_bWritePositon = 0;
     if(ISKEYDOWN(VK_CONTROL) && ISKEYDOWN(VK_LBUTTON))
@@ -678,7 +677,7 @@ void CTCmdBarDlg::OnTimer(UINT nIDEvent)
 }
 
 
-void CTCmdBarDlg::OnCancel()
+void CToolbarDlg::OnCancel()
 {
 
 }
@@ -686,7 +685,7 @@ void CTCmdBarDlg::OnCancel()
 /**
  *	하위 팝업메뉴에 폴더를 추가하는 함수
  */
-bool CTCmdBarDlg::AddSubMenu(int iIndex, CString sPath, CRect rc)
+bool CToolbarDlg::AddSubMenu(int iIndex, CString sPath, CRect rc)
 {
     CString s = Int2Str(iIndex);
     CDSIni  ini(s, INI_FILE);
@@ -724,7 +723,7 @@ bool CTCmdBarDlg::AddSubMenu(int iIndex, CString sPath, CRect rc)
  * @param  bRightButton  마우스 우클릭이면 true
  * @return
  */
-bool CTCmdBarDlg::ShowSubfolder(int iIndex, bool bRightButton)
+bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 {
     if(iIndex >= g_arButtonData.GetSize())
         return false;
@@ -836,7 +835,7 @@ bool CTCmdBarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 /**
  *  토탈커맨드에서 툴바가 얼마나의 상대위치로 있는지를 저장한다.	
  */
-void CTCmdBarDlg::WriteGluePosition()
+void CToolbarDlg::WriteGluePosition()
 {
     HWND hWndCmd = ::FindWindow(REGEDIT_CLASSNAME, NULL);
     if(hWndCmd && !::IsIconic(hWndCmd))
@@ -860,7 +859,7 @@ void CTCmdBarDlg::WriteGluePosition()
  * 좀 무식한 방법이기는 하지만 별 문제는 없을 듯.
  */
 BOOL bNewLoad = FALSE;
-void CTCmdBarDlg::OnSettingChange(UINT uFlags, LPCTSTR lpszSection) 
+void CToolbarDlg::OnSettingChange(UINT uFlags, LPCTSTR lpszSection) 
 {
 	CDialog::OnSettingChange(uFlags, lpszSection);
 	
@@ -872,12 +871,12 @@ void CTCmdBarDlg::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
         bNewLoad = TRUE;    ///< 다음에 회면에 보일때 툴바를 다시 초기화한다.
 }
 
-void CTCmdBarDlg::OnSize(UINT nType, int cx, int cy) 
+void CToolbarDlg::OnSize(UINT nType, int cx, int cy) 
 {
 	CDialog::OnSize(nType, cx, cy);	
 }
 
-void CTCmdBarDlg::OnWindowPosChanged(WINDOWPOS FAR* lpwndpos) 
+void CToolbarDlg::OnWindowPosChanged(WINDOWPOS FAR* lpwndpos) 
 {
 	CDialog::OnWindowPosChanged(lpwndpos);
 	
@@ -890,7 +889,7 @@ void CTCmdBarDlg::OnWindowPosChanged(WINDOWPOS FAR* lpwndpos)
     }	
 }
 ///< 팝업메뉴 핸들러 1
-void CTCmdBarDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct) 
+void CToolbarDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct) 
 {
 	if(nIDCtl == 0)
     {
@@ -901,7 +900,7 @@ void CTCmdBarDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 	CDialog::OnDrawItem(nIDCtl, lpDrawItemStruct);
 }
 ///< 팝업메뉴 핸들러 2
-void CTCmdBarDlg::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
+void CToolbarDlg::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
 {
 	// TODO: Add your message handler code here and/or call default
 	if(nIDCtl == 0)

@@ -51,6 +51,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="."
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -77,9 +78,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\bin\RegUtil.exe"
+				OutputFile="..\bin\EasyRegistry.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				UACExecutionLevel="2"
 				ProgramDatabaseFile=".\Release/TCmdBar.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -142,6 +144,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="."
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -210,7 +213,7 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath="DlgConfigFolder.cpp"
+				RelativePath=".\Util\Common.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -233,7 +236,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="DlgRename.cpp"
+				RelativePath=".\Dialog\DlgConfigFolder.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -256,7 +259,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="DlgSort.cpp"
+				RelativePath=".\Dialog\DlgRename.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -279,7 +282,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="dsCommon.cpp"
+				RelativePath=".\Dialog\DlgSort.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -302,7 +305,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="dsIni.cpp"
+				RelativePath=".\Toolbar\FolderToolbar.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -325,30 +328,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="dsTray.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="FolderToolbar.cpp"
+				RelativePath=".\Util\Ini.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -383,7 +363,7 @@
 				>
 			</File>
 			<File
-				RelativePath="StaticEx.cpp"
+				RelativePath=".\Util\StaticEx.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -458,7 +438,7 @@
 				>
 			</File>
 			<File
-				RelativePath="TCmdBarDlg.cpp"
+				RelativePath=".\Toolbar\TCmdUtil.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -481,7 +461,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="TCmdUtil.cpp"
+				RelativePath=".\Toolbar\TMenuData.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -504,7 +484,30 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="TMenuData.cpp"
+				RelativePath=".\Dialog\ToolbarDlg.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Util\Tray.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -532,31 +535,27 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="DlgConfigFolder.h"
+				RelativePath=".\Util\Common.h"
 				>
 			</File>
 			<File
-				RelativePath="DlgRename.h"
+				RelativePath=".\Dialog\DlgConfigFolder.h"
 				>
 			</File>
 			<File
-				RelativePath="DlgSort.h"
+				RelativePath=".\Dialog\DlgRename.h"
 				>
 			</File>
 			<File
-				RelativePath="dsCommon.h"
+				RelativePath=".\Dialog\DlgSort.h"
 				>
 			</File>
 			<File
-				RelativePath="dsIni.h"
+				RelativePath=".\Toolbar\FolderToolbar.h"
 				>
 			</File>
 			<File
-				RelativePath=".\dsTray.h"
-				>
-			</File>
-			<File
-				RelativePath="FolderToolbar.h"
+				RelativePath=".\Util\Ini.h"
 				>
 			</File>
 			<File
@@ -576,7 +575,7 @@
 				>
 			</File>
 			<File
-				RelativePath="StaticEx.h"
+				RelativePath=".\Util\StaticEx.h"
 				>
 			</File>
 			<File
@@ -588,15 +587,19 @@
 				>
 			</File>
 			<File
-				RelativePath="TCmdBarDlg.h"
+				RelativePath=".\Toolbar\TCmdUtil.h"
 				>
 			</File>
 			<File
-				RelativePath="TCmdUtil.h"
+				RelativePath=".\Toolbar\TMenuData.h"
 				>
 			</File>
 			<File
-				RelativePath="TMenuData.h"
+				RelativePath=".\Dialog\ToolbarDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Util\Tray.h"
 				>
 			</File>
 		</Filter>
@@ -625,6 +628,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\EasyRegistry.txt"
+			>
+		</File>
 		<File
 			RelativePath="ReadMe.txt"
 			>

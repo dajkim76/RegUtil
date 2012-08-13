@@ -20,16 +20,17 @@
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
-//#include <dslib.h>
-#include "dsIni.h"
-#include "dsCommon.h"
-#include "dsTray.h"
+
+#include "util/Ini.h"
+#include "util/Common.h"
+#include "util/Tray.h"
+#include "ruDefine.h"
+
 template<class T>
 inline CString Int2Str(T  i )
 {
     CString s; s.Format(L"%d", i); return s;
 }
-#include "ruDefine.h"
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

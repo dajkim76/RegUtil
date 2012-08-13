@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "TCmdBar.h"
-#include "TCmdBarDlg.h"
+#include "Dialog/ToolbarDlg.h"
 //#include <dsUtil.h>
 
 #ifdef _DEBUG
@@ -77,7 +77,7 @@ BOOL CTCmdBarApp::InitInstance()
     m_wndInvisible.SetIcon(hIco, FALSE);
 
 
-	CTCmdBarDlg dlg(&m_wndInvisible);
+	CToolbarDlg dlg(&m_wndInvisible);
 	m_pMainWnd = &dlg;
 	int nResponse = dlg.DoModal();
 	if (nResponse == IDOK)

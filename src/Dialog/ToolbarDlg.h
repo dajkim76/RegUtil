@@ -8,8 +8,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "FolderToolbar.h"
-#include "dsTray.h"
+#include "Toolbar/FolderToolbar.h"
+#include "Util/Tray.h"
 /////////////////////////////////////////////////////////////////////////////
 // CTCmdBarDlg dialog
 class CMyTray : public CDSTray
@@ -17,7 +17,7 @@ class CMyTray : public CDSTray
 public:
     virtual LRESULT OnCallback(WPARAM wp, LPARAM lp) ;
 };
-class CTCmdBarDlg : public CDialog
+class CToolbarDlg : public CDialog
 {
 // Construction
 public:
@@ -26,8 +26,8 @@ public:
 	void OnCancel();
 	void RecalSize(bool bLoadPos);
     void WriteGluePosition();
-	CTCmdBarDlg(CWnd* pParent = NULL);	// standard constructor
-    LRESULT CTCmdBarDlg::OnUserOnTray(WPARAM wp, LPARAM lp);
+	CToolbarDlg(CWnd* pParent = NULL);	// standard constructor
+    LRESULT CToolbarDlg::OnUserOnTray(WPARAM wp, LPARAM lp);
 
 // Dialog Data
 	//{{AFX_DATA(CTCmdBarDlg)

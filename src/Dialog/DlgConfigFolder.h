@@ -9,7 +9,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgConfigFolder dialog
-#include "StaticEx.h"
+#include "util/StaticEx.h"
 /**
  버튼 수정 창
 */

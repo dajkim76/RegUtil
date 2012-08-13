@@ -1,7 +1,7 @@
 
 #include "Stdafx.h"
-#include "dsTray.h"
-#include "dsCommon.h"
+#include "Tray.h"
+#include "Common.h"
 
 
 const UINT CALLBACK_MSGID = WM_USER+1024;

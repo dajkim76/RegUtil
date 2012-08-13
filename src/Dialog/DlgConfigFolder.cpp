@@ -6,7 +6,7 @@
 #include "DlgConfigFolder.h"
 //#include <dsIni.h>
 //#include <dsUtil.h>
-#include "TMenuData.h"
+#include "toolbar/TMenuData.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -289,7 +289,7 @@ BOOL	dsGetSectionKeys(CStringArray & aKeys, LPCTSTR szSection, LPCTSTR szPath)
 	return TRUE;
 }
 */
-#include "dsini.h"
+#include "UTIL/ini.h"
 
 
 void CDlgConfigFolder_Sub::OnOK() 
