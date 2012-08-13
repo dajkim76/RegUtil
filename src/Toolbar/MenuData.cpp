@@ -159,6 +159,7 @@ void TMenuData_OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 	if(nID == 0)	//분리자이면.. ItemHeight = 9
 	{
+		dc.FillSolidRect(rcItem, g_colUnSelectedBack);
 		dc.Draw3dRect(rcItem.left + nIconWidth +2 , rcItem.top+3, rcItem.Width() - (nIconWidth +2), 1, g_colSep, g_colSep );
 
 		//dc.FillRect(&rcItem, &brMenu);

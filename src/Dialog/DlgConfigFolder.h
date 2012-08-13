@@ -64,6 +64,7 @@ public:
     CString _sFolderKey;
     CString _sTargetPath;
 	CString _sTitle;
+	CString name_;
     CRect _rc;
 
 // Dialog Data

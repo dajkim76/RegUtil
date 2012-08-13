@@ -11,29 +11,22 @@
 
 #include <afxtempl.h>
 
+void    JumptoReg(CString sPath, CString name = L"")  ; 
 
-void	TCMD_SendID(UINT uiCmd)    ;            ///< 700부터 시작하는 UserMenuID(토탈커맨드에 정의됨)
-void    TCMD_SendPath(CString sPath)  ;         ///< 패스를 토커에 전달해서 패스를 변겨하게 한다.
+CString CreateSubkey();                            ///< GUID를 생성해서 고유의 ini섹션키를 얻는다.
 
-
-CString GetSubkey();                            ///< GUID를 생성해서 고유의 ini섹션키를 얻는다.
-
-#define INI_FILE                dsRunningPath(L"TCmdBar.ini")
-#define INI_INT(x,d)            GetPrivateProfileInt(L"main", x, d, INI_FILE)
-#define SUBFOLDERINI_FILE       dsRunningPath(L"SubFolder2.ini")
-
-class  CButtonData
+class  ButtonData
 {
 public:
-    CString     sButtonText;      //Button
-    CString     sFolderPath;      //Folder Path
-    int         iCommand;         //Command
-    CString     sSubkey;
+    CString     text_;      //Button
+    CString     path_;      //Folder Path
+	CString	    name_;
+    CString     submenu_;
 };
 
 
-typedef CArray  <CButtonData, CButtonData&>  CItemDataArray;
-extern CItemDataArray g_arButtonData;
+typedef CArray  <ButtonData, ButtonData&>  ItemDataArray;
+extern ItemDataArray g_arButtonData;
 
 void    GetSubFolders(CString sFolderSectionKey, CStringArray& arKey, CStringArray &arData, CStringArray& arExt);
 void    LoadIni(CToolBar * pBar);

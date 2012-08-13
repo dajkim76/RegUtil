@@ -70,6 +70,9 @@ public:
 	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+	afx_msg void OnJumptoreg();
+	afx_msg void OnOption();
+	afx_msg void OnHelp();
 };
 
 //{{AFX_INSERT_LOCATION}}

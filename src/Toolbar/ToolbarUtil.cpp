@@ -17,57 +17,13 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-
-/**
- *	토탈커맨드에 사용자 정의 메시지를 전송하여 폴더를 변경하게 한다.
- */
-void	TCMD_SendID(UINT uiCmd)
-{
-	HWND hWnd = FindWindow(L"TTOTAL_CMD", NULL);
-	if(hWnd != NULL)
-	{
-		SendMessage(hWnd, 1075/*WM_USER+xx*/,uiCmd, 0);
-		::SetForegroundWindow(hWnd);
-	}
-}
-
-
-
-BOOL CALLBACK EnumWindowsProc(          HWND hwnd,
-    LPARAM lParam
-)
-{
-    TCHAR szClass[MAX_PATH];
-    GetClassName(hwnd, szClass, MAX_PATH);
-    if( CString(szClass).CompareNoCase(L"tcombobox") == 0
-        || CString(szClass).CompareNoCase(L"TMyComboBox.UnicodeClass") == 0 
-        || CString(szClass).CompareNoCase(L"TMyComboBox") == 0 )
-    {
-        HWND hWndEdit = FindWindowEx(hwnd, NULL, L"EDIT", NULL);
-        if(hWndEdit)
-        {
-            //Edit콘트롤에 아무것도 없는 것만을 처리하도록 한다. 
-            //FTp패널의 콤보도 걸리는데 이 콤보에는 항상 값이 들어 있기 때문에..
-            //오판하지 않도록 하기 위해서다.. 
-           int iLen = GetWindowTextLength(hWndEdit);
-           if(iLen == 0)
-           {
-               HWND* pWnd = (HWND*)(lParam);
-               *pWnd = hwnd;
-               return FALSE;    //Stop searching
-           }
-        }
-
-    }
-    return TRUE;
-}
-
 /**
  *	토커에 패스를 전달하여 폴더를 변경한다.
  */
-void TCMD_SendPath(CString sPath) 
+void JumptoReg(CString sPath, CString name) 
 {
-	RegWorks::Lookup(sPath, L"");
+	CWaitCursor wait;
+	RegWorks::Lookup(sPath, name);
 }
 
 
@@ -76,7 +32,7 @@ void TCMD_SendPath(CString sPath)
 #include <rpc.h>
 #pragma comment(lib,"Rpcrt4.lib")
 
-CString GetSubkey()
+CString CreateSubkey()
 {
     CString sKey;
     UUID uuid;
@@ -114,7 +70,7 @@ CString GetSubkey()
 }
 
 
-CItemDataArray g_arButtonData;
+ItemDataArray g_arButtonData;
 
 /**
  * 서브 폴더를 
@@ -127,8 +83,8 @@ CItemDataArray g_arButtonData;
 void GetSubFolders(CString sFolderSectionKey, CStringArray& arKey, CStringArray &arData, CStringArray& arExt)
 {
     CStringArray _arKey;
-    dsGetSectionKeys(_arKey, sFolderSectionKey, SUBFOLDERINI_FILE);
-    CDSIni  ini(sFolderSectionKey, SUBFOLDERINI_FILE);
+    dsGetSectionKeys(_arKey, sFolderSectionKey, SUBMENU_INI);
+    CDSIni  ini(sFolderSectionKey, SUBMENU_INI);
     for(int i=0;i<_arKey.GetSize();i++)
     {
         CString sData = ini.GetStr(_arKey[i], L"");
@@ -140,7 +96,7 @@ void GetSubFolders(CString sFolderSectionKey, CStringArray& arKey, CStringArray 
             arData.Add(sData);
 
             //꾸미기 정보를 로드한다.
-            CDSIni  ini2(sFolderSectionKey + L"E", SUBFOLDERINI_FILE);
+            CDSIni  ini2(sFolderSectionKey + L"E", SUBMENU_INI);
             CString sExt = ini2.GetStr(_arKey[i]);
             arExt.Add(sExt);
         }
@@ -152,13 +108,14 @@ void GetSubFolders(CString sFolderSectionKey, CStringArray& arKey, CStringArray 
  */
 void    LoadIni(CToolBar * pBar)
 {
-    int iSize = GetPrivateProfileInt(L"main", L"size", 0, INI_FILE);
+    int iSize = _GetInt(L"size", 0);
     if(0 == iSize)
     {
-        pBar->SetButtons(NULL, 1);
-        pBar->SetButtonText(0, L"여기에 폴더를 드랍하시오, Ctrl+드래그로 바를 이동 시킵니다.");
-        pBar->SetButtonInfo(0, 99, TBBS_AUTOSIZE | TBBS_BUTTON  ,1);        
-        return;
+		LPCWSTR defaultText = L"우클릭으로 수정 혹은 추가하세요, Ctrl + 드래그로 바를 이동 시킵니다.";
+		_WriteInt(L"size", 1);
+		CDSIni  ini(L"0", PROFILE_INI);
+		ini.WriteStr(L"text", defaultText);
+		iSize = 1;
     }
 
     g_arButtonData.RemoveAll();
@@ -168,36 +125,30 @@ void    LoadIni(CToolBar * pBar)
     for(int i=0; i<iSize; i++)
     {
         CString s = Int2Str(i);
-        CDSIni  ini(s, INI_FILE);
+        CDSIni  ini(s, PROFILE_INI);
         
-        CButtonData   ButtonData;
-        ButtonData.iCommand = ini.GetInt(L"iCommand", 0);
-        ButtonData.sButtonText = ini.GetStr(L"sButtonText", L"");
-        ButtonData.sFolderPath = ini.GetStr(L"sFolderPath", L"");
-        ButtonData.sSubkey =     ini.GetStr(L"subkey", L"");
-        if(ButtonData.sSubkey.IsEmpty())
+        ButtonData   ButtonData;
+        ButtonData.text_ = ini.GetStr(L"text", L"");
+        ButtonData.path_ = ini.GetStr(L"path", L"");
+		ButtonData.name_ = ini.GetStr(L"name", L"");
+        ButtonData.submenu_ =     ini.GetStr(L"subkey", L"");
+        if(ButtonData.submenu_.IsEmpty())
         {
-            ButtonData.sSubkey = GetSubkey();
-            ini.WriteStr(L"subkey", ButtonData.sSubkey);
+            ButtonData.submenu_ = CreateSubkey();
+            ini.WriteStr(L"subkey", ButtonData.submenu_);
         }
-
-        if(ButtonData.iCommand == 0 && ButtonData.sFolderPath.IsEmpty())
-        {
-            AfxMessageBox(L"ini 파일에 오류가 있습니다.");
-            continue;
-        }       
 
         //  서브폴더를 로드해 보고 
         //  데이타가 있으면 변경 이미지를 변경한다.
         CStringArray ar;
         CStringArray ar3;
         CStringArray ar2;
-        GetSubFolders(ButtonData.sSubkey, ar2, ar, ar3);
+        GetSubFolders(ButtonData.submenu_, ar2, ar, ar3);
         int iImage = 0;
         if(ar.GetSize() > 0)
             iImage = 1;
 
-        pBar->SetButtonText(i, ButtonData.sButtonText);
+        pBar->SetButtonText(i, ButtonData.text_);
         pBar->SetButtonInfo(i,i+100, TBBS_AUTOSIZE | TBBS_BUTTON  ,iImage);
 
         g_arButtonData.Add(ButtonData);

@@ -60,7 +60,7 @@ namespace
 			{
 				if ( name.GetLength() )
 				{
-					Sleep(100);
+					Sleep(30);
 					OpenValue(name);
 				}
 			}
@@ -186,6 +186,10 @@ namespace
 			for ( ; ; )
 			{
 				CString itemText = GetLVItemText(item);
+				if ( itemText.IsEmpty())
+				{
+					break;
+				}
 				if ( itemText.CompareNoCase(name) == 0 ) 
 				{
 					break;
@@ -195,7 +199,7 @@ namespace
 
 			BringWindowToTop(editor_);
 			SendMessage( listview_, WM_SETFOCUS, 0, 0);
-			Sleep(100);
+			Sleep(30);
 
 			SetLVItemState(item);
 			ATLTRACE(L"%s --> %d index\n", name, item);
@@ -403,7 +407,7 @@ bool RegWorks::Lookup( _KeyRoot root, CString path, CString name )
 
 bool RegWorks::Lookup( CString fullpath, CString name )
 {
-	_Validate(fullpath);
+	Validate(fullpath);
 
 	HWND hEditor = RequireRegEditorHanlde();
 	if( hEditor )
@@ -431,12 +435,12 @@ HWND RegWorks::RequireRegEditorHanlde()
 	if( hwnd )
 	{
 		SetForegroundWindow(hwnd);
-		Sleep(100);
+		Sleep(30);
 	}
 	return hwnd;
 }
 
-void RegWorks::_Validate( CString& path )
+void RegWorks::Validate( CString& path )
 {
 	// hklm\\Sof... ==> HKEY_LOCAL_MACHINE\\Soft...
 	path.Trim();
@@ -454,4 +458,17 @@ void RegWorks::_Validate( CString& path )
 			path = root + L"\\" + key;
 		}
 	}
+}
+
+bool RegWorks::IsValidPath( CString path )
+{
+	path.Trim();
+	int pos = path.Find(L"\\");
+	if( pos > 0)
+	{
+		path = path.Left( pos );
+		return KeyRoot::toType(path) != KeyRoot::UNKNOWN;
+	}
+
+	return false;
 }

@@ -15,7 +15,7 @@
 	return	: szFile이 NULL이면               실행화일이 설치된 폴더를
 	          szFile이 NULL이 아니면 아니면에 실행화일이 설치된 폴더에 szFile이 추가된 패스를 리턴한다. 
 */
-CString dsRunningPath( LPCTSTR szFileName ) 
+CString _ModulePath( LPCTSTR szFileName ) 
 {	
 	static CString s_sDir;
 	if(s_sDir.IsEmpty())
@@ -45,7 +45,7 @@ CString dsRunningPath( LPCTSTR szFileName )
 	@param szMutexName  고유문자열
 	@return 하나만 실행중이면 TRUE, 두개이상 실행중이면  FALSE
 */
-BOOL dsOneInstance(LPCTSTR szMutextName)
+BOOL CheckMutextInstance(LPCTSTR szMutextName)
 {
 	HANDLE hMutexOneInstance = ::CreateMutex(NULL, TRUE, szMutextName ); 
     if(::GetLastError() == ERROR_ALREADY_EXISTS) 
@@ -151,7 +151,7 @@ void DSTRACE(LPCTSTR pFormat, ...)
 //	클리보드에서 Text를 얻어옵니다.......
 //
 //	성공하면 TRUE를 실패하면 FALSE를 리턴합니다..
-BOOL dsGetClipboardText(HWND hWnd, CString &strRet)
+BOOL GetClipboardText(HWND hWnd, CString &strRet)
 {
 	ASSERT(hWnd);
 	if( ::OpenClipboard( hWnd) == FALSE) return FALSE;
@@ -175,7 +175,7 @@ BOOL dsGetClipboardText(HWND hWnd, CString &strRet)
 	return TRUE;
 }
 
-BOOL dsSetClipboardText(HWND hWnd, CString str)
+BOOL SetClipboardText(HWND hWnd, CString str)
 {
 	if (str.IsEmpty())
 		return FALSE;

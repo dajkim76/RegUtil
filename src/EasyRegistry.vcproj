@@ -382,6 +382,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Dialog\JumptoRegDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Toolbar\MenuData.cpp"
 				>
 				<FileConfiguration
@@ -406,6 +410,10 @@
 			</File>
 			<File
 				RelativePath=".\RegWorks\Misc.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Dialog\OptionDlg.cpp"
 				>
 			</File>
 			<File
@@ -567,11 +575,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Dialog\JumptoRegDlg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Toolbar\MenuData.h"
 				>
 			</File>
 			<File
 				RelativePath=".\RegWorks\Misc.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Dialog\OptionDlg.h"
 				>
 			</File>
 			<File
@@ -638,5 +654,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="EasyRegistry.rc"
+		/>
 	</Globals>
 </VisualStudioProject>

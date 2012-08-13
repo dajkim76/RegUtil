@@ -27,3 +27,31 @@ CString __S( LPCWSTR pszFormat, ...)
 
 	return pszDest;
 }
+
+// profile
+LPCWSTR kSection = L"main";
+#define  INIPATH PROFILE_INI
+
+CString _GetString( CString key, CString defaultValue )
+{
+	TCHAR buffer[4096] = { NULL };
+	GetPrivateProfileString(kSection, key, defaultValue, buffer, _countof(buffer), INIPATH);
+	return buffer;
+}
+
+void _WriteString( CString key, CString value )
+{
+	WritePrivateProfileString(kSection, key, value, INIPATH);
+}
+
+int _GetInt( CString key, int defaultValue )
+{
+	TCHAR buffer[4096] = { NULL };
+	GetPrivateProfileString(kSection, key, Int2Str(defaultValue), buffer, _countof(buffer), INIPATH);
+	return _ttoi(buffer);
+}
+
+void _WriteInt( CString key, int value )
+{
+	WritePrivateProfileString(kSection, key, Int2Str(value), INIPATH);
+}

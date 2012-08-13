@@ -5,6 +5,7 @@
 #include "EasyRegistry.h"
 #include "Dialog/ToolbarDlg.h"
 //#include <dsUtil.h>
+#include <shlwapi.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -42,10 +43,20 @@ CEasyRegistryApp theApp;
 
 BOOL CEasyRegistryApp::InitInstance()
 {
+	CString path = _GetString(L"launcher", L"");
+	const BOOL isLauncher = PathFileExists(path);
+	if ( isLauncher  )
+	{
+		ShellExecute(NULL, L"open", path, NULL, NULL, SW_NORMAL);
+	}
 
-    if(!dsOneInstance(L"regutil_mutex"))
+
+    if( !CheckMutextInstance(L"regutil_mutex") )
     {
-        AfxMessageBox(L"EasyRegistry 프로그램이 이미 실행중입니다.", MB_ICONWARNING);
+		if ( ! isLauncher )
+		{
+			AfxMessageBox(L"EasyRegistry 프로그램이 이미 실행중입니다.", MB_ICONWARNING);
+		}
         return FALSE;
     }
 

@@ -56,12 +56,12 @@ BOOL CDlgSort::OnInitDialog()
 
     CenterWindow(GetDesktopWindow());
 
-    _list.InsertColumn(0, L"폴더명", LVCFMT_LEFT, 300);
+    _list.InsertColumn(0, L"폴더명", LVCFMT_LEFT, 250);
     _list.InsertColumn(1, L"", LVCFMT_LEFT, 0);
 	
     CStringArray arKeys;
-    dsGetSectionKeys(arKeys,  _sSection, dsRunningPath(L"SubFolder2.ini"));
-    CDSIni ini(_sSection,                  dsRunningPath(L"SubFolder2.ini"));
+    dsGetSectionKeys(arKeys,  _sSection, SUBMENU_INI);
+    CDSIni ini(_sSection, SUBMENU_INI);
     int iListIndex = 0;
     for(int i=0;i<arKeys.GetSize(); i++)
     {
@@ -73,6 +73,8 @@ BOOL CDlgSort::OnInitDialog()
         _list.SetItemText(iListIndex, 1, arKeys[i] + L"," + sData);
         iListIndex++;
     }
+
+	_list.SetExtendedStyle( _list.GetExtendedStyle() | LVS_EX_FULLROWSELECT );
     
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -130,7 +132,7 @@ void CDlgSort::OnDown()
 
 void CDlgSort::OnOK() 
 {
-	CDSIni ini(_sSection, dsRunningPath(L"SubFolder2.ini"));
+	CDSIni ini(_sSection, SUBMENU_INI);
 	ini.ClearSection(_sSection);
     for(int i=0;i<_list.GetItemCount();i++)
     {
@@ -163,15 +165,6 @@ void CDlgSort::OnRename()
 {
 	int index  = getIndex();
     if(index<0) return;
-/*
-    CString s = _list.GetItemText(index, 0);
-    CDlgRename dlg(s, this);
-    if(IDOK == dlg.DoModal())
-    {
-        _list.SetItemText(index, 0, dlg._s);
-        m_bChanged = true;
-    }	
-*/
 
 	CString sKey = _list.GetItemText(index, 1);
 	if(sKey.Find(L",") > 0)
@@ -188,7 +181,7 @@ void CDlgSort::OnRename()
 	{
 		_list.SetItemText(index, 0, dlg._sTitle);
 		CString sData;
-		sData.Format(L"%d,%s|%s", _ttoi(sKey), dlg._sTitle, dlg._sTargetPath);
+		sData.Format(L"%d,%s|%s|%s", _ttoi(sKey), dlg._sTitle, dlg._sTargetPath, dlg.name_);
 		_list.SetItemText(index, 1, sData);
 	}
 

@@ -13,7 +13,7 @@
 /** @ingroup DSUTIL
     실행화일이 있는 포더의 패스를 얻는다. 
 */
-CString dsRunningPath(LPCTSTR szFileName);
+CString _ModulePath(LPCTSTR szFileName);
 
 /** @ingroup DSUTIL
 	dsDeleteFile	szFilePath를 삭제한다. readonly속성을 가진 파일도 삭제한다.
@@ -101,7 +101,7 @@ public:
 	@param szMutexName  고유문자열
 	@return 하나만 실행중이면 TRUE, 두개이상 실행중이면  FALSE
 */
-BOOL    dsOneInstance(LPCTSTR szMutextName);
+BOOL    CheckMutextInstance(LPCTSTR szMutextName);
 
 /**
 	화면 락거는 기능입니다. 
@@ -121,9 +121,9 @@ void DSTRACE(LPCTSTR pFormat, ...);
 
 int  dsMessageBox(UINT nType, LPCTSTR pFormat, ...);
 
-BOOL dsSetClipboardText(HWND hWnd, CString str) ;
+BOOL SetClipboardText(HWND hWnd, CString str) ;
 
-BOOL dsGetClipboardText(HWND hWnd, CString &strRet);
+BOOL GetClipboardText(HWND hWnd, CString &strRet);
 
 BOOL dsFolderSelect(HWND hWnd, CString strSubject, CString &path) ;
 

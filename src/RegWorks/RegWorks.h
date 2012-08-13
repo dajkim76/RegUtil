@@ -30,7 +30,6 @@ public:
 	static HWND RequireRegEditorHanlde();
 	static bool Lookup(_KeyRoot root, CString path, CString name);
 	static bool Lookup(CString fullpath, CString name);
-
-protected:
-	static void _Validate(CString& path);
+	static bool IsValidPath(CString path);
+	static void Validate(CString& path);
 };

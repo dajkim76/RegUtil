@@ -4,12 +4,13 @@
 #include "stdafx.h"
 #include "EasyRegistry.h"
 #include "DlgConfigFolder.h"
-//#include <dsIni.h>
-//#include <dsUtil.h>
 #include "toolbar/MenuData.h"
+#include "UTIL/ini.h"
+#include "RegWorks/RegWorks.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
+#include "RegWorks/RegWorks.h"
 static char THIS_FILE[] = __FILE__;
 #endif
 
@@ -49,17 +50,36 @@ BOOL CDlgConfigFolder::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 	
-    CDSIni ini(Int2Str(_iIndex), dsRunningPath(L"TCmdbar.ini"));
-    SetDlgItemText(CEDIT_TEXT,  ini.GetStr(L"sButtonText", L""));
-    SetDlgItemText(CEDIT_ID,  ini.GetStr(L"iCommand", L""));
-    SetDlgItemText(CEDIT_PATH,  ini.GetStr(L"sFolderPath", L""));
+    CDSIni ini(Int2Str(_iIndex), PROFILE_INI);
+	CString text = ini.GetStr(L"text", L"");
+	CString path = ini.GetStr(L"path", L"");
+	if ( text.GetLength() == 0 && path.GetLength() == 0)
+	{
+		CString clipText;
+		if ( GetClipboardText(m_hWnd, clipText) )
+		{
+			if( RegWorks::IsValidPath(clipText) )
+			{
+				RegWorks::Validate(clipText);
+				int pos = clipText.ReverseFind(L'\\');
+				if( pos > 0 )
+				{
+					text = clipText.Mid(pos + 1);
+					path = clipText;					
+				}
+			}
+		}
+	}
+    SetDlgItemText(CEDIT_TEXT, text );	
+    SetDlgItemText(CEDIT_PATH, path );
+	SetDlgItemText(CEDIT_NAME,  ini.GetStr(L"name", L""));
 
 	GetDlgItem(IDC_STATIC_3)->ShowWindow(SW_HIDE);
 
     CWindowRect rcWin(this);
     CScreenRect rcScr;
     if( (_rc.left + rcWin.Width()) > rcScr.Width())
-        _rc.left = rcScr.Width() - rcWin.Width()-10;
+        _rc.left = rcScr.Width() - rcWin.Width() - 10;
 
     MoveWindow(_rc.left, _rc.bottom, rcWin.Width(), rcWin.Height());
 
@@ -86,7 +106,7 @@ BOOL CDlgConfigFolder::OnInitDialog()
     GetDlgItem(IDCANCEL)->MoveWindow(&rc1);
 
     GetWindowRect(&rcWin);
-    SetWindowPos(NULL, 0, 0, rcWin.Width(), rc1.bottom+35, SWP_NOMOVE);
+    SetWindowPos(NULL, 0, 0, rcWin.Width(), rc1.bottom + 32, SWP_NOMOVE);
     
     
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -95,18 +115,17 @@ BOOL CDlgConfigFolder::OnInitDialog()
 
 void CDlgConfigFolder::OnOK() 
 {		
-    CDSIni ini(Int2Str(_iIndex), dsRunningPath(L"TCmdbar.ini"));
+    CDSIni ini(Int2Str(_iIndex), PROFILE_INI);
     CString s;
     
     GetDlgItemText(CEDIT_TEXT, s);
-    ini.WriteStr(L"sButtonText", s);
-
+    ini.WriteStr(L"text", s);
     
-    GetDlgItemText(CEDIT_ID, s);
-    ini.WriteStr(L"iCommand", s);
+    GetDlgItemText(CEDIT_NAME, s);
+    ini.WriteStr(L"name", s);
 
     GetDlgItemText(CEDIT_PATH,  s);
-    ini.WriteStr(L"sFolderPath", s);
+    ini.WriteStr(L"path", s);
 
 	CDialog::OnOK();
 }
@@ -159,20 +178,42 @@ BOOL CDlgConfigFolder_Sub::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	CDSIni ini(_sFolderKey, dsRunningPath(L"SubFolder2.ini"));
+	CDSIni ini(_sFolderKey, SUBMENU_INI);
 	CString sData = ini.GetStr(Int2Str(_iSubIndex), L"");
 	if(sData.GetLength())
 	{
 		int pos = sData.Find(L"|");
 		SetDlgItemText(CEDIT_TEXT, sData.Left(pos) );
-		SetDlgItemText(CEDIT_PATH, sData.Mid(pos+1) );
+		
+		sData = sData.Mid(pos+1);
+		pos = sData.Find(L"|");
+		if (pos > 0)
+		{
+			SetDlgItemText(CEDIT_PATH, sData.Left(pos) );
+			SetDlgItemText(CEDIT_NAME,  sData.Mid(pos + 1) );
+		}
+		else
+		{
+			SetDlgItemText(CEDIT_PATH, sData );
+		}
 	}
 	else
 	{
+		if ( _sTargetPath.GetLength() == 0)
+		{
+			CString text;
+			if ( GetClipboardText(m_hWnd, text) )
+			{
+				if( RegWorks::IsValidPath(text) )
+				{
+					RegWorks::Validate(text);
+					_sTargetPath = text;
+				}
+			}
+		}
+
 		CString s = _sTargetPath.Mid( _sTargetPath.ReverseFind(L'\\')+1);
 		SetDlgItemText(CEDIT_TEXT, s );
-		GetDlgItem(CEDIT_ID)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDC_STATIC_2)->ShowWindow(SW_HIDE);
 		SetDlgItemText(CEDIT_PATH, _sTargetPath);
 	}	
 
@@ -186,14 +227,18 @@ BOOL CDlgConfigFolder_Sub::OnInitDialog()
     MyEn(FALSE);
 
 	CString sDefault;
-	CDSIni ini2(_sFolderKey + L"E", dsRunningPath(L"SubFolder2.ini"));
+	CDSIni ini2(_sFolderKey + L"E", SUBMENU_INI);
 	CString sDisplay = ini2.GetStr(Int2Str(_iSubIndex), L"-1");
 	if(sDisplay == L"-1")
 	{
-		CDSIni cfg(L"main", dsRunningPath(L"tcmdbar.ini"));
+		CDSIni cfg(L"main", PROFILE_INI);
 		sDefault = cfg.GetStr(L"default");
-	}else
+	}
+	else
+	{
 		sDefault = sDisplay;
+	}
+
 	if(sDefault.GetLength() > 0)
 	{
 		MenuData md;
@@ -246,55 +291,13 @@ BOOL CDlgConfigFolder_Sub::OnInitDialog()
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
-/*
-BOOL	dsGetSectionKeys(CStringArray & aKeys, LPCTSTR szSection, LPCTSTR szPath)
-{
-	//파일 존재 확인
-	aKeys.RemoveAll();
 
-	//버퍼 할당, 초기버퍼는 2만 바이트로 충분하게
-	DWORD dwSize = 20000;
-	DWORD dwRetSize =0;
-	TCHAR*szBuffer = new TCHAR[dwSize];
-	if(NULL == szBuffer)
-		return FALSE;
-	do
-	{
-		dwRetSize = GetPrivateProfileString(szSection, NULL, NULL, szBuffer, dwSize, szPath);
-		//만약 버퍼의 크기가 모자라면
-		if((dwSize-2) == dwRetSize) 
-		{			
-			delete	[]szBuffer;
-			dwSize = dwSize * 2;
-			szBuffer = new TCHAR[dwSize];
-			//메모리 할당이 실패하면
-			if(NULL == szBuffer)
-				return FALSE;
-		}else
-			break;
-		
-	}while(TRUE);
 
-	//버퍼 할당
-	TCHAR *pPos = szBuffer;
-	while (NULL != *pPos)
-	{
-		aKeys.Add(pPos);
-		pPos += lstrlen(pPos) + 1;
-	}
-
-	delete	[]szBuffer;
-	szBuffer = NULL;
-
-	return TRUE;
-}
-*/
-#include "UTIL/ini.h"
 
 
 void CDlgConfigFolder_Sub::OnOK() 
 {		
-    CDSIni ini(_sFolderKey, dsRunningPath(L"SubFolder2.ini"));
+    CDSIni ini(_sFolderKey, SUBMENU_INI);
     CString sPath;    
     CString sName;
 //    int i;
@@ -305,45 +308,32 @@ void CDlgConfigFolder_Sub::OnOK()
 		AfxMessageBox(L"제목으로 , 문자를 사용할 수 없습니다.");
 		return;
 	}
-    //ini.WriteStr("sButtonText", s);
-    
-    //GetDlgItemText(CEDIT_ID, s);
-    //ini.WriteStr("iCommand", s);
+        
     GetDlgItemText(CEDIT_PATH,  sPath);
 	_sTargetPath = sPath;
-    //ini.WriteStr("sFolderPath", s);
 
-    CString sData = sName + L"|" + sPath;
+    GetDlgItemText(CEDIT_NAME,  name_);
+
+    CString sData = sName + L"|" + sPath + L"|" + name_;
     ini.WriteStr(Int2Str(_iSubIndex), NULL);    //먼저 해당것을 지운다..
-    
-    /*CStringArray arKeys, arValue;
-    dsGetSectionKeys(arKeys,  _sFolderKey, dsRunPath("SubFolder2.ini"));
-    for(i=0; i<arKeys.GetSize(); i++)
-    {
-        arValue.Add( ini.GetStr(arKeys[i]) );
-    }
-    ini.ClearSection(_sFolderKey);
-    */
-    //
+   
     //  맨 처음 내것을 맨 위에 입력하고..
     ini.WriteStr(Int2Str(_iSubIndex), sData);
-    /*만뒤에 다시 for(i=0; i<arKeys.GetSize(); i++)
-    {
-        //arValue.Add( ini.GetStr(arKeys[i]) );
-        ini.WriteStr(arKeys[i], arValue[i]);
-    }*/
-
+   
 	BOOL bDefault = ((CButton*)GetDlgItem(CHK_DEFAULT))->GetCheck();
-	CDSIni cfg(L"main", dsRunningPath(L"tcmdbar.ini"));
+	CDSIni cfg(L"main", PROFILE_INI);
 
-    CDSIni ini2(_sFolderKey + L"E", dsRunningPath(L"SubFolder2.ini"));    
+    CDSIni ini2(_sFolderKey + L"E", SUBMENU_INI);    
     CString sExt = Int2Str(_iSubIndex);
     if( ! ((CButton*)GetDlgItem(CCHK_USE))->GetCheck() )
     {
         ini2.WriteStr(sExt, L"");
-		if(bDefault)
+		if( bDefault )
+		{
 			cfg.WriteStr(L"default", L"");
-    }else
+		}
+    }
+	else
     {
         //진하게..
         BOOL bBold = ((CButton*)GetDlgItem(CCHK_BOLD))->GetCheck();
@@ -394,7 +384,7 @@ void TMenuData_Parse(CString sExt, MenuData&data)
 
 void CDlgConfigFolder_Sub::OnCol1()
 {
-    CColorDialog dlg;
+    CColorDialog dlg(0, 0, this);
     if(dlg.DoModal()==IDOK)
     {
         st1.b = true;
@@ -405,7 +395,7 @@ void CDlgConfigFolder_Sub::OnCol1()
 }
 void CDlgConfigFolder_Sub::OnCol2()
 {
-    CColorDialog dlg;
+    CColorDialog dlg(0, 0, this);
     if(dlg.DoModal()==IDOK)
     {
         st2.b = true;

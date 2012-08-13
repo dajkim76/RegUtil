@@ -51,10 +51,6 @@ int CFolderToolbar::OnCreate(LPCREATESTRUCT lpCreateStruct)
     ImageList_AddMasked(m_il.m_hImageList, hbm, RGB(255,0,255));
     GetToolBarCtrl().SetImageList(&m_il);
     DeleteObject(hbm);
-
-    //////////////////////////////////////////////////////////////////////////
-    //  파일을 드래그앤 드랍으로 받을 수 있게 한다.
-    this->DragAcceptFiles();
     
 	return 0;
 }
