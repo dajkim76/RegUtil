@@ -29,4 +29,10 @@
 #include "../_Define.h"
 
 
+template<class T>
+inline CString Int2Str(T  i )
+{
+    CString s; s.Format(L"%d", i); return s;
+}
+CString _ModulePath( LPCTSTR szFileName ) ;
 // TODO: reference additional headers your program requires here

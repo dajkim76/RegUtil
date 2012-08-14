@@ -31,7 +31,8 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 	{
 		// TODO: code your application's behavior here.
 		//Test1();
-		Test2();
+		//Test2();
+		Test3();
 	}
 
 	return nRetCode;

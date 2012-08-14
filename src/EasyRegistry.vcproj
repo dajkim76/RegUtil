@@ -398,6 +398,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\RegWorks\RegSerach.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\RegWorks\RegWorks.cpp"
 				>
 			</File>
@@ -561,6 +565,10 @@
 			</File>
 			<File
 				RelativePath=".\Dialog\RegistryPathDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RegWorks\RegSerach.h"
 				>
 			</File>
 			<File

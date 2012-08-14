@@ -2,6 +2,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EasyRegistry", "EasyRegistry.vcproj", "{FF32624C-36AA-4E95-A451-060BDC488036}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcproj", "{3ED330A0-5D0B-43B2-A8E7-9913EBC7CCC4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -12,6 +14,10 @@ Global
 		{FF32624C-36AA-4E95-A451-060BDC488036}.Debug|Win32.Build.0 = Debug|Win32
 		{FF32624C-36AA-4E95-A451-060BDC488036}.Release|Win32.ActiveCfg = Release|Win32
 		{FF32624C-36AA-4E95-A451-060BDC488036}.Release|Win32.Build.0 = Release|Win32
+		{3ED330A0-5D0B-43B2-A8E7-9913EBC7CCC4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3ED330A0-5D0B-43B2-A8E7-9913EBC7CCC4}.Debug|Win32.Build.0 = Debug|Win32
+		{3ED330A0-5D0B-43B2-A8E7-9913EBC7CCC4}.Release|Win32.ActiveCfg = Release|Win32
+		{3ED330A0-5D0B-43B2-A8E7-9913EBC7CCC4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
