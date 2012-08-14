@@ -13,17 +13,17 @@
 /**
  버튼 수정 창
 */
-class CDlgConfigFolder : public CDialog
+class RegistryPathDlg : public CDialog
 {
 // Construction
 public:
-	CDlgConfigFolder(int iIndex, CRect rc, CWnd* pParent = NULL);   // standard constructor
+	RegistryPathDlg(int iIndex, CRect rc, CWnd* pParent = NULL);   // standard constructor
     int _iIndex;
     CRect _rc;
 
 // Dialog Data
 	//{{AFX_DATA(CDlgConfigFolder)
-	enum { IDD = IDLG_CONFIG_FOLDER };
+	enum { IDD = IDD_REGISTRYPATHDLG };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA    
 

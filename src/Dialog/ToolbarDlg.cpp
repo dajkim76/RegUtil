@@ -4,10 +4,10 @@
 #include "stdafx.h"
 #include "EasyRegistry.h"
 #include "Dialog/ToolbarDlg.h"
-#include "Dialog/DlgConfigFolder.h"
+#include "Dialog/RegistryPathDlg.h"
 #include "Toolbar/MenuData.h"
 #include "Toolbar/ToolbarUtil.h"
-#include "Dialog/DlgSort.h"
+#include "Dialog/EditSubmenuDlg.h"
 #include "RegWorks\RegWorks.h"
 #include "JumptoRegDlg.h"
 #include "OptionDlg.h"
@@ -842,7 +842,7 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
                     /**
                      *	수정 변경 차을 띄운다.
                      */
-                    CDlgSort dlg(item.submenu_);
+                    EditSubmenuDlg dlg(item.submenu_);
                     if(dlg.DoModal() == IDOK)
                     {
                         if(dlg.m_bChanged)
@@ -898,7 +898,7 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 							CRect rc;
 							m_bar.GetItemRect(iIndex, &rc);
 							m_bar.ClientToScreen(&rc);
-							CDlgConfigFolder dlg(iIndex, rc);
+							RegistryPathDlg dlg(iIndex, rc);
 							if(dlg.DoModal() == IDOK)
 							{
 								LoadIni(&m_bar);
@@ -976,7 +976,7 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 							/**
 							 *  이미 저장한 버튼에 대한 수정창을 띄운다.	
 							 */
-							CDlgConfigFolder dlg(iNewIndex, rc);
+							RegistryPathDlg dlg(iNewIndex, rc);
 							if(dlg.DoModal()== IDOK)
 							{
 								LoadIni(&m_bar);

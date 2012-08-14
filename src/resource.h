@@ -6,11 +6,13 @@
 #define IDD_ABOUTBOX                    100
 #define IDS_ABOUTBOX                    101
 #define IDD_TCMDBAR_DIALOG              102
+#define IDD_TOOLBARDLG                  102
 #define IDR_MAINFRAME                   128
 #define IDB_BITMAP1                     131
 #define IDLG_CONFIG_FOLDER              132
+#define IDD_REGISTRYPATHDLG             132
 #define IDLG_SORT                       137
-#define IDLG_RENAME                     138
+#define IDD_EDIT_SUBMENU                137
 #define IDD_JUMPTOREG                   139
 #define IDR_MENU1                       140
 #define IDD_OPTION                      141

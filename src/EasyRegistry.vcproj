@@ -240,75 +240,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Dialog\DlgConfigFolder.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Dialog\DlgRename.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\Dialog\DlgSort.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\EasyRegistry.cpp"
 				>
 				<FileConfiguration
@@ -334,6 +265,33 @@
 			<File
 				RelativePath=".\EasyRegistry.rc"
 				>
+			</File>
+			<File
+				RelativePath=".\Dialog\EditSubmenuDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Dialog\EditSubmenuDlg.h"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Toolbar\FolderToolbar.cpp"
@@ -415,6 +373,29 @@
 			<File
 				RelativePath=".\Dialog\OptionDlg.cpp"
 				>
+			</File>
+			<File
+				RelativePath=".\Dialog\RegistryPathDlg.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\RegWorks\RegWorks.cpp"
@@ -551,18 +532,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Dialog\DlgConfigFolder.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Dialog\DlgRename.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Dialog\DlgSort.h"
-				>
-			</File>
-			<File
 				RelativePath=".\EasyRegistry.h"
 				>
 			</File>
@@ -588,6 +557,10 @@
 			</File>
 			<File
 				RelativePath=".\Dialog\OptionDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Dialog\RegistryPathDlg.h"
 				>
 			</File>
 			<File

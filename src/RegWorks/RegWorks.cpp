@@ -443,7 +443,7 @@ HWND RegWorks::RequireRegEditorHanlde()
 void RegWorks::Validate( CString& path )
 {
 	// hklm\\Sof... ==> HKEY_LOCAL_MACHINE\\Soft...
-	path.Trim();
+	path.Trim(L" \t()\n\r");
 	path.Replace(L"\\\\", L"\\");
 
 	int pos = path.Find(L'\\');
@@ -462,7 +462,8 @@ void RegWorks::Validate( CString& path )
 
 bool RegWorks::IsValidPath( CString path )
 {
-	path.Trim();
+	path.Trim(L" \t()\n\r");
+	path.Replace(L"\\\\", L"\\");
 	int pos = path.Find(L"\\");
 	if( pos > 0)
 	{

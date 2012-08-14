@@ -10,17 +10,17 @@
 /////////////////////////////////////////////////////////////////////////////
 // CDlgSort dialog
 
-class CDlgSort : public CDialog
+class EditSubmenuDlg : public CDialog
 {
 // Construction
 public:
 	int getIndex();
-	CDlgSort(CString sSection, CWnd* pParent = NULL);   // standard constructor
+	EditSubmenuDlg(CString sSection, CWnd* pParent = NULL);   // standard constructor
 
     CString _sSection;
 // Dialog Data
 	//{{AFX_DATA(CDlgSort)
-	enum { IDD = IDLG_SORT };
+	enum { IDD = IDD_EDIT_SUBMENU };
 	CListCtrl	_list;
     bool    m_bChanged;
 	//}}AFX_DATA
@@ -46,6 +46,8 @@ protected:
 	afx_msg void OnRename();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 //{{AFX_INSERT_LOCATION}}

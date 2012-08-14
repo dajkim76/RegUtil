@@ -31,7 +31,7 @@ public:
 
 // Dialog Data
 	//{{AFX_DATA(CTCmdBarDlg)
-	enum { IDD = IDD_TCMDBAR_DIALOG };
+	enum { IDD = IDD_TOOLBARDLG };
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
     CFolderToolbar    m_bar;

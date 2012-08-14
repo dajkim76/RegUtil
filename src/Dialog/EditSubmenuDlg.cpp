@@ -3,9 +3,8 @@
 
 #include "stdafx.h"
 #include "EasyRegistry.h"
-#include "DlgSort.h"
-#include "DlgRename.h"
-#include "DlgConfigFolder.h"
+#include "EditSubmenuDlg.h"
+#include "RegistryPathDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -17,8 +16,8 @@ static char THIS_FILE[] = __FILE__;
 // CDlgSort dialog
 
 
-CDlgSort::CDlgSort(CString sSection, CWnd* pParent /*=NULL*/)
-	: CDialog(CDlgSort::IDD, pParent)
+EditSubmenuDlg::EditSubmenuDlg(CString sSection, CWnd* pParent /*=NULL*/)
+	: CDialog(EditSubmenuDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CDlgSort)
 		// NOTE: the ClassWizard will add member initialization here
@@ -28,7 +27,7 @@ CDlgSort::CDlgSort(CString sSection, CWnd* pParent /*=NULL*/)
 }
 
 
-void CDlgSort::DoDataExchange(CDataExchange* pDX)
+void EditSubmenuDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CDlgSort)
@@ -37,20 +36,21 @@ void CDlgSort::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CDlgSort, CDialog)
+BEGIN_MESSAGE_MAP(EditSubmenuDlg, CDialog)
 	//{{AFX_MSG_MAP(CDlgSort)
 	ON_BN_CLICKED(IDC_BUTTON1, OnUP)
 	ON_BN_CLICKED(IDC_BUTTON2, OnDown)
 	ON_BN_CLICKED(IDC_BUTTON3, OnDelete)
 	ON_BN_CLICKED(IDC_BUTTON4, OnRename)
 	//}}AFX_MSG_MAP
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &EditSubmenuDlg::OnNMDblclkList1)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgSort message handlers
 
 
-BOOL CDlgSort::OnInitDialog() 
+BOOL EditSubmenuDlg::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
 
@@ -74,14 +74,14 @@ BOOL CDlgSort::OnInitDialog()
         iListIndex++;
     }
 
-	_list.SetExtendedStyle( _list.GetExtendedStyle() | LVS_EX_FULLROWSELECT );
+	_list.SetExtendedStyle( _list.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES );
     
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-int CDlgSort::getIndex()
+int EditSubmenuDlg::getIndex()
 {
     POSITION pos = _list.GetFirstSelectedItemPosition();
     if( ! pos)
@@ -92,7 +92,7 @@ int CDlgSort::getIndex()
     return _list.GetNextSelectedItem(pos);
 }
 
-void CDlgSort::OnUP() 
+void EditSubmenuDlg::OnUP() 
 {
 	int index  = getIndex();
     if(index<0) return;
@@ -110,7 +110,7 @@ void CDlgSort::OnUP()
 	
 }
 
-void CDlgSort::OnDown() 
+void EditSubmenuDlg::OnDown() 
 {
 	int index  = getIndex();
     if(index<0) return;	
@@ -130,7 +130,7 @@ void CDlgSort::OnDown()
 }
 
 
-void CDlgSort::OnOK() 
+void EditSubmenuDlg::OnOK() 
 {
 	CDSIni ini(_sSection, SUBMENU_INI);
 	ini.ClearSection(_sSection);
@@ -150,7 +150,7 @@ void CDlgSort::OnOK()
 	CDialog::OnOK();
 }
 
-void CDlgSort::OnDelete() 
+void EditSubmenuDlg::OnDelete() 
 {
 	int index  = getIndex();
     if(index<0) return;
@@ -161,7 +161,7 @@ void CDlgSort::OnDelete()
     m_bChanged = true;
 }
 
-void CDlgSort::OnRename() 
+void EditSubmenuDlg::OnRename() 
 {
 	int index  = getIndex();
     if(index<0) return;
@@ -185,4 +185,12 @@ void CDlgSort::OnRename()
 		_list.SetItemText(index, 1, sData);
 	}
 
+}
+
+void EditSubmenuDlg::OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: Add your control notification handler code here
+	PostMessage(WM_COMMAND, IDC_BUTTON4);
+	*pResult = 0;
 }

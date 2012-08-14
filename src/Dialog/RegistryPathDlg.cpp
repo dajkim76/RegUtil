@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "EasyRegistry.h"
-#include "DlgConfigFolder.h"
+#include "RegistryPathDlg.h"
 #include "toolbar/MenuData.h"
 #include "UTIL/ini.h"
 #include "RegWorks/RegWorks.h"
@@ -18,8 +18,8 @@ static char THIS_FILE[] = __FILE__;
 // CDlgConfigFolder dialog
 
 
-CDlgConfigFolder::CDlgConfigFolder(int iIndex, CRect rc, CWnd* pParent /*=NULL*/)
-	: CDialog(CDlgConfigFolder::IDD, pParent)
+RegistryPathDlg::RegistryPathDlg(int iIndex, CRect rc, CWnd* pParent /*=NULL*/)
+	: CDialog(RegistryPathDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CDlgConfigFolder)
 		// NOTE: the ClassWizard will add member initialization here
@@ -30,7 +30,7 @@ CDlgConfigFolder::CDlgConfigFolder(int iIndex, CRect rc, CWnd* pParent /*=NULL*/
 }
 
 
-void CDlgConfigFolder::DoDataExchange(CDataExchange* pDX)
+void RegistryPathDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CDlgConfigFolder)
@@ -38,7 +38,7 @@ void CDlgConfigFolder::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CDlgConfigFolder, CDialog)
+BEGIN_MESSAGE_MAP(RegistryPathDlg, CDialog)
 	//{{AFX_MSG_MAP(CDlgConfigFolder)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -46,7 +46,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CDlgConfigFolder message handlers
 
-BOOL CDlgConfigFolder::OnInitDialog() 
+BOOL RegistryPathDlg::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
 	
@@ -113,7 +113,7 @@ BOOL CDlgConfigFolder::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CDlgConfigFolder::OnOK() 
+void RegistryPathDlg::OnOK() 
 {		
     CDSIni ini(Int2Str(_iIndex), PROFILE_INI);
     CString s;
