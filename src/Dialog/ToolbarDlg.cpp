@@ -626,7 +626,8 @@ void CToolbarDlg::OnTimer(UINT nIDEvent)
         //  사용자가 이동하고 나서 마우스 Lbuton을 놓으면 토커바의 새 위치를 저장한다.
         //
         s_bWritePositon = 1;
-    }else if(s_bWritePositon == 1 && !ISKEYDOWN(VK_LBUTTON))
+    }
+	else if(s_bWritePositon == 1 && !ISKEYDOWN(VK_LBUTTON))
     {
         WriteGluePosition();
         s_bWritePositon = 0;
@@ -675,7 +676,8 @@ void CToolbarDlg::OnTimer(UINT nIDEvent)
             if(::IsIconic(hWnd))    ///토커바가 최소화되어 있으면 숨긴다.
                 _Hide();
 
-    }else{
+    }else
+	{
         /*
          *	활성창이 포커바가 아니거나, 최소화 되어 있으면 바를 숨긴다.
          */
@@ -818,6 +820,7 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 				mnuPopup.AppendMenu(MF_SEPARATOR|MF_OWNERDRAW, 0, (TCHAR*)NULL);
 				_AppendMenu( 100, L"수정");
 				_AppendMenu( 101, L"삭제");
+				_AppendMenu( 102, L"EasyRegistry 종료");
 				
 				
 				//_AppendMenu( 104, L"RegEdit창에 달라붙기");

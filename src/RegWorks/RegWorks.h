@@ -12,7 +12,7 @@ struct KeyRoot
 		UNKNOWN,
 	};
 
-	static type toType(CString root);
+	static type toType(CString path);
 	static HKEY GetKey(type key);
 	static CString toText(type key);
 };

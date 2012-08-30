@@ -70,6 +70,11 @@ namespace
 		{
 			SendMessage(treeview_, WM_SETFOCUS, 0, 0);
 
+			// 트리를 새로고침한다.
+			PostMessage(editor_, WM_KEYDOWN, VK_F5, 0x1f01);
+			PostMessage(editor_, WM_KEYUP, VK_F5, 0x1f01);
+			Sleep(20);
+
 			HTREEITEM  tvItem = (HTREEITEM )SendMessage(treeview_, TVM_GETNEXTITEM, TVGN_ROOT, NULL);
 			ATLASSERT(tvItem);
 			if ( tvItem )
@@ -279,32 +284,39 @@ namespace
 }
 
 
-KeyRoot::type KeyRoot::toType( CString root )
+KeyRoot::type KeyRoot::toType( CString path )
 {
-	root.MakeUpper();
-	if ( root == L"HKCR" || root ==  L"HKEY_CLASSES_ROOT" )
+	path.Trim(L" \r\n\t()");
+	path.MakeUpper();
+	int pos = path.Find(L"\\");
+	if( pos > 0 )
+	{
+		path = path.Left( pos );
+	}
+
+	if ( path == L"HKCR" || path ==  L"HKEY_CLASSES_ROOT" )
 	{
 		return HKCR;
 	}
-	else if ( root == L"HKCU" || root == L"HKEY_CURRENT_USER" )
+	else if ( path == L"HKCU" || path == L"HKEY_CURRENT_USER" )
 	{
 		return HKCU;
 	}
-	else if ( root == L"HKLM" || root == L"HKEY_LOCAL_MACHINE" )
+	else if ( path == L"HKLM" || path == L"HKEY_LOCAL_MACHINE" )
 	{
 		return HKLM;
 	}
-	else if ( root == L"HKUSERS" || root == L"HKEY_USERS" )
+	else if ( path == L"HKUSERS" || path == L"HKEY_USERS" )
 	{
 		return HKUSERS;
 	}
-	else if ( root == L"HKCC" || root == L"HKEY_CURRENT_CONFIG" )
+	else if ( path == L"HKCC" || path == L"HKEY_CURRENT_CONFIG" )
 	{
 		return HKCC;
 	}
 	else
 	{
-		_ASSERT_EXPR(0, __S(L"invalid root: %s ", root));
+		_ASSERT_EXPR(0, __S(L"invalid root: %s ", path));
 		return UNKNOWN;
 	}
 }

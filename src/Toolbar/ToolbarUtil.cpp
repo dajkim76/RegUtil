@@ -144,9 +144,18 @@ void    LoadIni(CToolBar * pBar)
         CStringArray ar3;
         CStringArray ar2;
         GetSubFolders(ButtonData.submenu_, ar2, ar, ar3);
-        int iImage = 0;
+        int iImage = 6;
+		if( KeyRoot::toType(ButtonData.path_) == KeyRoot::HKCU )
+		{
+			iImage = 2;
+		}
+		else if( KeyRoot::toType(ButtonData.path_) == KeyRoot::HKLM )
+		{
+			iImage = 4;
+		}
+
         if(ar.GetSize() > 0)
-            iImage = 1;
+            iImage ++;
 
         pBar->SetButtonText(i, ButtonData.text_);
         pBar->SetButtonInfo(i,i+100, TBBS_AUTOSIZE | TBBS_BUTTON  ,iImage);
