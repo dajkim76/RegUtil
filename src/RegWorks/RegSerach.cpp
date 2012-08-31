@@ -3,26 +3,50 @@
 #include <strsafe.h>
 
 #define  DTRACE _tprintf
-
-UINT __count = 0;
+static UINT __count = 0;
 
 namespace RegSearch
 {
-	void EnumRegistryKey(HKEY hKey, CAtlString sKeyName, vector< CAtlString >& ListEnumKey)
+	#define MAX_REG_KEY_NAME		(512)
+	#define MAX_REG_KEY_VALUE		(32767)
+
+
+	bool FindKeyword(const CAtlString& source, const CAtlString& keyword, bool isCasesensitive)
+	{
+		ATLASSERT(keyword.GetLength());
+		if( isCasesensitive )
+		{
+			return source.Find(keyword) >= 0;
+		}
+
+		CAtlString tempSource = source;
+		tempSource.MakeLower();
+		CAtlString tempKeyword = keyword;
+		tempKeyword.MakeLower();
+		return tempSource.Find(tempKeyword) >= 0;
+	}
+
+	void EnumRegistryKey(HKEY hKey, CAtlString key, vector< CAtlString >& keyList)
 	{
 		LONG retcode = ERROR_SUCCESS;
 		HKEY hOpenKey = NULL;
 		TCHAR str[MAX_PATH];
 		memset( str, '\0', sizeof(str));
-		ListEnumKey.clear();
+		keyList.clear();
 
-		if(sKeyName.GetLength()>0)
-			retcode = RegOpenKey( hKey, sKeyName, &hOpenKey);
+		if( key.GetLength() > 0)
+		{
+			retcode = RegOpenKey( hKey, key, &hOpenKey);
+		}
 		else
+		{
 			hOpenKey = hKey;
+		}
 
 		if( retcode != (DWORD)ERROR_SUCCESS )
+		{
 			return;
+		}
 
 		for (int i = 0, retCode = ERROR_SUCCESS; retCode == ERROR_SUCCESS; i++) 
 		{
@@ -38,15 +62,19 @@ namespace RegSearch
 				sNewKeyName = str;
 
 				if(sNewKeyName.GetLength()>0)
-					ListEnumKey.push_back( sNewKeyName );
+				{
+					keyList.push_back( sNewKeyName );
+				}
 			}
 		}
 
 		if(hKey)
+		{
 			RegCloseKey( hOpenKey );
+		}
 	}
 
-	void SearchRegistryKeyValue(HKEY hKey, CAtlString sKeyName, RegItemList& resultList, const SearchOption& option)
+	void SearchRegistryKeyValue(HKEY hKey, CAtlString key, RegItemList& resultList, const SearchOption& option)
 	{
 		if( ! option.nameCheck_ && ! option.valueCheck_ )
 		{
@@ -59,13 +87,19 @@ namespace RegSearch
 		TCHAR name[MAX_REG_KEY_NAME];
 		memset( name, _T('\0'), sizeof(name));
 
-		if(sKeyName.GetLength()>0)
-			retcode = RegOpenKeyEx(hKey, sKeyName, 0, KEY_READ, &hOpenKey);
+		if(key.GetLength() > 0)
+		{
+			retcode = RegOpenKeyEx(hKey, key, 0, KEY_READ, &hOpenKey);
+		}
 		else
+		{
 			hOpenKey = hKey;
+		}
 
 		if( retcode != (DWORD)ERROR_SUCCESS )
+		{
 			return;
+		}
 
 		static BYTE data[MAX_REG_KEY_VALUE];
 		static TCHAR tempBuffer[MAX_REG_KEY_VALUE*3 + 10] = { NULL };
@@ -93,9 +127,18 @@ namespace RegSearch
 				break;
 			}
 
-			if ( retcode != ERROR_SUCCESS )
+			if ( retcode == ERROR_MORE_DATA )
 			{
-				ATLASSERT(FALSE);
+				/*
+				Registry Element	Size Limit
+				Key name	255 characters
+				Value name	16,383 characters
+				Windows 2000:  260 ANSI characters or 16,383 Unicode characters.
+				Value	Available memory (latest format)
+					1 MB (standard format)
+				Tree	A registry tree can be 512 levels deep. You can create up to 32 levels at a time through a single registry API call.
+				*/
+				//DTRACE(L"\n******* MoreData[%s][%s] size=%u\n\n", key, name, valueSize);
 				continue;
 			}
 
@@ -105,6 +148,11 @@ namespace RegSearch
 			}
 
 			if( dwType == REG_NONE )
+			{
+				continue;
+			}
+
+			if ( retcode != ERROR_SUCCESS )
 			{
 				continue;
 			}
@@ -214,12 +262,17 @@ namespace RegSearch
 				}
 			}
 			else
-			{
-				_ASSERT_EXPR(dwType == REG_NONE, L"unknown reg type");
+			{	/*
+				Unknown type : 64 ???
+				if( dwType != REG_NONE )
+				{
+					DTRACE(L"\n###### UnSupported reg type: %d\n\n", dwType);
+				}
+				_ASSERT_EXPR(dwType == REG_NONE, str);
+				*/
 				continue;
 			}
 
-			ATLASSERT(buffer);
 			const bool isValuecheckSuccess = (	!isNamecheckSuccess && 
 												buffer && 
 												option.valueCheck_ && 
@@ -235,9 +288,9 @@ namespace RegSearch
 		} // for
 
 		if(hKey)
+		{
 			RegCloseKey( hOpenKey );
-
-		//delete[] data;
+		}		
 	}
 
 	void ClearRegItemList( RegItemList& itemList)
@@ -247,23 +300,6 @@ namespace RegSearch
 			delete itemList[i];
 		}
 		itemList.clear();
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-
-	bool FindKeyword(const CAtlString& source, const CAtlString& keyword, bool isCasesensitive)
-	{
-		ATLASSERT(keyword.GetLength());
-		if( isCasesensitive )
-		{
-			return source.Find(keyword) >= 0;
-		}
-
-		CAtlString tempSource = source;
-		tempSource.MakeLower();
-		CAtlString tempKeyword = keyword;
-		tempKeyword.MakeLower();
-		return tempSource.Find(tempKeyword) >= 0;
 	}
 
 	bool RegistrySearch(HKEY root, CAtlString key, const SearchOption& option, RegItemList& resultList, ISearchNotify* notify)

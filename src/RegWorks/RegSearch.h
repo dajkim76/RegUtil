@@ -6,9 +6,6 @@ using namespace std;
 
 namespace RegSearch
 {
-	#define MAX_REG_KEY_NAME		512
-	#define MAX_REG_KEY_VALUE		32767
-
 	class RegItem
 	{
 	public:
@@ -19,25 +16,19 @@ namespace RegSearch
 		{
 			text_ = szText;
 		}
-		CAtlString key_;
-		DWORD	type_;
-		CAtlString	name_;
 		
-		// result
+		CAtlString key_;		// key
+		DWORD	type_;			// type of value
+		CAtlString	name_;		// name of value
+		
+		// value
 		DWORD	dwordData_;		/// DWORD
-		__int64	qwordData_;	/// QWord
-		CAtlString	text_;	/// SZ, SZ_EX, MULTI_SZ
+		__int64	qwordData_;		/// QWord
+		CAtlString	text_;		/// REG_SZ, REG_EXPAND_SZ, REG_MULTI_SZ, REG_BINARY
 	};
 
 	typedef std::vector< RegItem* > RegItemList;
-
-	class SearchOption;
-
-	void EnumRegistryKey(HKEY hKey, CAtlString sKeyName, vector< CAtlString >& ListEnumKey);
-	void SearchRegistryKeyValue(HKEY hKey, CAtlString sKeyName, RegItemList& resultList, const SearchOption& option);
 	void ClearRegItemList( RegItemList& itemList);
-
-	//////////////////////////////////////////////////////////////////////////
 
 	class SearchOption
 	{
@@ -50,20 +41,18 @@ namespace RegSearch
 				, canceled_(false) {}
 		CAtlString keyword_;
 		bool caseSenstive_;
-		bool nameCheck_;
 		bool keyCheck_;
+		bool nameCheck_;		
 		bool valueCheck_;
 		bool canceled_;
-	};
+	};	
 
-	bool FindKeyword(const CAtlString& source, const CAtlString& keyword, bool isCasesensitive);
-
+	/// 검색시 발견되면 Post로 노티할 인터페이스
 	class ISearchNotify
 	{
 	public:
 		virtual void OnFound(CAtlString key, RegItem* item) = 0;
 	};
-
+	
 	bool RegistrySearch(HKEY root, CAtlString key, const SearchOption& option, RegItemList& resultList, ISearchNotify* notify = NULL);
-
 };
