@@ -406,6 +406,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SearchUI\SearchDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SearchUI\SearchHistoryWnd.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SearchThread.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SearchUI\SimpleThread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Util\StaticEx.cpp"
 				>
 				<FileConfiguration
@@ -577,6 +593,22 @@
 			</File>
 			<File
 				RelativePath="Resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SearchUI\SearchDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SearchUI\SearchHistoryWnd.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SearchThread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SearchUI\SimpleThread.h"
 				>
 			</File>
 			<File

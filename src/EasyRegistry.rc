@@ -150,6 +150,28 @@ BEGIN
     CONTROL         "실행시 레지스트리 에디터도 실행하기",IDC_CHECK_LAUNCHER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,22,236,10
 END
 
+IDD_SEARCH DIALOGEX 0, 0, 328, 137
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "검색하기"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT1,64,94,251,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,205,116,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,271,116,50,14
+    CONTROL         "HKEY_CLASSES_ROOT",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,20,140,10
+    CONTROL         "HKEY_CURRENT_USER",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,33,140,10
+    CONTROL         "HKEY_LOCAL_MACHINE",IDC_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,46,140,10
+    CONTROL         "HKEY_USERS",IDC_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,59,140,10
+    CONTROL         "HKEY_CURRENT_CONFIG",IDC_CHECK5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,72,140,10
+    CONTROL         "키",IDC_CHECK6,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,181,22,140,10
+    CONTROL         "값",IDC_CHECK7,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,181,35,140,10
+    CONTROL         "데이터",IDC_CHECK8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,181,49,140,10
+    CONTROL         "대소문자 구분하기",IDC_CHECK9,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,181,64,140,10
+    LTEXT           "찾을 내용 :",IDC_STATIC,10,97,49,8
+    GROUPBOX        "찾을 대상",IDC_STATIC,171,7,150,79
+    GROUPBOX        "찾을 대상",IDC_STATIC,7,7,157,79
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -241,6 +263,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 80
     END
+
+    IDD_SEARCH, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 321
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 130
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -328,11 +358,19 @@ BEGIN
         MENUITEM "정보",                          IDM_ABOUTBOX
         MENUITEM "업데이트 내역",                     ID_HELP
         MENUITEM SEPARATOR
+        MENUITEM "검색",                          IE_MNU_SEARCH
         MENUITEM "옵션",                          ID_OPTION
         MENUITEM "주소로 바로 이동하기",                 ID_JUMPTOREG
         MENUITEM "레지스트리 편집기 실행",                ID_RUN_EDITOR
         MENUITEM "EasyRegistry 종료",             IDOK
     END
+END
+
+IDR_MENU2 MENUEX 
+BEGIN
+    MENUITEM "새 검색",                        ID_NEW_SEARCH,MFT_STRING,MFS_ENABLED
+    MENUITEM "결과내 검색",                      0,MFT_STRING,MFS_ENABLED
+    MENUITEM "탭 닫기(x)",                     0,MFT_STRING | MFT_RIGHTJUSTIFY,MFS_ENABLED
 END
 
 

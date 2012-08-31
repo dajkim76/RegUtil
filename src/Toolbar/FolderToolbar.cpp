@@ -62,7 +62,7 @@ void CFolderToolbar::OnRButtonDown(UINT nFlags, CPoint point)
 {
     CToolBarCtrl &ctl = GetToolBarCtrl();
     int iIndex = ctl.HitTest(&point);
-    if(iIndex>=0 )
+    if( iIndex >= 0 )
     {
         if(ISKEYDOWN(VK_CONTROL))
             GetParent()->PostMessage(WMUM_RDOWN, iIndex, 1);

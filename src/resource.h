@@ -16,6 +16,8 @@
 #define IDD_JUMPTOREG                   139
 #define IDR_MENU1                       140
 #define IDD_OPTION                      141
+#define IDR_MENU2                       142
+#define IDD_SEARCH                      143
 #define CEDIT_TEXT                      1000
 #define CEDIT_ID                        1001
 #define CEDIT_NAME                      1001
@@ -40,7 +42,16 @@
 #define IDC_CHECK_GLUE                  1016
 #define IDC_BUTTON4                     1017
 #define IDC_CHECK_LAUNCHER              1017
+#define IDC_CHECK1                      1018
 #define BTN_SEP                         1019
+#define IDC_CHECK2                      1019
+#define IDC_CHECK3                      1020
+#define IDC_CHECK4                      1021
+#define IDC_CHECK5                      1022
+#define IDC_CHECK6                      1023
+#define IDC_CHECK7                      1024
+#define IDC_CHECK8                      1025
+#define IDC_CHECK9                      1026
 #define ID_TRAY_32773                   32773
 #define ID_TRAY_32774                   32774
 #define ID_TRAY_EASYREGISTRY32775       32775
@@ -50,14 +61,18 @@
 #define ID_TRAY_32779                   32779
 #define ID_TRAY_32780                   32780
 #define ID_RUN_EDITOR                   32781
+#define ID_TRAY_32782                   32782
+#define IE_MNU_SEARCH                   32783
+#define ID_32784                        32784
+#define ID_NEW_SEARCH                   32785
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        142
-#define _APS_NEXT_COMMAND_VALUE         32782
-#define _APS_NEXT_CONTROL_VALUE         1018
+#define _APS_NEXT_RESOURCE_VALUE        144
+#define _APS_NEXT_COMMAND_VALUE         32786
+#define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

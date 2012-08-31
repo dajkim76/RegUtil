@@ -2,8 +2,7 @@
 #include "RegSearch.h"
 #include <strsafe.h>
 
-#define  DTRACE _tprintf
-static UINT __count = 0;
+#define  DTRACE(...)
 
 namespace RegSearch
 {
@@ -50,18 +49,14 @@ namespace RegSearch
 
 		for (int i = 0, retCode = ERROR_SUCCESS; retCode == ERROR_SUCCESS; i++) 
 		{
-			retCode = RegEnumKey(hOpenKey, 
-				i, 
-				str, 
-				MAX_PATH
-				); 
+			retCode = RegEnumKey(hOpenKey, i, str, MAX_PATH	); 
 
 			if (retCode == (DWORD)ERROR_SUCCESS) 
 			{
 				CAtlString sNewKeyName;
 				sNewKeyName = str;
 
-				if(sNewKeyName.GetLength()>0)
+				if(sNewKeyName.GetLength() > 0)
 				{
 					keyList.push_back( sNewKeyName );
 				}
@@ -112,15 +107,7 @@ namespace RegSearch
 			DWORD nameSize = MAX_REG_KEY_NAME;
 			DWORD valueSize = MAX_REG_KEY_VALUE;
 
-			retcode = RegEnumValue(hOpenKey,
-				i,
-				name,
-				&nameSize,
-				NULL,
-				&dwType,
-				data,
-				&valueSize
-				);
+			retcode = RegEnumValue(hOpenKey, i, name, &nameSize, NULL, &dwType, data, &valueSize );
 
 			if ( retcode == ERROR_NO_MORE_ITEMS )
 			{
@@ -302,7 +289,7 @@ namespace RegSearch
 		itemList.clear();
 	}
 
-	bool RegistrySearch(HKEY root, CAtlString key, const SearchOption& option, RegItemList& resultList, ISearchNotify* notify)
+	bool RegistrySearch::_Search(HKEY root, CAtlString key, SearchOption& option, ISearchNotify* notify)
 	{
 		if( option.canceled_ )
 		{
@@ -334,14 +321,13 @@ namespace RegSearch
 
 			if ( option.keyCheck_ && FindKeyword( keyItem, keyword, option.caseSenstive_) )
 			{			
-				RegItem* item = new RegItem();
-				item->key_ = subKey;
-				resultList.push_back( item );
-
 				DTRACE(L"%d: key:[%s] \n", __count++, subKey);
 				if ( notify )
 				{
-					notify->OnFound(subKey, NULL);
+					if ( ! notify->OnFound(subKey, NULL) )
+					{
+						return false;
+					}
 				}
 			}
 
@@ -354,15 +340,15 @@ namespace RegSearch
 				{
 					item->name_ = _T("(Default)");
 				}
-				resultList.push_back( item );
-
-				// Detach result object
-				itemList[j] = NULL;
 
 				DTRACE(L"%d: key:[%s] -> [%s]=[%s] \n", __count++, subKey, item->name_, item->text_ );
 				if ( notify )
 				{
-					notify->OnFound(subKey, item );
+					itemList[j] = NULL;
+					if ( ! notify->OnFound(subKey, item ) )
+					{
+						return false;
+					}
 				}
 			}
 
@@ -370,7 +356,7 @@ namespace RegSearch
 			ClearRegItemList(itemList);
 
 			// goto child key
-			if ( ! RegistrySearch(root, subKey, option, resultList))
+			if ( ! _Search(root, subKey, option, notify))
 			{
 				return false;
 			}

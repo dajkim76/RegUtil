@@ -11,6 +11,7 @@
 #include "RegWorks\RegWorks.h"
 #include "JumptoRegDlg.h"
 #include "OptionDlg.h"
+#include "SearchHistoryWnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -114,6 +115,7 @@ BEGIN_MESSAGE_MAP(CToolbarDlg, CDialog)
 	ON_COMMAND(ID_OPTION, &CToolbarDlg::OnOption)
 	ON_COMMAND(ID_HELP, &CToolbarDlg::OnHelp)
 	ON_COMMAND(ID_RUN_EDITOR, &CToolbarDlg::OnRunEditor)
+	ON_COMMAND(IE_MNU_SEARCH, &CToolbarDlg::OnMnuSearch)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1127,4 +1129,9 @@ void CToolbarDlg::OnHelp()
 void CToolbarDlg::OnRunEditor()
 {
 	ShellExecute(m_hWnd, _T("open"), L"regedit.exe", NULL, NULL, SW_NORMAL);
+}
+
+void CToolbarDlg::OnMnuSearch()
+{
+	CSearchHistoryWnd * wnd = new CSearchHistoryWnd();
 }

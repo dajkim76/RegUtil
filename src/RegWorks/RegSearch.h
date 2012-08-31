@@ -38,21 +38,50 @@ namespace RegSearch
 				, nameCheck_(true)
 				, keyCheck_(true)
 				, valueCheck_(true)
-				, canceled_(false) {}
+				, canceled_(false) 
+		{
+			searchHKLM_ = true;
+			searchHKCU_ = true;
+			searchHKCR_ = false;
+			searchHKUSERS_ = false;
+			searchHKCONFIG_ = false;
+		}
 		CAtlString keyword_;
 		bool caseSenstive_;
 		bool keyCheck_;
 		bool nameCheck_;		
 		bool valueCheck_;
 		bool canceled_;
+
+		bool searchHKLM_;
+		bool searchHKCU_;
+		bool searchHKCR_;
+		bool searchHKUSERS_;
+		bool searchHKCONFIG_;		
 	};	
 
 	/// 검색시 발견되면 Post로 노티할 인터페이스
 	class ISearchNotify
 	{
 	public:
-		virtual void OnFound(CAtlString key, RegItem* item) = 0;
+		// false 이면 끝
+		virtual bool OnFound(CAtlString key, RegItem* item) = 0;
 	};
 	
-	bool RegistrySearch(HKEY root, CAtlString key, const SearchOption& option, RegItemList& resultList, ISearchNotify* notify = NULL);
+	class RegistrySearch
+	{
+	public:
+		RegistrySearch (HKEY root) : root_(root) {}
+		
+		bool Search(CAtlString key, SearchOption& option, ISearchNotify* notify)
+		{
+			return _Search(root_, key, option, notify);
+		}
+
+	protected:
+		HKEY root_;
+
+		bool _Search(HKEY root, CAtlString key, SearchOption& option, ISearchNotify* notify);		
+	};
+	
 };
