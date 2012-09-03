@@ -33,3 +33,5 @@ public:
 	static bool IsValidPath(CString path);
 	static void Validate(CString& path);
 };
+
+CString RegTypeToString(DWORD type);

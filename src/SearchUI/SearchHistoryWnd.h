@@ -21,6 +21,7 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg LRESULT OnSearchItem(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnSearchEnd(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
 
 	std::vector<CListCtrl*> viewList_;
 	CListCtrl* currentView_;	

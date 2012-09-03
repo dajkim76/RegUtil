@@ -6,6 +6,10 @@ using namespace std;
 
 namespace RegSearch
 {
+	#define MAX_REG_KEY_NAME		(512)
+	#define MAX_REG_KEY_VALUE		(32767)
+
+
 	class RegItem
 	{
 	public:
@@ -13,8 +17,9 @@ namespace RegSearch
 			: type_(0)
 			, dwordData_(0)
 			, qwordData_(0)
+			, length_(0)
+			, text_(szText)
 		{
-			text_ = szText;
 		}
 		
 		CAtlString key_;		// key
@@ -25,6 +30,8 @@ namespace RegSearch
 		DWORD	dwordData_;		/// DWORD
 		__int64	qwordData_;		/// QWord
 		CAtlString	text_;		/// REG_SZ, REG_EXPAND_SZ, REG_MULTI_SZ, REG_BINARY
+
+		int length_;
 	};
 
 	typedef std::vector< RegItem* > RegItemList;
@@ -71,8 +78,20 @@ namespace RegSearch
 	class RegistrySearch
 	{
 	public:
-		RegistrySearch (HKEY root) : root_(root) {}
+		static const int sizeData = MAX_REG_KEY_VALUE;
+		static const int cchTempBuffer = MAX_REG_KEY_VALUE*3 + 10;
+		RegistrySearch (HKEY root, CAtlString rootName) : root_(root), rootName_(rootName) 
+		{
+			data_ = new BYTE[sizeData];
+			tempBuffer_ = new TCHAR [cchTempBuffer];
+		}
 		
+		~RegistrySearch()
+		{
+			delete []data_;
+			delete []tempBuffer_;
+		}
+
 		bool Search(CAtlString key, SearchOption& option, ISearchNotify* notify)
 		{
 			return _Search(root_, key, option, notify);
@@ -80,8 +99,12 @@ namespace RegSearch
 
 	protected:
 		HKEY root_;
+		CAtlString rootName_;
+		BYTE* data_;
+		TCHAR* tempBuffer_;
 
 		bool _Search(HKEY root, CAtlString key, SearchOption& option, ISearchNotify* notify);		
+		void _SearchRegistryKeyValue(HKEY hKey, CAtlString key, RegItemList& resultList, const SearchOption& option);
 	};
 	
 };

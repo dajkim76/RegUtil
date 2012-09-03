@@ -19,27 +19,27 @@ UINT SearchThread::Run()
 	
 	if( goon && option_.searchHKLM_ )
 	{
-		RegistrySearch RS(HKEY_LOCAL_MACHINE);
+		RegistrySearch RS(HKEY_LOCAL_MACHINE, L"HKLM");
 		goon = RS.Search(L"", option_, this);
 	}
 	if( goon && option_.searchHKCU_ )
 	{
-		RegistrySearch RS(HKEY_CURRENT_USER);
+		RegistrySearch RS(HKEY_CURRENT_USER, L"HKCU");
 		goon = RS.Search(L"", option_, this);
 	}
 	if( goon && option_.searchHKCR_)
 	{
-		RegistrySearch RS(HKEY_CLASSES_ROOT);
+		RegistrySearch RS(HKEY_CLASSES_ROOT, L"HKCR");
 		goon = RS.Search(L"", option_, this);
 	}
 	if( goon && option_.searchHKUSERS_ )
 	{
-		RegistrySearch RS(HKEY_USERS);
+		RegistrySearch RS(HKEY_USERS, L"HKUSERS");
 		goon = RS.Search(L"", option_, this);
 	}
 	if( goon && option_.searchHKCONFIG_ )
 	{
-		RegistrySearch RS(HKEY_CURRENT_CONFIG);
+		RegistrySearch RS(HKEY_CURRENT_CONFIG, L"HKCC");
 		goon = RS.Search(L"", option_, this);
 	}
 

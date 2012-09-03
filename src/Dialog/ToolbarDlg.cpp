@@ -11,7 +11,7 @@
 #include "RegWorks\RegWorks.h"
 #include "JumptoRegDlg.h"
 #include "OptionDlg.h"
-#include "SearchHistoryWnd.h"
+#include "SearchUI/SearchHistoryWnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -115,7 +115,7 @@ BEGIN_MESSAGE_MAP(CToolbarDlg, CDialog)
 	ON_COMMAND(ID_OPTION, &CToolbarDlg::OnOption)
 	ON_COMMAND(ID_HELP, &CToolbarDlg::OnHelp)
 	ON_COMMAND(ID_RUN_EDITOR, &CToolbarDlg::OnRunEditor)
-	ON_COMMAND(IE_MNU_SEARCH, &CToolbarDlg::OnMnuSearch)
+	ON_COMMAND(ID_MNU_SEARCH, &CToolbarDlg::OnMnuSearch)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -820,6 +820,7 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 				_AppendMenu( 105, L"오른쪽에 추가");
 				_AppendMenu( 106, L"아래에 추가");
 				mnuPopup.AppendMenu(MF_SEPARATOR|MF_OWNERDRAW, 0, (TCHAR*)NULL);
+				_AppendMenu( 108, L"검색...");
 				_AppendMenu( 100, L"수정");
 				_AppendMenu( 101, L"삭제");
 				_AppendMenu( 102, L"EasyRegistry 종료");
@@ -1016,6 +1017,10 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 								JumptoReg(dlg.path_);
 							}
 						}
+						else if( 108 == iCmd )
+						{
+							PostMessage(WM_COMMAND, ID_MNU_SEARCH, 0);
+						}
 						//기능
 				}
             }            
@@ -1134,4 +1139,5 @@ void CToolbarDlg::OnRunEditor()
 void CToolbarDlg::OnMnuSearch()
 {
 	CSearchHistoryWnd * wnd = new CSearchHistoryWnd();
+	wnd->PostMessage(WM_COMMAND, ID_NEW_SEARCH, 0);
 }

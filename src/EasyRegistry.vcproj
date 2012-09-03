@@ -414,7 +414,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SearchThread.cpp"
+				RelativePath=".\SearchUI\SearchThread.cpp"
 				>
 			</File>
 			<File
@@ -604,7 +604,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SearchThread.h"
+				RelativePath=".\SearchUI\SearchThread.h"
 				>
 			</File>
 			<File

@@ -283,6 +283,21 @@ namespace
 	};
 }
 
+CString RegTypeToString( DWORD type )
+{
+#define  _C(x)	if( type == x) return L#x
+	_C(REG_SZ);
+	_C(REG_EXPAND_SZ);
+	_C(REG_MULTI_SZ);
+	_C(REG_DWORD);
+	_C(REG_QWORD);
+	_C(REG_BINARY);
+	_C(REG_RESOURCE_LIST);
+	_C(REG_FULL_RESOURCE_DESCRIPTOR);
+	_C(REG_RESOURCE_REQUIREMENTS_LIST);
+	return L"";
+}
+
 
 KeyRoot::type KeyRoot::toType( CString path )
 {

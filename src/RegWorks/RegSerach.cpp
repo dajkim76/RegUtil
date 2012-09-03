@@ -6,9 +6,6 @@
 
 namespace RegSearch
 {
-	#define MAX_REG_KEY_NAME		(512)
-	#define MAX_REG_KEY_VALUE		(32767)
-
 
 	bool FindKeyword(const CAtlString& source, const CAtlString& keyword, bool isCasesensitive)
 	{
@@ -69,7 +66,7 @@ namespace RegSearch
 		}
 	}
 
-	void SearchRegistryKeyValue(HKEY hKey, CAtlString key, RegItemList& resultList, const SearchOption& option)
+	void RegistrySearch::_SearchRegistryKeyValue(HKEY hKey, CAtlString key, RegItemList& resultList, const SearchOption& option)
 	{
 		if( ! option.nameCheck_ && ! option.valueCheck_ )
 		{
@@ -96,9 +93,7 @@ namespace RegSearch
 			return;
 		}
 
-		static BYTE data[MAX_REG_KEY_VALUE];
-		static TCHAR tempBuffer[MAX_REG_KEY_VALUE*3 + 10] = { NULL };
-		memset( data, _T('\0'), sizeof(data));
+		memset( data_, _T('\0'), sizeData);
 
 		resultList.clear();
 
@@ -107,7 +102,7 @@ namespace RegSearch
 			DWORD nameSize = MAX_REG_KEY_NAME;
 			DWORD valueSize = MAX_REG_KEY_VALUE;
 
-			retcode = RegEnumValue(hOpenKey, i, name, &nameSize, NULL, &dwType, data, &valueSize );
+			retcode = RegEnumValue(hOpenKey, i, name, &nameSize, NULL, &dwType, data_, &valueSize );
 
 			if ( retcode == ERROR_NO_MORE_ITEMS )
 			{
@@ -144,6 +139,8 @@ namespace RegSearch
 				continue;
 			}
 
+			DWORD length = 0;
+
 			const bool isNamecheckSuccess = ( option.nameCheck_ && FindKeyword(name, option.keyword_, option.caseSenstive_));
 			
 			LPTSTR buffer = NULL;
@@ -152,16 +149,17 @@ namespace RegSearch
 			{
 				if ( isNamecheckSuccess || option.valueCheck_ )
 				{
-					LPTSTR pszValue = reinterpret_cast<LPTSTR> (data);
+					LPTSTR pszValue = reinterpret_cast<LPTSTR> (data_);
 					const int cch = valueSize / sizeof(TCHAR); // with NULL
+					length = cch;
 					if ((valueSize % sizeof(TCHAR) != 0) || (pszValue[cch - 1] != 0))
 					{
 						pszValue[cch] = _T('\0');
-						buffer = (TCHAR*)data;
+						buffer = (TCHAR*)data_;
 					}
 					else
 					{
-						buffer = (TCHAR*)data;
+						buffer = (TCHAR*)data_;
 					}
 				}
 			}
@@ -169,16 +167,17 @@ namespace RegSearch
 			{
 				if ( isNamecheckSuccess || option.valueCheck_ )				
 				{
-					LPTSTR pszValue = reinterpret_cast<LPTSTR> (data);
+					LPTSTR pszValue = reinterpret_cast<LPTSTR> (data_);
 					const int cch = valueSize / sizeof(TCHAR); // with NULL
+					length = cch;
 					if ( (valueSize % sizeof(TCHAR) != 0) || (pszValue[valueSize / sizeof(TCHAR) - 1] != 0))
 					{
 						pszValue[cch] = _T('\0');
-						buffer = (TCHAR*)data;
+						buffer = (TCHAR*)data_;
 					}
 					else
 					{
-						buffer = (TCHAR*)data;
+						buffer = (TCHAR*)data_;
 					}
 				}
 			}
@@ -186,10 +185,10 @@ namespace RegSearch
 			{
 				if ( isNamecheckSuccess || option.valueCheck_ )				
 				{
-					LPTSTR pszValue = reinterpret_cast<LPTSTR> (data);
+					LPTSTR pszValue = reinterpret_cast<LPTSTR> (data_);
 					ATLASSERT( (valueSize % sizeof(TCHAR) == 0) );
 					const int cch = (valueSize / sizeof(TCHAR));
-
+					length = cch;
 					if ( cch >= 1 )
 					{
 						for(int i = 0; i < cch; i++)
@@ -203,7 +202,7 @@ namespace RegSearch
 						// last \r -> NULL
 						pszValue[cch - 1] = _T('\0');
 
-						buffer = (TCHAR*)data;
+						buffer = (TCHAR*)data_;
 					}
 				}
 			}
@@ -212,40 +211,42 @@ namespace RegSearch
 						(dwType == REG_FULL_RESOURCE_DESCRIPTOR) || 
 						(dwType == REG_RESOURCE_REQUIREMENTS_LIST) )
 			{
-				
+				length = valueSize;
 				if( valueSize > 0 && isNamecheckSuccess)
 				{
 					TCHAR temp[4];
 					memset(temp, '\0', sizeof(temp));
 
-					tempBuffer[0] = NULL;
-					for(int j=0; j < (int)valueSize; j++)
+					tempBuffer_[0] = NULL;
+					for(int j = 0; j < (int)valueSize; j++)
 					{
-						StringCchPrintf(temp, _countof(temp), _T("%02X "), (long int)data[j]);
-						StringCchCat( tempBuffer, _countof(tempBuffer),  temp );
+						StringCchPrintf(temp, _countof(temp), _T("%02X "), (long int)data_[j]);
+						StringCchCat( tempBuffer_, cchTempBuffer,  temp );
 					}
 
-					buffer = tempBuffer;
+					buffer = tempBuffer_;
 				}
 			}
 			else if( dwType == REG_DWORD )
 			{
+				length = 4;
 				if ( isNamecheckSuccess )
 				{
 					DWORD dwData = 0;
-					memcpy( &dwData, data, sizeof(DWORD));
-					StringCchPrintf(tempBuffer, _countof(tempBuffer), _T("0x%x(%u)"), dwData, dwData );
-					buffer = tempBuffer;
+					memcpy( &dwData, data_, sizeof(DWORD));
+					StringCchPrintf(tempBuffer_, cchTempBuffer, _T("0x%x(%u)"), dwData, dwData );
+					buffer = tempBuffer_;
 				}
 			}
 			else if( dwType == REG_QWORD ) // 64bit word
 			{
+				length = 8;
 				if ( isNamecheckSuccess )
 				{
 					__int64 qData = 0;
-					memcpy( &qData, data, sizeof(__int64));
-					StringCchPrintf(tempBuffer, _countof(tempBuffer), _T("0x%I64x(%I64d)"), qData, qData);
-					buffer = tempBuffer;
+					memcpy( &qData, data_, sizeof(__int64));
+					StringCchPrintf(tempBuffer_, cchTempBuffer, _T("0x%I64x(%I64d)"), qData, qData);
+					buffer = tempBuffer_;
 				}
 			}
 			else
@@ -270,6 +271,7 @@ namespace RegSearch
 				RegItem* p = new RegItem(buffer);
 				p->type_ = dwType;
 				p->name_ = name;
+				p->length_ = length;
 				resultList.push_back( p );
 			}
 		} // for
@@ -324,28 +326,28 @@ namespace RegSearch
 				DTRACE(L"%d: key:[%s] \n", __count++, subKey);
 				if ( notify )
 				{
-					if ( ! notify->OnFound(subKey, NULL) )
+					if ( ! notify->OnFound(rootName_ + _T("\\") + subKey, NULL) )
 					{
 						return false;
 					}
 				}
 			}
 
-			SearchRegistryKeyValue(root, subKey, itemList, option);
+			_SearchRegistryKeyValue(root, subKey, itemList, option);
 			for( unsigned j = 0; j < itemList.size(); j++ )
 			{
 				RegItem* item = itemList[j];
 				item->key_ = subKey;
 				if ( item->name_.IsEmpty() )
 				{
-					item->name_ = _T("(Default)");
+					item->name_ = _T("(±âº»°ª)");
 				}
 
 				DTRACE(L"%d: key:[%s] -> [%s]=[%s] \n", __count++, subKey, item->name_, item->text_ );
 				if ( notify )
 				{
 					itemList[j] = NULL;
-					if ( ! notify->OnFound(subKey, item ) )
+					if ( ! notify->OnFound(rootName_ + _T("\\") + subKey, item ) )
 					{
 						return false;
 					}

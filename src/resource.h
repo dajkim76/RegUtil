@@ -43,15 +43,24 @@
 #define IDC_BUTTON4                     1017
 #define IDC_CHECK_LAUNCHER              1017
 #define IDC_CHECK1                      1018
+#define IDC_CHECK_HKCR                  1018
 #define BTN_SEP                         1019
 #define IDC_CHECK2                      1019
+#define IDC_CHECK_HKCU                  1019
 #define IDC_CHECK3                      1020
+#define IDC_CHECK_HKLM2                 1020
 #define IDC_CHECK4                      1021
+#define IDC_CHECK_HKUSERS               1021
 #define IDC_CHECK5                      1022
+#define IDC_CHECK_HKCC                  1022
 #define IDC_CHECK6                      1023
+#define IDC_CHECK_KEY                   1023
 #define IDC_CHECK7                      1024
+#define IDC_CHECK_VALUE                 1024
 #define IDC_CHECK8                      1025
+#define IDC_CHECK_DATA                  1025
 #define IDC_CHECK9                      1026
+#define IDC_CHECK_CASE                  1026
 #define ID_TRAY_32773                   32773
 #define ID_TRAY_32774                   32774
 #define ID_TRAY_EASYREGISTRY32775       32775
@@ -65,13 +74,14 @@
 #define IE_MNU_SEARCH                   32783
 #define ID_32784                        32784
 #define ID_NEW_SEARCH                   32785
+#define ID_MNU_SEARCH                   32786
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        144
-#define _APS_NEXT_COMMAND_VALUE         32786
+#define _APS_NEXT_COMMAND_VALUE         32787
 #define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
