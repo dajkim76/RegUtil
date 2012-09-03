@@ -2,7 +2,8 @@
 #include "SearchThread.h"
 
 SearchThread::SearchThread(HWND notifyWnd, SearchOption option) 
-		: notifyWnd_(notifyWnd)
+		: SimpleThread(true)
+		, notifyWnd_(notifyWnd)
 		, option_(option)
 {
 }

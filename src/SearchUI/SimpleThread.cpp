@@ -4,7 +4,7 @@
 
 #define  DCHECK ASSERT
 #define  NOTREACHED(x) DCHECK(! x)
-SimpleThread::SimpleThread(void)
+SimpleThread::SimpleThread(bool autoFree) : autoFree_(autoFree)
 {
 	thread_ = NULL;
 	isSuspended_ = false;
@@ -95,4 +95,8 @@ void SimpleThread::_EndThreadEx(unsigned retVal)
 {	
 	_CloseHandle();
 	_endthreadex(retVal);
+	if ( autoFree_ )
+	{
+		delete this;
+	}
 }

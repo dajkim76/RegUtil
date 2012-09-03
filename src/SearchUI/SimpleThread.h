@@ -3,7 +3,7 @@
 class SimpleThread
 {
 public:
-	SimpleThread(void);
+	SimpleThread(bool autoFree = false);
 	virtual ~SimpleThread(void);
 
 	void Start();
@@ -20,6 +20,7 @@ protected:
 	void _EndThreadEx(unsigned retVal);
 	HANDLE thread_;
 	bool isSuspended_;
+	bool autoFree_;
 
 private:
 	static unsigned CALLBACK InternalThreadProc(void* pParam);
