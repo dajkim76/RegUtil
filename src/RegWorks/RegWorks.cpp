@@ -301,6 +301,10 @@ CString RegTypeToString( DWORD type )
 
 KeyRoot::type KeyRoot::toType( CString path )
 {
+	if ( path.IsEmpty() )
+	{
+		return KeyRoot::UNKNOWN;
+	}
 	path.Trim(L" \r\n\t()");
 	path.MakeUpper();
 	int pos = path.Find(L"\\");

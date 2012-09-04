@@ -765,7 +765,10 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
     //왼쪽 클릭일 경우에는.. 
     if( ! bRightButton )
     {
-		JumptoReg( item.path_, item.name_ );  
+		if ( item.path_.GetLength() )
+		{
+			JumptoReg( item.path_, item.name_ );  
+		}
     }
     else
     {
@@ -817,6 +820,14 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
                 }
             }
 
+			int iTotalSize = _GetInt( L"size", 0);
+			CDSIni ini0(Int2Str(0), PROFILE_INI);
+			int dummy = 0;
+			if( iTotalSize == 1 )
+			{
+				dummy = ini0.GetInt(L"dummy", 0);
+			}
+
 			{
 				MenuData data;
 
@@ -825,9 +836,12 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 				TMenuData_Set(id, data);	\
 				mnuPopup.AppendMenu(MF_STRING|MF_OWNERDRAW, id, (TCHAR*)NULL);
 				
-				_AppendMenu( 107, L"주소로 바로 이동하기");				
+				_AppendMenu( 107, L"주소로 바로 이동하기");								
 				_AppendMenu( 105, L"오른쪽에 추가");
-				_AppendMenu( 106, L"아래에 추가");
+				if ( dummy == 0)
+				{
+					_AppendMenu( 106, L"아래에 추가");
+				}
 				mnuPopup.AppendMenu(MF_SEPARATOR|MF_OWNERDRAW, 0, (TCHAR*)NULL);
 				_AppendMenu( 108, L"검색...");
 				_AppendMenu( 100, L"수정");
@@ -848,7 +862,7 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 
             /**
              *	TMenuData에서 정보를 가져와서 팝업메뉴를 꾸민다.
-             */
+             */			
             int iRetCmd = mnuPopup.TrackPopupMenu(TPM_RETURNCMD , pt.x, pt.y, this);
             if(iRetCmd != 0)
             {
@@ -877,7 +891,8 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
                     ini.WriteStr(Int2Str(iKey), L""); //1 2[s] 3[s] 4[s]
                     LoadIni(&m_bar);
                     RecalSize(false);
-                }else if ( iRetCmd < 100 )
+                }
+				else if ( iRetCmd < 100 )
                 {                
                     CString sData = ar.GetAt(iRetCmd-1);
 					int pos = sData.Find(L"|");
@@ -895,7 +910,7 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
                 }
 				else
 				{
-					int iCmd = iRetCmd;
+						int iCmd = iRetCmd;
 					// 기능..
 						if(102 == iCmd)
 						{
@@ -918,6 +933,10 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 							{
 								LoadIni(&m_bar);
 								RecalSize(false);
+								if ( dummy )
+								{
+									ini0.WriteInt(L"dummy", 0);
+								}
 							}
 						}
 						//삭제
@@ -956,8 +975,11 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 							CPoint pt;
 							GetCursorPos(&pt);
 							CRect rc(pt.x, pt.y, pt.x, pt.y);
-
-							int iTotalSize = _GetInt( L"size", 0);
+							
+							if( dummy )
+							{
+								iTotalSize --;
+							}
 
 							/**
 							 *	iIndex오른쪽에 새로운 버튼을 추가한다
@@ -996,7 +1018,12 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 							{
 								LoadIni(&m_bar);
 								RecalSize(false);
-							}else
+								if( dummy )
+								{
+									ini0.WriteInt(L"dummy", 0);
+								}
+							}
+							else
 							{
 								// 수정창을 취소했다면 다시 버튼정보를 ini에서 지운다.
 								//

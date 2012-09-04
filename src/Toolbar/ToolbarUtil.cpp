@@ -115,6 +115,7 @@ void    LoadIni(CToolBar * pBar)
 		_WriteInt(L"size", 1);
 		CDSIni  ini(L"0", PROFILE_INI);
 		ini.WriteStr(L"text", defaultText);
+		ini.WriteInt(L"dummy", 1);
 		iSize = 1;
     }
 

@@ -53,7 +53,8 @@ BOOL RegistryPathDlg::OnInitDialog()
     CDSIni ini(Int2Str(_iIndex), PROFILE_INI);
 	CString text = ini.GetStr(L"text", L"");
 	CString path = ini.GetStr(L"path", L"");
-	if ( text.GetLength() == 0 && path.GetLength() == 0)
+	
+	if ( ini.GetStr(L"dummy", 0) || (text.GetLength() == 0 && path.GetLength() == 0))
 	{
 		CString clipText;
 		if ( GetClipboardText(m_hWnd, clipText) )
