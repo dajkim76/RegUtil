@@ -38,9 +38,8 @@ BOOL COptionDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	CheckDlgButton(IDC_CHECK_GLUE, _GetInt(L"bGlue", 1) == 1 ? BST_CHECKED : BST_UNCHECKED);
-
-	CString launcher = _GetString(L"launcher");
-	CheckDlgButton(IDC_CHECK_LAUNCHER, PathFileExists(launcher) ? BST_CHECKED : BST_UNCHECKED);
+	CheckDlgButton(IDC_CHECK_LAUNCHER, _GetInt(L"launcher", 1) ? BST_CHECKED : BST_UNCHECKED);
+	CheckDlgButton(IDC_CHECK_AUTOCLOSE, _GetInt(L"autoClose", 0) ? BST_CHECKED : BST_UNCHECKED);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -49,17 +48,8 @@ BOOL COptionDlg::OnInitDialog()
 void COptionDlg::OnOK()
 {
 	_WriteInt(L"bGlue", IsDlgButtonChecked(IDC_CHECK_GLUE) == BST_CHECKED);
-	if ( IsDlgButtonChecked(IDC_CHECK_LAUNCHER) == BST_CHECKED )
-	{
-		TCHAR path[MAX_PATH] = { NULL };
-		GetWindowsDirectory(path, _countof(path));
-		PathAppend(path, L"RegEdit.exe");
-		_WriteString(L"launcher", path);
-	}
-	else
-	{
-		_WriteString(L"launcher", L"");
-	}
+	_WriteInt(L"launcher", IsDlgButtonChecked(IDC_CHECK_LAUNCHER) == BST_CHECKED);
+	_WriteInt(L"autoClose", IsDlgButtonChecked(IDC_CHECK_AUTOCLOSE) == BST_CHECKED);
 
 	CDialog::OnOK();
 }

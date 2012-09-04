@@ -172,8 +172,12 @@ BOOL CToolbarDlg::OnInitDialog()
     {    
         m_tray.Create(this, L"EasyRegistry 1.0", m_hIcon);
     }
-    SetTimer(101, 50, NULL);
+
+    autoClose_ = _GetInt(L"autoClose", 0);
+
+	SetTimer(101, 50, NULL);
     ShowWindow(SW_HIDE);
+	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 void CToolbarDlg::OnAbout()
@@ -690,6 +694,11 @@ void CToolbarDlg::OnTimer(UINT nIDEvent)
 		else if ( RegWorks::FindRegEdit() == NULL )
 		{
 			ShowWindow(SW_HIDE);
+
+			if ( autoClose_ )
+			{
+				PostQuitMessage(1);
+			}
 		}
 
     }
@@ -1123,7 +1132,10 @@ void CToolbarDlg::OnJumptoreg()
 void CToolbarDlg::OnOption()
 {
 	COptionDlg dlg;
-	dlg.DoModal();
+	if( dlg.DoModal() == IDOK)
+	{
+		autoClose_ = _GetInt(L"autoClose", 1);
+	}
 }
 
 void CToolbarDlg::OnHelp()

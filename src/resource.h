@@ -18,6 +18,7 @@
 #define IDD_OPTION                      141
 #define IDR_MENU2                       142
 #define IDD_SEARCH                      143
+#define IDD_RESEARCH                    144
 #define CEDIT_TEXT                      1000
 #define CEDIT_ID                        1001
 #define CEDIT_NAME                      1001
@@ -44,6 +45,7 @@
 #define IDC_CHECK_LAUNCHER              1017
 #define IDC_CHECK1                      1018
 #define IDC_CHECK_HKCR                  1018
+#define IDC_CHECK_AUTOCLOSE             1018
 #define BTN_SEP                         1019
 #define IDC_CHECK2                      1019
 #define IDC_CHECK_HKCU                  1019
@@ -75,13 +77,16 @@
 #define ID_32784                        32784
 #define ID_NEW_SEARCH                   32785
 #define ID_MNU_SEARCH                   32786
+#define ID_32787                        32787
+#define ID_MNU_SAVEAS                   32788
+#define ID_MNU_RESEARCH                 32789
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        144
-#define _APS_NEXT_COMMAND_VALUE         32787
+#define _APS_NEXT_RESOURCE_VALUE        145
+#define _APS_NEXT_COMMAND_VALUE         32790
 #define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

@@ -11,21 +11,23 @@ class CSearchHistoryWnd : public CFrameWnd
 public:
 	CSearchHistoryWnd();
 	virtual ~CSearchHistoryWnd();
+	CListCtrl& GetListCtrl() { return currentView_; }
 
 protected:
 	DECLARE_MESSAGE_MAP()
-public:
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	CTabCtrl	tab_;
 	CMenu menu_;
+	CListCtrl currentView_;	
+
+public:
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg LRESULT OnSearchItem(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnSearchEnd(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnNMDblclkList1(NMHDR *pNMHDR, LRESULT *pResult);
-
-	std::vector<CListCtrl*> viewList_;
-	CListCtrl* currentView_;	
 	afx_msg void OnNewSearch();
+	afx_msg void OnMnuSaveas();
+	afx_msg void OnMnuResearch();
 };
 
 

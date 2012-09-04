@@ -42,11 +42,13 @@ CEasyRegistryApp theApp;
 // CEasyRegistryApp initialization
 
 BOOL CEasyRegistryApp::InitInstance()
-{
-	CString path = _GetString(L"launcher", L"");
-	const BOOL isLauncher = PathFileExists(path);
-	if ( isLauncher  )
+{	
+	BOOL isLauncher = _GetInt(L"launcher", 1);
+	if ( isLauncher )
 	{
+		TCHAR path[MAX_PATH] = { NULL };
+		GetWindowsDirectory(path, _countof(path));
+		PathAppend(path, L"RegEdit.exe");
 		ShellExecute(NULL, L"open", path, NULL, NULL, SW_NORMAL);
 	}
 

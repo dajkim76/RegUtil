@@ -9,6 +9,7 @@ namespace RegSearch
 	#define MAX_REG_KEY_NAME		(512)
 	#define MAX_REG_KEY_VALUE		(32767)
 
+	bool FindKeyword(const CAtlString& source, const CAtlString& keyword, bool isCasesensitive);
 
 	class RegItem
 	{

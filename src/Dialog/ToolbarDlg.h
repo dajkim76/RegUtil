@@ -50,6 +50,7 @@ public:
 public:
 	HICON       m_hIcon;
     CMyTray     m_tray;
+	BOOL autoClose_;
 
 	// Generated message map functions
 	//{{AFX_MSG(CTCmdBarDlg)

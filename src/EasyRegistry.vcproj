@@ -406,6 +406,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SearchUI\ResearchDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SearchUI\SearchDlg.cpp"
 				>
 			</File>
@@ -589,6 +593,10 @@
 			</File>
 			<File
 				RelativePath=".\RegWorks\RegWorks.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SearchUI\ResearchDlg.h"
 				>
 			</File>
 			<File
