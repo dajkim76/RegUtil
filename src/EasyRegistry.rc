@@ -213,6 +213,7 @@ BEGIN
     BEGIN
         BLOCK "041204b0"
         BEGIN
+            VALUE "CompanyName", "김대정 www.mdiwebma.com"
             VALUE "FileDescription", "EasyRegistry: 레지스트리 즐겨찾기 툴"
             VALUE "FileVersion", "1, 0, 0, 0"
             VALUE "InternalName", "EasyRegistry"

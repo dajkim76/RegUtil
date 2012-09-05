@@ -140,7 +140,7 @@ const	int	nIconWidth = 21;
 
 
 
-void TMenuData_OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct) 
+void TMenuData_OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct, CImageList& imageList) 
 {
 	//그리고 여기서 글자를 출력한다..
 	UINT nID = lpDrawItemStruct->itemID; //
@@ -243,6 +243,15 @@ void TMenuData_OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 		dc.SetTextColor( (fState & ODS_SELECTED) ? g_colSelectedText : g_colUnSelectedText );
 	}
 
+	if( d._iconIndex >= 0 )
+	{
+		IMAGEINFO info;
+		imageList.GetImageInfo(0, &info);
+		CRect rc = info.rcImage;
+		int top = rcItem.top + (rcItem.Height() - rc.Height()) / 2;
+		CPoint pt(rcItem.left + 3, top);
+		imageList.Draw(&dc, d._iconIndex, pt, ILD_TRANSPARENT);
+	}
     //CString sDebug;
     //sDebug.Format("%s->%d %d %d %d", strName, rcText.left, rcText.top, rcText.Width(), rcText.Height());
     //OutputDebugString(sDebug);

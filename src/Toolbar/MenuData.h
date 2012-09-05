@@ -18,6 +18,7 @@ public:
     COLORREF        _colText;   //글자색
     COLORREF        _colBg;     //배경색
     bool            _bBold;     //진하게
+	int				_iconIndex;
 	MenuData()
     {
         _bBold = false;
@@ -26,13 +27,14 @@ public:
         _colBg = -1;
         _iSize = -1;
         _iHeight = -1;
+		_iconIndex = -1;
     }
 	virtual ~MenuData();
 };
 
 
 void TMenuData_OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct)  ;
-void TMenuData_OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct) ;
+void TMenuData_OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct, CImageList& imageList) ;
 void TMenuData_Set(UINT nID, MenuData data) ;
 void TMenuData_Clear();
 void TMenuData_Parse(CString sExt, MenuData&data);

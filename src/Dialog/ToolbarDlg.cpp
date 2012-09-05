@@ -432,7 +432,7 @@ void CToolbarDlg::RecalSize(bool bLoadPos)
     CRect rc;
     int iCount = m_bar.GetToolBarCtrl().GetButtonCount();
     m_bar.GetItemRect(iCount-1, &rc);
-    m_bar.MoveWindow(-7,-5,rc.right+6, sizeToolbar.cy+7);
+    m_bar.MoveWindow(-7,-5,rc.right + 11, sizeToolbar.cy+7);
 
     int ix = 0;
     int iy = 0;
@@ -444,7 +444,7 @@ void CToolbarDlg::RecalSize(bool bLoadPos)
     
     SetWindowPos(&wndTopMost ,ix,
                               iy,
-                              rc.right-2, 
+                              rc.right + 1, 
                               sizeToolbar.cy-10, 
                               SWP_SHOWWINDOW | (bLoadPos==true ? 0 : SWP_NOMOVE));                              
     
@@ -697,7 +697,10 @@ void CToolbarDlg::OnTimer(UINT nIDEvent)
 
 			if ( autoClose_ )
 			{
-				PostQuitMessage(1);
+				if ( _GetInt(L"launcher") == 1)
+				{
+					PostQuitMessage(1);
+				}
 			}
 		}
 
@@ -792,15 +795,59 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
             //
             TMenuData_Clear();
 
+			const int kHKLM = 4;
+			const int kHKCU = 2;
+
+			const int kIdToogle = 109;
+
+			_KeyRoot key = KeyRoot::toType(item.path_);
+			int toggleImage = -1;
+			CString togglePrefix;
+			if ( key == KeyRoot::HKLM )
+			{
+				toggleImage = kHKCU;
+				togglePrefix = L"User > ";
+			}
+			else if ( key == KeyRoot::HKCU )
+			{
+				toggleImage = kHKLM;
+				togglePrefix = L"Machine > ";
+			}
+
             CMenu mnuPopup;
             mnuPopup.CreatePopupMenu();
+
+			if ( toggleImage > 0 )
+			{
+				MenuData data;
+				data._sText = togglePrefix + item.text_;
+				data._iHeight = 20;
+				data._iconIndex = toggleImage;
+				TMenuData_Set(kIdToogle, data);
+				mnuPopup.AppendMenu(MF_STRING|MF_OWNERDRAW, kIdToogle, (TCHAR*)NULL);
+			}
+
             for(int i = 0; i < ar.GetSize(); i++)
             {
-                CString s = ar[i];
-                s = s.Left ( s.Find(L"|") );
+                CString item = ar[i];
+				int pos = item.Find(L"|");
+                CString s = item.Left ( pos );
+				CString path = item.Mid(pos + 1);
+
                 MenuData data;
                 data._sText = s;
-                data._iHeight = 20;                
+                data._iHeight = 20;
+
+
+				if( KeyRoot::toType(path) == KeyRoot::HKLM )
+				{
+					data._iconIndex = kHKLM;
+				}
+				else if( KeyRoot::toType(path) == KeyRoot::HKCU )
+				{
+					data._iconIndex = kHKCU;
+				}
+
                 CString sExt = arExt[i];
 				OutputDebugString(sExt);
 				TMenuData_Parse(sExt, data);
@@ -845,7 +892,10 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 				mnuPopup.AppendMenu(MF_SEPARATOR|MF_OWNERDRAW, 0, (TCHAR*)NULL);
 				_AppendMenu( 108, L"검색...");
 				_AppendMenu( 100, L"수정");
-				_AppendMenu( 101, L"삭제");
+				if ( dummy == 0)
+				{
+					_AppendMenu( 101, L"삭제");
+				}
 				_AppendMenu( 102, L"EasyRegistry 종료");
 				
 				
@@ -881,16 +931,49 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
                         }
                     }
                 }
-                else if(ISKEYDOWN(VK_CONTROL) && iRetCmd < 100)
+				else if(ISKEYDOWN(VK_CONTROL) && iRetCmd < 100)
                 {
                     /**
-                     *	Ctrl과 같이 선택하면 그 아이템을 삭제한다.
+                     *	VK_CONTROL과 같이 선택하면 그 아이템을 삭제한다.
                      */
                     CDSIni ini (item.submenu_, SUBMENU_INI);
                     int iKey = _ttoi(arKey.GetAt(iRetCmd-1));
                     ini.WriteStr(Int2Str(iKey), L""); //1 2[s] 3[s] 4[s]
                     LoadIni(&m_bar);
                     RecalSize(false);
+                }
+                else if(ISKEYDOWN(VK_SHIFT) && iRetCmd < 100)
+                {
+					CString sData = ar.GetAt(iRetCmd-1);
+					int pos = sData.Find(L"|");
+					sData = sData.Mid(pos + 1);
+					pos = sData.ReverseFind(L'|');
+					CString path, name;
+					if (pos > 0)
+					{
+						path = sData.Left(pos);
+						name = sData.Mid( pos + 1);
+					}
+					else
+					{
+						path = sData;
+					}
+
+					key = KeyRoot::toType(path);
+					if( key == KeyRoot::HKLM )
+					{
+						pos = path.Find(L"\\");
+						JumptoReg( KeyRoot::toText(KeyRoot::HKCU) + L"\\" + path.Mid(pos + 1), name);
+					}
+					else if( key == KeyRoot::HKCU )
+					{
+						pos = path.Find(L"\\");
+						JumptoReg( KeyRoot::toText(KeyRoot::HKLM) + L"\\" + path.Mid(pos + 1), name);
+					}
+					else
+					{
+						JumptoReg(path, name);
+					}
                 }
 				else if ( iRetCmd < 100 )
                 {                
@@ -1057,6 +1140,19 @@ bool CToolbarDlg::ShowSubfolder(int iIndex, bool bRightButton)
 						{
 							PostMessage(WM_COMMAND, ID_MNU_SEARCH, 0);
 						}
+						else if( iCmd == kIdToogle)
+						{
+							int pos = item.path_.Find(L"\\");
+							CString path = item.path_.Mid(pos + 1);
+							if( key == KeyRoot::HKLM )
+							{
+								JumptoReg( KeyRoot::toText(KeyRoot::HKCU) + L"\\" + path, item.name_);
+							}
+							else if( key == KeyRoot::HKCU )
+							{
+								JumptoReg( KeyRoot::toText(KeyRoot::HKLM) + L"\\" + path, item.name_);
+							}
+						}
 						//기능
 				}
             }            
@@ -1128,7 +1224,8 @@ void CToolbarDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
 	if(nIDCtl == 0)
     {
-        TMenuData_OnDrawItem(nIDCtl, lpDrawItemStruct);
+		CImageList& imageList = m_bar.m_il;
+        TMenuData_OnDrawItem(nIDCtl, lpDrawItemStruct, imageList);
 	    return;
     }
 
