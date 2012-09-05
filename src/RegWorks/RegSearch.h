@@ -32,6 +32,7 @@ namespace RegSearch
 		__int64	qwordData_;		/// QWord
 		CAtlString	text_;		/// REG_SZ, REG_EXPAND_SZ, REG_MULTI_SZ, REG_BINARY
 
+		FILETIME filetime_;
 		int length_;
 	};
 

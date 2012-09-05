@@ -22,7 +22,13 @@ namespace RegSearch
 		return tempSource.Find(tempKeyword) >= 0;
 	}
 
-	void EnumRegistryKey(HKEY hKey, CAtlString key, vector< CAtlString >& keyList)
+	struct KeyEntry
+	{
+		CAtlString key_;
+		FILETIME filetime_;
+	};
+
+	void EnumRegistryKey(HKEY hKey, CAtlString key, vector< KeyEntry >& keyList)
 	{
 		LONG retcode = ERROR_SUCCESS;
 		HKEY hOpenKey = NULL;
@@ -46,7 +52,9 @@ namespace RegSearch
 
 		for (int i = 0, retCode = ERROR_SUCCESS; retCode == ERROR_SUCCESS; i++) 
 		{
-			retCode = RegEnumKey(hOpenKey, i, str, MAX_PATH	); 
+			FILETIME filetime;
+			DWORD dwSize = _countof(str);
+			retCode = RegEnumKeyEx(hOpenKey, i, str, &dwSize, NULL, NULL, NULL, &filetime); 
 
 			if (retCode == (DWORD)ERROR_SUCCESS) 
 			{
@@ -55,7 +63,10 @@ namespace RegSearch
 
 				if(sNewKeyName.GetLength() > 0)
 				{
-					keyList.push_back( sNewKeyName );
+					KeyEntry key;
+					key.key_ = sNewKeyName;
+					key.filetime_ = filetime;
+					keyList.push_back( key );
 				}
 			}
 		}
@@ -304,13 +315,15 @@ namespace RegSearch
 		}
 
 		const CAtlString& keyword = option.keyword_;
-		vector<CAtlString> keyList;
+		vector<KeyEntry> keyList;
 		EnumRegistryKey(root, key, keyList);
 
 		for( unsigned i = 0; i < keyList.size(); i++ )
 		{
-			vector< RegItem* > itemList;
-			CAtlString& keyItem = keyList[i];
+		
+			CAtlString& keyItem = keyList[i].key_;
+			FILETIME& filetime = keyList[i].filetime_;
+
 			CAtlString subKey = key;
 			if( subKey.GetLength()) 
 			{
@@ -333,10 +346,12 @@ namespace RegSearch
 				}
 			}
 
+			vector< RegItem* > itemList;
 			_SearchRegistryKeyValue(root, subKey, itemList, option);
 			for( unsigned j = 0; j < itemList.size(); j++ )
 			{
 				RegItem* item = itemList[j];
+				item->filetime_ = filetime;
 				item->key_ = subKey;
 				if ( item->name_.IsEmpty() )
 				{

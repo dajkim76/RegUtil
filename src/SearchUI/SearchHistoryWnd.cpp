@@ -65,7 +65,7 @@ int CSearchHistoryWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	currentView_.InsertColumn(1, L"값 이름", LVCFMT_LEFT, 100 );
 	currentView_.InsertColumn(2, L"타입", LVCFMT_LEFT, 60 );
 	currentView_.InsertColumn(3, L"데이타", LVCFMT_LEFT, 500 );
-	currentView_.InsertColumn(4, L"수정된 날짜", LVCFMT_LEFT, 100 );
+	currentView_.InsertColumn(4, L"수정된 날짜", LVCFMT_LEFT, 140 );
 	currentView_.InsertColumn(5, L"길이", LVCFMT_LEFT, 100 );
 	currentView_.SetExtendedStyle(currentView_.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
@@ -115,6 +115,14 @@ LRESULT CSearchHistoryWnd::OnSearchItem( WPARAM wParam, LPARAM lParam )
 		currentView_.SetItemText(index, 2, RegTypeToString(item->type_) );
 		currentView_.SetItemText(index, 3, item->text_ );
 		currentView_.SetItemText(index, 5, Int2Str(item->length_) );
+		//filetime;
+		SYSTEMTIME systemtime = { NULL };
+		FileTimeToSystemTime(&item->filetime_, &systemtime);
+		CString datetime;
+		datetime.Format(L"%d-%02d-%02d %02d:%02d:%02d", 
+			systemtime.wYear, systemtime.wMonth, systemtime.wDay, 
+			systemtime.wHour, systemtime.wMinute, systemtime.wSecond);
+		currentView_.SetItemText(index, 4, datetime );
 	}
 
 	int next = currentView_.GetItemCount();
