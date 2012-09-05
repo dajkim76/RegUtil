@@ -39,7 +39,7 @@ BOOL COptionDlg::OnInitDialog()
 
 	CheckDlgButton(IDC_CHECK_GLUE, _GetInt(L"bGlue", 1) == 1 ? BST_CHECKED : BST_UNCHECKED);
 	CheckDlgButton(IDC_CHECK_LAUNCHER, _GetInt(L"launcher", 1) ? BST_CHECKED : BST_UNCHECKED);
-	CheckDlgButton(IDC_CHECK_AUTOCLOSE, _GetInt(L"autoClose", 0) ? BST_CHECKED : BST_UNCHECKED);
+	CheckDlgButton(IDC_CHECK_AUTOCLOSE, _GetInt(L"autoClose", 1) ? BST_CHECKED : BST_UNCHECKED);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

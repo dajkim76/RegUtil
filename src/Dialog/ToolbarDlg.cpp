@@ -173,9 +173,10 @@ BOOL CToolbarDlg::OnInitDialog()
         m_tray.Create(this, L"EasyRegistry 1.0", m_hIcon);
     }
 
-    autoClose_ = _GetInt(L"autoClose", 0);
+    autoClose_ = _GetInt(L"autoClose", 1);
 
 	SetTimer(101, 50, NULL);
+	SetTimer(102, 1000, NULL);
     ShowWindow(SW_HIDE);
 	
 	return TRUE;  // return TRUE  unless you set the focus to a control
@@ -626,85 +627,91 @@ void CToolbarDlg::_Hide()
 
 void CToolbarDlg::OnTimer(UINT nIDEvent) 
 {
-    static BOOL s_bWritePositon = 0;
-    if(ISKEYDOWN(VK_CONTROL) && ISKEYDOWN(VK_LBUTTON))
-    {
-        //  사용자가 이동하고 나서 마우스 Lbuton을 놓으면 토커바의 새 위치를 저장한다.
-        //
-        s_bWritePositon = 1;
-    }
-	else if(s_bWritePositon == 1 && !ISKEYDOWN(VK_LBUTTON))
-    {
-        WriteGluePosition();
-        s_bWritePositon = 0;
-    }
-
-	
-    /*
-     *	50밀리 타이머로 현재 토탈커맨드가 활성화 되어 있는지에 따라서
-     *  토커바를 보이고 감추고 한다.
-     */
-    HWND hWnd = ::GetForegroundWindow();
-    TCHAR szClass[MAX_PATH];
-    GetClassName(hWnd, szClass, MAX_PATH);
-    if(_tcsicmp(szClass, REGEDIT_CLASSNAME) == 0)
-    {  
-        /*
-         *	토커바가 토커에 달라붙어 움직여야 한다면 위치를 찾아서 이동시킨다.
-         */
-        int bGlue = _GetInt( L"bGlue", 1);
-        if(bGlue && !::IsIconic(hWnd))
-        {           
-            int gx = _GetInt(L"iGlueX", 253);
-            int gy = _GetInt(L"iGlueY", 21);
-
-            CRect rc;
-            ::GetWindowRect(hWnd, &rc);
-            CRect rcMy;
-            GetWindowRect(&rcMy);
-            if( rcMy.left - rc.left != gx || 
-                rcMy.top - rc.top != gy)
-            {            
-                rcMy.left = rc.left+ gx;
-                rcMy.top = rc.top + gy;
-                SetWindowPos(NULL, rcMy.left, rcMy.top,0,0,SWP_NOSIZE);
-            }
-        }
-
-        /*
-         *	토커가 회면에 보이고, 최소화가 아니면 그 위에 토커바를 띄운다.
-         */
-        if( ! ::IsWindowVisible(m_hWnd) && !::IsIconic(hWnd))
-        {
-            ShowWindow(SW_SHOW);
-            SetWindowPos(&wndTopMost, 0,0,0,0,SWP_NOSIZE | SWP_NOMOVE);
-        }else 
-            if(::IsIconic(hWnd))    ///토커바가 최소화되어 있으면 숨긴다.
-                _Hide();
-
-    }else
+	if (nIDEvent == 101)
 	{
-        /*
-         *	활성창이 포커바가 아니거나, 최소화 되어 있으면 바를 숨긴다.
-         */
-        if(hWnd != m_hWnd || ::IsIconic(hWnd))
+		static BOOL s_bWritePositon = 0;
+		if(ISKEYDOWN(VK_CONTROL) && ISKEYDOWN(VK_LBUTTON))
 		{
-            _Hide();
+			//  사용자가 이동하고 나서 마우스 Lbuton을 놓으면 토커바의 새 위치를 저장한다.
+			//
+			s_bWritePositon = 1;
 		}
-		else if ( RegWorks::FindRegEdit() == NULL )
+		else if(s_bWritePositon == 1 && !ISKEYDOWN(VK_LBUTTON))
 		{
-			ShowWindow(SW_HIDE);
+			WriteGluePosition();
+			s_bWritePositon = 0;
+		}
 
-			if ( autoClose_ )
-			{
-				if ( _GetInt(L"launcher") == 1)
-				{
-					PostQuitMessage(1);
+		
+		/*
+		 *	50밀리 타이머로 현재 토탈커맨드가 활성화 되어 있는지에 따라서
+		 *  토커바를 보이고 감추고 한다.
+		 */
+		HWND hWnd = ::GetForegroundWindow();
+		TCHAR szClass[MAX_PATH];
+		GetClassName(hWnd, szClass, MAX_PATH);
+		if(_tcsicmp(szClass, REGEDIT_CLASSNAME) == 0)
+		{  
+			/*
+			 *	토커바가 토커에 달라붙어 움직여야 한다면 위치를 찾아서 이동시킨다.
+			 */
+			int bGlue = _GetInt( L"bGlue", 1);
+			if(bGlue && !::IsIconic(hWnd))
+			{           
+				int gx = _GetInt(L"iGlueX", 253);
+				int gy = _GetInt(L"iGlueY", 21);
+
+				CRect rc;
+				::GetWindowRect(hWnd, &rc);
+				CRect rcMy;
+				GetWindowRect(&rcMy);
+				if( rcMy.left - rc.left != gx || 
+					rcMy.top - rc.top != gy)
+				{            
+					rcMy.left = rc.left+ gx;
+					rcMy.top = rc.top + gy;
+					SetWindowPos(NULL, rcMy.left, rcMy.top,0,0,SWP_NOSIZE);
 				}
 			}
-		}
 
-    }
+			/*
+			 *	토커가 회면에 보이고, 최소화가 아니면 그 위에 토커바를 띄운다.
+			 */
+			if( ! ::IsWindowVisible(m_hWnd) && !::IsIconic(hWnd))
+			{
+				ShowWindow(SW_SHOW);
+				SetWindowPos(&wndTopMost, 0,0,0,0,SWP_NOSIZE | SWP_NOMOVE);
+			}else 
+				if(::IsIconic(hWnd))    ///토커바가 최소화되어 있으면 숨긴다.
+					_Hide();
+
+		}else
+		{
+			/*
+			 *	활성창이 포커바가 아니거나, 최소화 되어 있으면 바를 숨긴다.
+			 */
+			if(hWnd != m_hWnd || ::IsIconic(hWnd))
+			{
+				_Hide();
+			}
+			else if ( RegWorks::FindRegEdit() == NULL )
+			{
+				ShowWindow(SW_HIDE);			
+			}
+
+		}
+	}
+
+	else if( nIDEvent == 102 )
+	{
+		if ( autoClose_ &&  RegWorks::FindRegEdit() == NULL )
+		{
+			if ( _GetInt(L"launcher") == 1)
+			{
+				PostQuitMessage(1);
+			}
+		}
+	}
     
 	CDialog::OnTimer(nIDEvent);
 }

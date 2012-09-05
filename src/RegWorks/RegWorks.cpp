@@ -30,8 +30,8 @@ namespace
 			listview_ = FindWindowEx( editor_, NULL, L"SysListView32", NULL);
 			ATLASSERT(listview_);
 
-
-			process_ = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid_); 
+			// xp에서 NUU을 리턴하는 경우가 있어서 최소 권하으로 연다.
+			process_ = OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION, FALSE, pid_); 
 			ATLASSERT(process_);
 			if( process_ )
 			{
