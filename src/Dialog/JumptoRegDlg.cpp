@@ -52,6 +52,13 @@ BOOL CJumptoRegDlg::OnInitDialog()
 
 	if ( GetClipboardText(m_hWnd, text) )
 	{
+		//엔터이후는 무시
+		int pos = text.Find(L"\n");
+		if( pos > 0 )
+		{
+			text = text.Left(pos);
+		}
+
 		if( RegWorks::IsValidPath(text) )
 		{
 			RegWorks::Validate(text);

@@ -64,10 +64,10 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOG  0, 0, 235, 74
+IDD_ABOUTBOX DIALOGEX 0, 0, 235, 74
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "EasyRegistry"
-FONT 9, "굴림"
+FONT 9, "굴림", 0, 0, 0x0
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
     LTEXT           "EasyRegistry 1.0",IDC_STATIC,39,10,119,8,SS_NOPREFIX
@@ -398,6 +398,19 @@ BEGIN
     MENUITEM "새 검색",                        ID_NEW_SEARCH
     MENUITEM "결과내 검색",                      32789
     MENUITEM "결과 저장하기",                     ID_MNU_SAVEAS
+END
+
+IDR_MENU_SEARCHCONTEXT MENU 
+BEGIN
+    POPUP "SeachContext"
+    BEGIN
+        MENUITEM "키 복사",                        ID_SEACHCONTEXT_COPYKEY
+        MENUITEM "이름 복사",                       ID_SEACHCONTEXT_COPYNAME
+        MENUITEM "데이타 복사",                      ID_SEACHCONTEXT_COPYDATA
+        MENUITEM "모두 복사",                       ID_SEACHCONTEXT_COPYALL
+        MENUITEM SEPARATOR
+        MENUITEM "삭제",                          ID_SEACHCONTEXT_DELETE
+    END
 END
 
 

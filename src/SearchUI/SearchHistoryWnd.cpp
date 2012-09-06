@@ -39,9 +39,10 @@ BEGIN_MESSAGE_MAP(CSearchHistoryWnd, CFrameWnd)
 	ON_COMMAND(ID_NEW_SEARCH, &CSearchHistoryWnd::OnNewSearch)
 	ON_MESSAGE(UM_SEARCH_ITEM, OnSearchItem)
 	ON_MESSAGE(UM_SEARCH_END, OnSearchEnd)
-	ON_NOTIFY(NM_DBLCLK, 102, &CSearchHistoryWnd::OnNMDblclkList1)
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CSearchHistoryWnd::OnNMDblclkList1)
 	ON_COMMAND(ID_MNU_SAVEAS, &CSearchHistoryWnd::OnMnuSaveas)
 	ON_COMMAND(ID_MNU_RESEARCH, &CSearchHistoryWnd::OnMnuResearch)
+	ON_NOTIFY(NM_RCLICK, IDC_LIST1, &CSearchHistoryWnd::OnNMRClickList1)
 END_MESSAGE_MAP()
 
 
@@ -59,7 +60,7 @@ int CSearchHistoryWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetMenu(&menu_);
 
 	CRect rc;
-	currentView_.Create(WS_VISIBLE | WS_CHILD | LVS_REPORT, rc, this, 102);
+	currentView_.Create(WS_VISIBLE | WS_CHILD | LVS_REPORT, rc, this, IDC_LIST1);
 	ASSERT(currentView_.GetSafeHwnd() != NULL);
 	currentView_.InsertColumn(0, L"Registry 키", LVCFMT_LEFT, 500 );
 	currentView_.InsertColumn(1, L"값 이름", LVCFMT_LEFT, 100 );
@@ -246,6 +247,98 @@ void CSearchHistoryWnd::OnMnuResearch()
 					outList.SetItemText(next, k, s[k]);
 				}
 			}
+		}
+	}
+}
+
+void CSearchHistoryWnd::OnNMRClickList1( NMHDR *pNMHDR, LRESULT *pResult )
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: Add your control notification handler code here
+	*pResult = 0;
+
+	POSITION pos = currentView_.GetFirstSelectedItemPosition();
+	if( pos )
+	{
+		int index = currentView_.GetNextSelectedItem(pos);
+		CMenu menu;
+		menu.LoadMenu(IDR_MENU_SEARCHCONTEXT);
+		CMenu* pMenu = menu.GetSubMenu(0);
+		CPoint pt;
+		GetCursorPos(&pt);
+		CString str;
+		CString name;
+		name = currentView_.GetItemText(index, 1);
+		bool onlyKey = name.IsEmpty();
+		if( onlyKey )
+		{
+			pMenu->DeleteMenu(ID_SEACHCONTEXT_COPYNAME, MF_BYCOMMAND);
+			pMenu->DeleteMenu(ID_SEACHCONTEXT_COPYDATA, MF_BYCOMMAND);
+			pMenu->DeleteMenu(ID_SEACHCONTEXT_COPYALL, MF_BYCOMMAND);
+		}
+		int cmd = pMenu->TrackPopupMenu(TPM_RETURNCMD | TPM_NONOTIFY | TPM_LEFTBUTTON , pt.x, pt.y, this);
+		switch(cmd)
+		{
+		case ID_SEACHCONTEXT_COPYKEY:
+			str = currentView_.GetItemText(index, 0);
+			SetClipboardText(m_hWnd, str);
+			break;
+
+		case ID_SEACHCONTEXT_COPYNAME:
+			SetClipboardText(m_hWnd, name);
+			break;
+
+		case ID_SEACHCONTEXT_COPYDATA:
+			str = currentView_.GetItemText(index, 3);
+			SetClipboardText(m_hWnd, str);
+			break;
+
+		case ID_SEACHCONTEXT_COPYALL:
+			str.Format(L"[%s]\n%s=%s\n"
+				, currentView_.GetItemText(index, 0)
+				, name
+				, currentView_.GetItemText(index, 3)
+				);
+			SetClipboardText(m_hWnd, str);
+			break;
+
+		case ID_SEACHCONTEXT_DELETE:
+			{
+				CString path = currentView_.GetItemText(index, 0);
+				if ( name.GetLength())
+				{
+					str.Format(L"[%s]\n%s=%s\n\n이 값을"
+					, path
+					, name
+					, currentView_.GetItemText(index, 3)
+					);
+				}
+				else
+				{
+					str.Format(L"[%s]\n\n이 키와 하위 값을", path);
+				}
+
+				int ret = AfxMessageBox(str + L"\n정말로 삭제하겠습니까?", MB_YESNO | MB_ICONQUESTION);
+				if( ret == IDYES )
+				{
+					_KeyRoot key = KeyRoot::toType(path);
+					ATLASSERT(key != KeyRoot::UNKNOWN);
+					if ( key != KeyRoot::UNKNOWN )
+					{
+						HKEY hkey = KeyRoot::GetKey(key);
+						path = path.Mid(path.Find(L"\\") + 1);
+						if( name.IsEmpty() )
+						{
+							SHDeleteKey(hkey, path);
+						}
+						else
+						{
+							SHDeleteValue(hkey, path, name);
+						}
+					}
+				}
+			}
+			break;
 		}
 	}
 }

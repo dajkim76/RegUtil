@@ -65,6 +65,15 @@ void CSearchDlg::OnOK()
 		return;
 	}
 
+	if ( str.GetLength() == 1)
+	{
+		int ret = AfxMessageBox(L"검색어가 한 글자입니다\n시간이 오래걸릴 수 있습니다.\n\n계속하겠습니까?", MB_OKCANCEL);
+		if( ret == IDCANCEL )
+		{
+			return ;
+		}
+	}
+
 	option_.keyword_ = str;
 
 	

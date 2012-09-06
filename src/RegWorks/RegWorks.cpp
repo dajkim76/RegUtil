@@ -5,6 +5,9 @@
 
 namespace
 {	
+	// copy된 텍스트에서 주변글자를 제거하기 위한
+	LPCWSTR kTrimStrings = L" \r\n\t()[]";
+
 	class RegEditLocator
 	{
 	public:
@@ -305,7 +308,7 @@ KeyRoot::type KeyRoot::toType( CString path )
 	{
 		return KeyRoot::UNKNOWN;
 	}
-	path.Trim(L" \r\n\t()");
+	path.Trim(kTrimStrings);
 	path.MakeUpper();
 	int pos = path.Find(L"\\");
 	if( pos > 0 )
@@ -474,7 +477,7 @@ HWND RegWorks::RequireRegEditorHanlde()
 void RegWorks::Validate( CString& path )
 {
 	// hklm\\Sof... ==> HKEY_LOCAL_MACHINE\\Soft...
-	path.Trim(L" \t()\n\r");
+	path.Trim(kTrimStrings);
 	path.Replace(L"\\\\", L"\\");
 
 	int pos = path.Find(L'\\');
@@ -493,7 +496,7 @@ void RegWorks::Validate( CString& path )
 
 bool RegWorks::IsValidPath( CString path )
 {
-	path.Trim(L" \t()\n\r");
+	path.Trim(kTrimStrings);
 	path.Replace(L"\\\\", L"\\");
 	int pos = path.Find(L"\\");
 	if( pos > 0)

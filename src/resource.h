@@ -19,6 +19,8 @@
 #define IDR_MENU2                       142
 #define IDD_SEARCH                      143
 #define IDD_RESEARCH                    144
+#define IDR_MENU3                       145
+#define IDR_MENU_SEARCHCONTEXT          145
 #define CEDIT_TEXT                      1000
 #define CEDIT_ID                        1001
 #define CEDIT_NAME                      1001
@@ -80,13 +82,23 @@
 #define ID_32787                        32787
 #define ID_MNU_SAVEAS                   32788
 #define ID_MNU_RESEARCH                 32789
+#define ID_SEACHCONTEXT_32790           32790
+#define ID_SEACHCONTEXT_32791           32791
+#define ID_SEACHCONTEXT_32792           32792
+#define ID_SEACHCONTEXT_32793           32793
+#define ID_SEACHCONTEXT_32794           32794
+#define ID_SEACHCONTEXT_COPYKEY         32795
+#define ID_SEACHCONTEXT_COPYNAME        32796
+#define ID_SEACHCONTEXT_COPYDATA        32797
+#define ID_SEACHCONTEXT_COPYALL         32798
+#define ID_SEACHCONTEXT_DELETE          32799
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        145
-#define _APS_NEXT_COMMAND_VALUE         32790
+#define _APS_NEXT_RESOURCE_VALUE        146
+#define _APS_NEXT_COMMAND_VALUE         32800
 #define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

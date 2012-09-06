@@ -28,6 +28,7 @@ public:
 	afx_msg void OnNewSearch();
 	afx_msg void OnMnuSaveas();
 	afx_msg void OnMnuResearch();
+	afx_msg void OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 
