@@ -1,8 +1,9 @@
 "%VS90COMNTOOLS%/../IDE/devenv" "src/EasyRegistry.sln" /rebuild "Release"
-@echo off
 if not "%ERRORLEVEL%" == "0" goto ERROR
-@echo on
 
+cd bin
+call _make_setup.bat
+if not "%ERRORLEVEL%" == "0" goto ERROR
 
 goto	OK
 :ERROR
