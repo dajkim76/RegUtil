@@ -10,7 +10,7 @@ class SearchThread : public SimpleThread
 						, public ISearchNotify
 {
 public:
-	SearchThread(HWND notifyWnd, SearchOption option);
+	SearchThread(SearchThread*& threadPtr, HWND notifyWnd, SearchOption option);
 	~SearchThread(void);
 	void Cancel();
 	virtual bool OnFound(CAtlString key, RegItem* item);
@@ -20,4 +20,5 @@ protected:
 	HWND notifyWnd_;
 	SearchOption option_;
 	UINT startTick_;
+	SearchThread*& threadPtr_;
 };

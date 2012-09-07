@@ -94,9 +94,9 @@ void SimpleThread::_CloseHandle()
 void SimpleThread::_EndThreadEx(unsigned retVal)
 {	
 	_CloseHandle();
-	_endthreadex(retVal);
 	if ( autoFree_ )
 	{
 		delete this;
 	}
+	_endthreadex(retVal);
 }

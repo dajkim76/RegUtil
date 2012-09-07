@@ -104,7 +104,7 @@ void CSearchHistoryWnd::OnNewSearch()
 		{
 			searchThread_->Cancel();
 		}
-		searchThread_ = new SearchThread(m_hWnd, option);
+		searchThread_ = new SearchThread(searchThread_, m_hWnd, option);
 		searchThread_->Start();
 	}
 }

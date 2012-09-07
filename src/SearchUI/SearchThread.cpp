@@ -2,15 +2,20 @@
 #include "SearchThread.h"
 #include "RegWorks\RegWorks.h"
 
-SearchThread::SearchThread(HWND notifyWnd, SearchOption option) 
+SearchThread::SearchThread(SearchThread*& threadPtr, HWND notifyWnd, SearchOption option) 
 		: SimpleThread(true)
 		, notifyWnd_(notifyWnd)
 		, option_(option)
+		, threadPtr_(threadPtr)
 {
 }
 
 SearchThread::~SearchThread(void)
 {
+	if ( ! option_.canceled_ )
+	{
+		threadPtr_ = NULL;
+	}
 }
 
 UINT SearchThread::Run()
@@ -88,4 +93,5 @@ bool SearchThread::OnFound( CAtlString key, RegItem* item )
 void SearchThread::Cancel()
 {
 	option_.canceled_ = true;
+	threadPtr_ = NULL;
 }
