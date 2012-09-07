@@ -398,11 +398,12 @@ BEGIN
     END
 END
 
-IDR_MENU_SEARCH MENU 
+IDR_MENU_SEARCH MENUEX 
 BEGIN
-    MENUITEM "새 검색",                        ID_NEW_SEARCH
-    MENUITEM "결과내 검색",                      32789
-    MENUITEM "결과 저장하기",                     ID_MNU_SAVEAS
+    MENUITEM "새 검색",                        ID_NEW_SEARCH,MFT_STRING,MFS_ENABLED
+    MENUITEM "결과내 검색",                      32789,MFT_STRING,MFS_ENABLED
+    MENUITEM "결과 저장하기",                     ID_MNU_SAVEAS,MFT_STRING,MFS_ENABLED
+    MENUITEM "검색중지",                        ID_SEARCH_STOP,MFT_STRING | MFT_RIGHTJUSTIFY,MFS_ENABLED
 END
 
 IDR_MENU_SEARCHCONTEXT MENU 

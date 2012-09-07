@@ -69,8 +69,11 @@ UINT SearchThread::Run()
 		}
 	}
 
-	int second = (GetTickCount() - startTick_) / 1000;
-	PostMessage(notifyWnd_, UM_SEARCH_END, WPARAM(second), NULL);
+	if( !option_.canceled_)
+	{
+		int second = (GetTickCount() - startTick_) / 1000;
+		PostMessage(notifyWnd_, UM_SEARCH_END, WPARAM(second), NULL);
+	}
 	return 0;
 }
 

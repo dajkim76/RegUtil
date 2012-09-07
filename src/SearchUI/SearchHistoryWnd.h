@@ -41,6 +41,7 @@ public:
 	afx_msg void OnMnuResearch();
 	afx_msg void OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnColumnclick(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnSearchStop();
 };
 
 

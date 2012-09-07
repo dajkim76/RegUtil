@@ -62,6 +62,7 @@ BEGIN_MESSAGE_MAP(CSearchHistoryWnd, CFrameWnd)
 	ON_COMMAND(ID_MNU_RESEARCH, &CSearchHistoryWnd::OnMnuResearch)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST1, &CSearchHistoryWnd::OnNMRClickList1)
 	ON_NOTIFY(LVN_COLUMNCLICK, IDC_LIST1, &CSearchHistoryWnd::OnColumnclick)
+	ON_COMMAND(ID_SEARCH_STOP, &CSearchHistoryWnd::OnSearchStop)
 END_MESSAGE_MAP()
 
 
@@ -447,4 +448,16 @@ void CSearchHistoryWnd::OnColumnclick(NMHDR* pNMHDR, LRESULT* pResult)
 	}
 
 	currentView_.InsertItem(lastIndex, str);
+}
+void CSearchHistoryWnd::OnSearchStop()
+{
+	if ( searchThread_ )
+	{
+		searchThread_->Cancel();
+		int lastIndex = currentView_.GetItemCount() - 1;
+		if( lastIndex >= 0)
+		{
+			currentView_.SetItemText(lastIndex, 0, L"검색이 취소되었습니다.");
+		}
+	}
 }
