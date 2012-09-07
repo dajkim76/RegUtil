@@ -41,7 +41,10 @@ BOOL CSearchDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-#define __C(id,val) CheckDlgButton(id, val ? BST_CHECKED : BST_UNCHECKED )
+	CDSIni ini(L"main", PROFILE_INI);
+
+
+#define __C(id,val) CheckDlgButton(id, ini.GetInt(Int2Str(id), val) ? BST_CHECKED : BST_UNCHECKED )
 	__C(IDC_CHECK_HKLM2, option_.searchHKLM_ );
 	__C(IDC_CHECK_HKCU, option_.searchHKCU_ );
 	__C(IDC_CHECK_HKCR, option_.searchHKCR_);
@@ -52,6 +55,12 @@ BOOL CSearchDlg::OnInitDialog()
 	__C(IDC_CHECK_VALUE, option_.nameCheck_);
 	__C(IDC_CHECK_DATA, option_.valueCheck_);
 	__C(IDC_CHECK_CASE, option_.caseSenstive_);
+
+	SetDlgItemText(IDC_EDIT1, ini.GetStr(Int2Str(IDC_EDIT1)));
+	SetDlgItemText(IDC_EDIT_CUSTOMKEY, ini.GetStr(Int2Str(IDC_EDIT_CUSTOMKEY)));
+
+	CheckDlgButton(IDC_CHECK_CUSTOMKEY, ini.GetInt(Int2Str(IDC_CHECK_CUSTOMKEY)) ? BST_CHECKED : BST_UNCHECKED );
+	OnBnClickedCheckCustomkey();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -99,8 +108,10 @@ void CSearchDlg::OnOK()
 
 	option_.keyword_ = str;
 	
+	CDSIni ini(L"main", PROFILE_INI);
+
 #undef __C
-#define __C(id,val) val = (IsDlgButtonChecked(id) == BST_CHECKED )
+#define __C(id,val) val = (IsDlgButtonChecked(id) == BST_CHECKED ); ini.WriteInt(Int2Str(id), val);
 	__C(IDC_CHECK_HKLM2, option_.searchHKLM_ );
 	__C(IDC_CHECK_HKCU, option_.searchHKCU_ );
 	__C(IDC_CHECK_HKCR, option_.searchHKCR_);
@@ -111,6 +122,10 @@ void CSearchDlg::OnOK()
 	__C(IDC_CHECK_VALUE, option_.nameCheck_);
 	__C(IDC_CHECK_DATA, option_.valueCheck_);
 	__C(IDC_CHECK_CASE, option_.caseSenstive_);
+
+	ini.WriteInt(Int2Str(IDC_CHECK_CUSTOMKEY), IsDlgButtonChecked(IDC_CHECK_CUSTOMKEY) == BST_CHECKED);
+	ini.WriteStr(Int2Str(IDC_EDIT1), option_.keyword_);
+	ini.WriteStr(Int2Str(IDC_EDIT_CUSTOMKEY), option_.customkey_);
 
 
 	CDialog::OnOK();

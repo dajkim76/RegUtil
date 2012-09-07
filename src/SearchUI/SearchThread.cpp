@@ -92,6 +92,12 @@ bool SearchThread::OnFound( CAtlString key, RegItem* item )
 
 void SearchThread::Cancel()
 {
+	// NULL 포인터 참조시 안전하게
+	// 쓰레드에서 이미지 소멸되었다면
+	if( this == NULL )
+	{
+		return ;
+	}
 	option_.canceled_ = true;
 	threadPtr_ = NULL;
 }

@@ -100,12 +100,20 @@ void CSearchHistoryWnd::OnNewSearch()
 		currentView_.DeleteAllItems();
 		currentView_.InsertItem(0, L"검색중...");
 
+		bool preCanceled = false;
 		if ( searchThread_ )
 		{
 			searchThread_->Cancel();
+			preCanceled = true;
 		}
 		searchThread_ = new SearchThread(searchThread_, m_hWnd, option);
 		searchThread_->Start();
+
+		// 취소알림
+		if ( preCanceled )
+		{
+			AfxMessageBox(L"이전 검색을 취소하고\n" + option.keyword_ + L" 키워드로 검색을 다시 시작했습니다.");
+		}
 	}
 }
 
