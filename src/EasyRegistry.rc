@@ -378,12 +378,13 @@ END
 // Menu
 //
 
-IDR_MENU1 MENU 
+IDR_MENU_TRAY MENU 
 BEGIN
     POPUP "TRAY"
     BEGIN
         MENUITEM "정보",                          IDM_ABOUTBOX
-        MENUITEM "업데이트 내역",                     ID_HELP
+        MENUITEM "도움말",                         ID_HELP
+        MENUITEM "프로그램 홈페이지 방문",                ID_TRAY_DEVPAGE
         MENUITEM SEPARATOR
         MENUITEM "검색...",                       ID_MNU_SEARCH
         MENUITEM "옵션",                          ID_OPTION
@@ -393,7 +394,7 @@ BEGIN
     END
 END
 
-IDR_MENU2 MENU 
+IDR_MENU_SEARCH MENU 
 BEGIN
     MENUITEM "새 검색",                        ID_NEW_SEARCH
     MENUITEM "결과내 검색",                      32789

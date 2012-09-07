@@ -116,6 +116,7 @@ BEGIN_MESSAGE_MAP(CToolbarDlg, CDialog)
 	ON_COMMAND(ID_HELP, &CToolbarDlg::OnHelp)
 	ON_COMMAND(ID_RUN_EDITOR, &CToolbarDlg::OnRunEditor)
 	ON_COMMAND(ID_MNU_SEARCH, &CToolbarDlg::OnMnuSearch)
+	ON_COMMAND(ID_TRAY_DEVPAGE, &CToolbarDlg::OnTrayDevpage)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -585,7 +586,7 @@ LRESULT CToolbarDlg::OnUserOnTray(WPARAM wp, LPARAM lp)
         SetForegroundWindow();
         
         CMenu menu;
-        menu.LoadMenu(IDR_MENU1);
+        menu.LoadMenu(IDR_MENU_TRAY);
 		CMenu* trayMenu = menu.GetSubMenu(0);
         trayMenu->TrackPopupMenu( TPM_LEFTALIGN, point.x, point.y,this, NULL);        
         PostMessage(WM_NULL, 0, 0);
@@ -1283,4 +1284,10 @@ void CToolbarDlg::OnMnuSearch()
 {
 	CSearchHistoryWnd * wnd = new CSearchHistoryWnd();
 	wnd->PostMessage(WM_COMMAND, ID_NEW_SEARCH, 0);
+}
+
+void CToolbarDlg::OnTrayDevpage()
+{
+	LPCWSTR url = L"http://www.mdiwebma.com/webma2/board/?id=14";
+	ShellExecute(m_hWnd, L"open", url, NULL, NULL, SW_SHOWNORMAL);
 }

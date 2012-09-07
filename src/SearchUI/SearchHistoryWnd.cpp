@@ -56,7 +56,7 @@ int CSearchHistoryWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-	menu_.LoadMenu(IDR_MENU2);
+	menu_.LoadMenu(IDR_MENU_SEARCH);
 	SetMenu(&menu_);
 
 	CRect rc;

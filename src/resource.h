@@ -15,11 +15,12 @@
 #define IDD_EDIT_SUBMENU                137
 #define IDD_JUMPTOREG                   139
 #define IDR_MENU1                       140
+#define IDR_MENU_TRAY                   140
 #define IDD_OPTION                      141
 #define IDR_MENU2                       142
+#define IDR_MENU_SEARCH                 142
 #define IDD_SEARCH                      143
 #define IDD_RESEARCH                    144
-#define IDR_MENU3                       145
 #define IDR_MENU_SEARCHCONTEXT          145
 #define CEDIT_TEXT                      1000
 #define CEDIT_ID                        1001
@@ -92,13 +93,15 @@
 #define ID_SEACHCONTEXT_COPYDATA        32797
 #define ID_SEACHCONTEXT_COPYALL         32798
 #define ID_SEACHCONTEXT_DELETE          32799
+#define ID_TRAY_32800                   32800
+#define ID_TRAY_DEVPAGE                 32801
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        146
-#define _APS_NEXT_COMMAND_VALUE         32800
+#define _APS_NEXT_COMMAND_VALUE         32802
 #define _APS_NEXT_CONTROL_VALUE         1019
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

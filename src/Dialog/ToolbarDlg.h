@@ -76,6 +76,7 @@ public:
 	afx_msg void OnHelp();
 	afx_msg void OnRunEditor();
 	afx_msg void OnMnuSearch();
+	afx_msg void OnTrayDevpage();
 };
 
 //{{AFX_INSERT_LOCATION}}
