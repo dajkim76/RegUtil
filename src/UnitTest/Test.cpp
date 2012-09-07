@@ -25,11 +25,11 @@ void Test1()
 	TEST( RegWorks::FindRegEdit() );
 
 	//GetKey
-	TEST( KeyRoot::GetKey(KeyRoot::HKLM) == HKEY_LOCAL_MACHINE );
-	TEST( KeyRoot::GetKey(KeyRoot::HKCU) == HKEY_CURRENT_USER);
-	TEST( KeyRoot::GetKey(KeyRoot::HKCR) == HKEY_CLASSES_ROOT);
-	TEST( KeyRoot::GetKey(KeyRoot::HKUSERS) == HKEY_USERS);
-	TEST( KeyRoot::GetKey(KeyRoot::HKCC) == HKEY_CURRENT_CONFIG);
+	TEST( KeyRoot::toRootkey(KeyRoot::HKLM) == HKEY_LOCAL_MACHINE );
+	TEST( KeyRoot::toRootkey(KeyRoot::HKCU) == HKEY_CURRENT_USER);
+	TEST( KeyRoot::toRootkey(KeyRoot::HKCR) == HKEY_CLASSES_ROOT);
+	TEST( KeyRoot::toRootkey(KeyRoot::HKUSERS) == HKEY_USERS);
+	TEST( KeyRoot::toRootkey(KeyRoot::HKCC) == HKEY_CURRENT_CONFIG);
 
 	//toType
 	TEST( KeyRoot::toType( L"HKEY_LOCAL_MACHINE" ) == KeyRoot::HKLM);

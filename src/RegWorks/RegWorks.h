@@ -13,8 +13,10 @@ struct KeyRoot
 	};
 
 	static type toType(CString path);
-	static HKEY GetKey(type key);
+	static HKEY toRootkey(CString path);
+	static HKEY toRootkey(type key);
 	static CString toText(type key);
+	static CString toText(HKEY rootKey);
 };
 
 typedef KeyRoot::type _KeyRoot;

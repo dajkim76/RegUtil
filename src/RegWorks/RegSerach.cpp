@@ -314,6 +314,11 @@ namespace RegSearch
 			return true;
 		}
 
+		if ( ! _SearchValue( root, NULL, key, option, notify ))
+		{
+			return false;
+		}
+
 		const CAtlString& keyword = option.keyword_;
 		vector<KeyEntry> keyList;
 		EnumRegistryKey(root, key, keyList);
@@ -346,31 +351,10 @@ namespace RegSearch
 				}
 			}
 
-			vector< RegItem* > itemList;
-			_SearchRegistryKeyValue(root, subKey, itemList, option);
-			for( unsigned j = 0; j < itemList.size(); j++ )
+			if ( ! _SearchValue( root, &filetime, subKey, option, notify ))
 			{
-				RegItem* item = itemList[j];
-				item->filetime_ = filetime;
-				item->key_ = subKey;
-				if ( item->name_.IsEmpty() )
-				{
-					item->name_ = _T("(기본값)");
-				}
-
-				DTRACE(L"%d: key:[%s] -> [%s]=[%s] \n", __count++, subKey, item->name_, item->text_ );
-				if ( notify )
-				{
-					itemList[j] = NULL;
-					if ( ! notify->OnFound(rootName_ + _T("\\") + subKey, item ) )
-					{
-						return false;
-					}
-				}
+				return false;
 			}
-
-			//clear
-			ClearRegItemList(itemList);
 
 			// goto child key
 			if ( ! _Search(root, subKey, option, notify))
@@ -381,4 +365,40 @@ namespace RegSearch
 
 		return true;
 	}	
+
+	bool RegistrySearch::_SearchValue( HKEY root, FILETIME* filetime, CAtlString subKey, 
+										const SearchOption& option, ISearchNotify* notify )
+	{
+		vector< RegItem* > itemList;
+		_SearchRegistryKeyValue(root, subKey, itemList, option);
+		for( unsigned j = 0; j < itemList.size(); j++ )
+		{
+			RegItem* item = itemList[j];
+			item->validFiletime_ = (filetime != NULL);
+			if ( filetime )
+			{
+				item->filetime_ = *filetime;
+			}
+			item->key_ = subKey;
+			if ( item->name_.IsEmpty() )
+			{
+				item->name_ = _T("(기본값)");
+			}
+
+			DTRACE(L"%d: key:[%s] -> [%s]=[%s] \n", __count++, subKey, item->name_, item->text_ );
+			if ( notify )
+			{
+				itemList[j] = NULL;
+				if ( ! notify->OnFound(rootName_ + _T("\\") + subKey, item ) )
+				{
+					return false;
+				}
+			}
+		}
+
+		//clear
+		ClearRegItemList(itemList);
+		return true;
+	}
 }
+

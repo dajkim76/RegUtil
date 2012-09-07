@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "EasyRegistry.h"
 #include "SearchDlg.h"
+#include "RegWorks\RegWorks.h"
 
 
 // CSearchDlg dialog
@@ -28,6 +29,7 @@ void CSearchDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CSearchDlg, CDialog)
+	ON_BN_CLICKED(IDC_CHECK_CUSTOMKEY, &CSearchDlg::OnBnClickedCheckCustomkey)
 END_MESSAGE_MAP()
 
 
@@ -62,6 +64,7 @@ void CSearchDlg::OnOK()
 	GetDlgItemText(IDC_EDIT1, str);
 	if( !str.GetLength())
 	{
+		AfxMessageBox(L"검색어가 없습니다.");
 		return;
 	}
 
@@ -74,8 +77,27 @@ void CSearchDlg::OnOK()
 		}
 	}
 
-	option_.keyword_ = str;
+	bool isCustom = (IsDlgButtonChecked(IDC_CHECK_CUSTOMKEY) == BST_CHECKED);
+	if (isCustom )
+	{
+		CString customkey;
+		GetDlgItemText(IDC_EDIT_CUSTOMKEY, customkey);
+		if( customkey.IsEmpty())
+		{
+			return ;
+		}
 
+		if( KeyRoot::toType(customkey) == KeyRoot::UNKNOWN)
+		{
+			AfxMessageBox(L"커스텀키가 유효하지 않습니다.\n레지스트리 root키로 시작해야 합니다.\n\n예) HKEY_CURRENT_USER\\Software");
+			return ;
+		}
+
+		option_.customkey_ = customkey;
+	}
+
+
+	option_.keyword_ = str;
 	
 #undef __C
 #define __C(id,val) val = (IsDlgButtonChecked(id) == BST_CHECKED )
@@ -92,4 +114,23 @@ void CSearchDlg::OnOK()
 
 
 	CDialog::OnOK();
+}
+void CSearchDlg::OnBnClickedCheckCustomkey()
+{
+	bool isCustom = (IsDlgButtonChecked(IDC_CHECK_CUSTOMKEY) == BST_CHECKED);
+
+#undef __C
+#define __C(id,val) GetDlgItem(id)->EnableWindow(val)
+	__C(IDC_CHECK_HKLM2, !isCustom);
+	__C(IDC_CHECK_HKCU, !isCustom);
+	__C(IDC_CHECK_HKCR, !isCustom);
+	__C(IDC_CHECK_HKUSERS, !isCustom);
+	__C(IDC_CHECK_HKCC, !isCustom);
+
+	__C(IDC_EDIT_CUSTOMKEY, isCustom);
+
+	if ( isCustom )
+	{
+		GetDlgItem(IDC_EDIT_CUSTOMKEY)->SetFocus();
+	}
 }

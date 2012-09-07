@@ -18,6 +18,8 @@ IMPLEMENT_DYNAMIC(CSearchHistoryWnd, CFrameWnd)
 
 CSearchHistoryWnd::CSearchHistoryWnd()
 {
+	searchThread_ = NULL;
+
 	Create(
 		NULL,
 		kCaption,
@@ -97,8 +99,13 @@ void CSearchHistoryWnd::OnNewSearch()
 		SetWindowText(text);
 		currentView_.DeleteAllItems();
 		currentView_.InsertItem(0, L"°Ë»öÁß...");
-		SearchThread* searchThread = new SearchThread(m_hWnd, option);
-		searchThread->Start();
+
+		if ( searchThread_ )
+		{
+			searchThread_->Cancel();
+		}
+		searchThread_ = new SearchThread(m_hWnd, option);
+		searchThread_->Start();
 	}
 }
 
@@ -116,14 +123,18 @@ LRESULT CSearchHistoryWnd::OnSearchItem( WPARAM wParam, LPARAM lParam )
 		currentView_.SetItemText(index, 2, RegTypeToString(item->type_) );
 		currentView_.SetItemText(index, 3, item->text_ );
 		currentView_.SetItemText(index, 5, Int2Str(item->length_) );
-		//filetime;
-		SYSTEMTIME systemtime = { NULL };
-		FileTimeToSystemTime(&item->filetime_, &systemtime);
-		CString datetime;
-		datetime.Format(L"%d-%02d-%02d %02d:%02d:%02d", 
-			systemtime.wYear, systemtime.wMonth, systemtime.wDay, 
-			systemtime.wHour, systemtime.wMinute, systemtime.wSecond);
-		currentView_.SetItemText(index, 4, datetime );
+
+		if( item->validFiletime_ )
+		{
+			//filetime;
+			SYSTEMTIME systemtime = { NULL };
+			FileTimeToSystemTime(&item->filetime_, &systemtime);
+			CString datetime;
+			datetime.Format(L"%d-%02d-%02d %02d:%02d:%02d", 
+				systemtime.wYear, systemtime.wMonth, systemtime.wDay, 
+				systemtime.wHour, systemtime.wMinute, systemtime.wSecond);
+			currentView_.SetItemText(index, 4, datetime );
+		}
 	}
 
 	int next = currentView_.GetItemCount();
@@ -325,7 +336,7 @@ void CSearchHistoryWnd::OnNMRClickList1( NMHDR *pNMHDR, LRESULT *pResult )
 					ATLASSERT(key != KeyRoot::UNKNOWN);
 					if ( key != KeyRoot::UNKNOWN )
 					{
-						HKEY hkey = KeyRoot::GetKey(key);
+						HKEY hkey = KeyRoot::toRootkey(key);
 						path = path.Mid(path.Find(L"\\") + 1);
 						if( name.IsEmpty() )
 						{

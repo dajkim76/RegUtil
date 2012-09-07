@@ -343,7 +343,7 @@ KeyRoot::type KeyRoot::toType( CString path )
 	}
 }
 
-HKEY KeyRoot::GetKey( type key )
+HKEY KeyRoot::toRootkey( type key )
 {
 	switch ( key )
 	{
@@ -383,6 +383,23 @@ CString KeyRoot::toText( type key )
 		return L"";
 		break;
 	}
+}
+
+CString KeyRoot::toText( HKEY rootKey )
+{
+	if( rootKey == HKEY_CURRENT_USER) return L"HKEY_CURRENT_USER";
+	if( rootKey == HKEY_LOCAL_MACHINE) return L"HKEY_LOCAL_MACHINE";
+	if( rootKey == HKEY_CLASSES_ROOT) return L"HKEY_CLASSES_ROOT";
+	if( rootKey == HKEY_USERS) return L"HKEY_USERS";
+	if( rootKey == HKEY_CURRENT_CONFIG) return L"HKEY_CURRENT_CONFIG";
+	
+	ATLASSERT(!"key error");
+	return L"";
+}
+
+HKEY KeyRoot::toRootkey( CString path )
+{
+	return toRootkey( toType(path) );
 }
 
 

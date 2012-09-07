@@ -66,6 +66,9 @@
 #define IDC_CHECK_DATA                  1025
 #define IDC_CHECK9                      1026
 #define IDC_CHECK_CASE                  1026
+#define IDC_CHECK_CUSTOMKEY             1027
+#define IDC_EDIT2                       1028
+#define IDC_EDIT_CUSTOMKEY              1028
 #define ID_TRAY_32773                   32773
 #define ID_TRAY_32774                   32774
 #define ID_TRAY_EASYREGISTRY32775       32775
@@ -102,7 +105,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        146
 #define _APS_NEXT_COMMAND_VALUE         32802
-#define _APS_NEXT_CONTROL_VALUE         1019
+#define _APS_NEXT_CONTROL_VALUE         1029
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

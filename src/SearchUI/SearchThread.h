@@ -12,10 +12,12 @@ class SearchThread : public SimpleThread
 public:
 	SearchThread(HWND notifyWnd, SearchOption option);
 	~SearchThread(void);
+	void Cancel();
+	virtual bool OnFound(CAtlString key, RegItem* item);
+
+protected:
 	virtual UINT Run();
 	HWND notifyWnd_;
 	SearchOption option_;
 	UINT startTick_;
-
-	virtual bool OnFound(CAtlString key, RegItem* item);
 };

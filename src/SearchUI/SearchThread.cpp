@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SearchThread.h"
+#include "RegWorks\RegWorks.h"
 
 SearchThread::SearchThread(HWND notifyWnd, SearchOption option) 
 		: SimpleThread(true)
@@ -18,30 +19,49 @@ UINT SearchThread::Run()
 	
 	bool goon = true;
 	
-	if( goon && option_.searchHKLM_ )
+	if( option_.customkey_.GetLength())
 	{
-		RegistrySearch RS(HKEY_LOCAL_MACHINE, L"HKLM");
-		goon = RS.Search(L"", option_, this);
+		CAtlString path = option_.customkey_;
+	
+		HKEY root = KeyRoot::toRootkey(path);
+		ATLASSERT(root);
+
+		int pos = path.Find(L"\\");
+		if(pos > 0)
+		{
+			path = path.Mid(pos + 1);
+		}
+
+		RegistrySearch RS(root, L"");
+		goon = RS.Search(path, option_, this);
 	}
-	if( goon && option_.searchHKCU_ )
+	else
 	{
-		RegistrySearch RS(HKEY_CURRENT_USER, L"HKCU");
-		goon = RS.Search(L"", option_, this);
-	}
-	if( goon && option_.searchHKCR_)
-	{
-		RegistrySearch RS(HKEY_CLASSES_ROOT, L"HKCR");
-		goon = RS.Search(L"", option_, this);
-	}
-	if( goon && option_.searchHKUSERS_ )
-	{
-		RegistrySearch RS(HKEY_USERS, L"HKUSERS");
-		goon = RS.Search(L"", option_, this);
-	}
-	if( goon && option_.searchHKCONFIG_ )
-	{
-		RegistrySearch RS(HKEY_CURRENT_CONFIG, L"HKCC");
-		goon = RS.Search(L"", option_, this);
+		if( goon && option_.searchHKLM_ )
+		{
+			RegistrySearch RS(HKEY_LOCAL_MACHINE, L"");
+			goon = RS.Search(L"", option_, this);
+		}
+		if( goon && option_.searchHKCU_ )
+		{
+			RegistrySearch RS(HKEY_CURRENT_USER, L"");
+			goon = RS.Search(L"", option_, this);
+		}
+		if( goon && option_.searchHKCR_)
+		{
+			RegistrySearch RS(HKEY_CLASSES_ROOT, L"");
+			goon = RS.Search(L"", option_, this);
+		}
+		if( goon && option_.searchHKUSERS_ )
+		{
+			RegistrySearch RS(HKEY_USERS, L"");
+			goon = RS.Search(L"", option_, this);
+		}
+		if( goon && option_.searchHKCONFIG_ )
+		{
+			RegistrySearch RS(HKEY_CURRENT_CONFIG, L"");
+			goon = RS.Search(L"", option_, this);
+		}
 	}
 
 	int second = (GetTickCount() - startTick_) / 1000;
@@ -51,6 +71,11 @@ UINT SearchThread::Run()
 
 bool SearchThread::OnFound( CAtlString key, RegItem* item )
 {
+	if( option_.canceled_ )
+	{
+		return false;
+	}
+
 	if ( !IsWindow(notifyWnd_))
 	{
 		delete item;
@@ -58,4 +83,9 @@ bool SearchThread::OnFound( CAtlString key, RegItem* item )
 	}
 	PostMessage(notifyWnd_, UM_SEARCH_ITEM, (WPARAM) new CAtlString(key), (LPARAM)item);
 	return true;
+}
+
+void SearchThread::Cancel()
+{
+	option_.canceled_ = true;
 }

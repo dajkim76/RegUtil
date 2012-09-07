@@ -2,6 +2,7 @@
 
 #include <atlstr.h>
 #include <vector>
+#include "RegWorks.h"
 using namespace std;
 
 namespace RegSearch
@@ -20,6 +21,7 @@ namespace RegSearch
 			, qwordData_(0)
 			, length_(0)
 			, text_(szText)
+			, validFiletime_(false)
 		{
 		}
 		
@@ -34,6 +36,7 @@ namespace RegSearch
 
 		FILETIME filetime_;
 		int length_;
+		bool validFiletime_;
 	};
 
 	typedef std::vector< RegItem* > RegItemList;
@@ -67,6 +70,7 @@ namespace RegSearch
 		bool searchHKCR_;
 		bool searchHKUSERS_;
 		bool searchHKCONFIG_;		
+		CAtlString customkey_;
 	};	
 
 	/// 검색시 발견되면 Post로 노티할 인터페이스
@@ -86,6 +90,10 @@ namespace RegSearch
 		{
 			data_ = new BYTE[sizeData];
 			tempBuffer_ = new TCHAR [cchTempBuffer];
+			if( rootName_.IsEmpty() )
+			{
+				rootName_ = KeyRoot::toText(root);
+			}
 		}
 		
 		~RegistrySearch()
@@ -107,6 +115,6 @@ namespace RegSearch
 
 		bool _Search(HKEY root, CAtlString key, SearchOption& option, ISearchNotify* notify);		
 		void _SearchRegistryKeyValue(HKEY hKey, CAtlString key, RegItemList& resultList, const SearchOption& option);
+		bool _SearchValue(HKEY key, FILETIME* filetime, CAtlString subKey, const SearchOption& option, ISearchNotify* notify);
 	};
-	
 };

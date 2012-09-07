@@ -3,6 +3,7 @@
 #include <vector>
 
 // CSearchHistoryWnd
+class SearchThread;
 
 class CSearchHistoryWnd : public CFrameWnd
 {
@@ -18,6 +19,7 @@ protected:
 	CTabCtrl	tab_;
 	CMenu menu_;
 	CListCtrl currentView_;	
+	SearchThread* searchThread_;
 
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
