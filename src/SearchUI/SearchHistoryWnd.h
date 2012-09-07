@@ -1,9 +1,12 @@
 #pragma once
 
 #include <vector>
+#include "ListCtrlSortClass.h"
 
 // CSearchHistoryWnd
 class SearchThread;
+
+#define  MAX_SORT_COLUMN (6)
 
 class CSearchHistoryWnd : public CFrameWnd
 {
@@ -21,6 +24,12 @@ protected:
 	CListCtrl currentView_;	
 	SearchThread* searchThread_;
 
+	CListCtrlSortClass::SortDataType columnType_[MAX_SORT_COLUMN];
+	bool sortOrder_ [MAX_SORT_COLUMN];
+	int curSortColumn_;
+	HBITMAP hbmUp_;
+	HBITMAP hbmDn_;
+
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
@@ -31,6 +40,7 @@ public:
 	afx_msg void OnMnuSaveas();
 	afx_msg void OnMnuResearch();
 	afx_msg void OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnColumnclick(NMHDR* pNMHDR, LRESULT* pResult);
 };
 
 

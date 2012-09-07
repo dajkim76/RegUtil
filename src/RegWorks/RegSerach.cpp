@@ -314,11 +314,6 @@ namespace RegSearch
 			return true;
 		}
 
-		if ( ! _SearchValue( root, NULL, key, option, notify ))
-		{
-			return false;
-		}
-
 		const CAtlString& keyword = option.keyword_;
 		vector<KeyEntry> keyList;
 		EnumRegistryKey(root, key, keyList);

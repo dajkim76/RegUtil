@@ -20,6 +20,16 @@ CSearchHistoryWnd::CSearchHistoryWnd()
 {
 	searchThread_ = NULL;
 
+	for( int i = 0; i < MAX_SORT_COLUMN; i ++)
+	{
+		sortOrder_[i] = true;
+		columnType_[i] = CListCtrlSortClass::dtSTRING;
+	}
+
+	columnType_[5] = CListCtrlSortClass::dtINT;
+
+	curSortColumn_ = -1;
+
 	Create(
 		NULL,
 		kCaption,
@@ -28,6 +38,12 @@ CSearchHistoryWnd::CSearchHistoryWnd()
 		NULL,
 		NULL,
 		0);	
+
+	hbmUp_ = (HBITMAP)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_UP), IMAGE_BITMAP, 0, 0, 
+		LR_LOADTRANSPARENT|LR_DEFAULTCOLOR); 
+	hbmDn_ = (HBITMAP)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_BITMAP_DN), IMAGE_BITMAP, 0, 0, 
+		LR_LOADTRANSPARENT|LR_DEFAULTCOLOR); 
+
 }
 
 CSearchHistoryWnd::~CSearchHistoryWnd()
@@ -45,6 +61,7 @@ BEGIN_MESSAGE_MAP(CSearchHistoryWnd, CFrameWnd)
 	ON_COMMAND(ID_MNU_SAVEAS, &CSearchHistoryWnd::OnMnuSaveas)
 	ON_COMMAND(ID_MNU_RESEARCH, &CSearchHistoryWnd::OnMnuResearch)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST1, &CSearchHistoryWnd::OnNMRClickList1)
+	ON_NOTIFY(LVN_COLUMNCLICK, IDC_LIST1, &CSearchHistoryWnd::OnColumnclick)
 END_MESSAGE_MAP()
 
 
@@ -360,4 +377,74 @@ void CSearchHistoryWnd::OnNMRClickList1( NMHDR *pNMHDR, LRESULT *pResult )
 			break;
 		}
 	}
+}
+
+
+void CSearchHistoryWnd::OnColumnclick(NMHDR* pNMHDR, LRESULT* pResult) 
+{
+	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
+
+	*pResult = 0;
+	//if( ! _bEnableSorting)
+	//	return;
+
+	const int count  = currentView_.GetItemCount();
+	if ( count == 0 )
+	{
+		return ;
+	}
+
+	if( pNMListView->iSubItem >= MAX_SORT_COLUMN) 
+		return;
+
+	if( columnType_[ pNMListView->iSubItem ] == CListCtrlSortClass::SortDataType::dtNULL ) 
+		return;
+
+	if (pNMListView->iSubItem == curSortColumn_)
+	{
+		sortOrder_[ curSortColumn_ ] = ! sortOrder_[ curSortColumn_ ] ;
+	}
+	else
+	{
+		curSortColumn_ = pNMListView->iSubItem ;
+		//sortOrder_[ curSortColumn_ ] = ! sortOrder_[ curSortColumn_ ] ;
+	}
+
+	CHeaderCtrl* pHeader = currentView_.GetHeaderCtrl();
+	for(int i=0; i<pHeader->GetItemCount(); i++)
+	{
+		HDITEM hItem;		
+		hItem.mask = HDI_FORMAT;
+		pHeader->GetItem(i, &hItem);
+
+		if(i == curSortColumn_)
+		{
+			hItem.mask |= HDI_BITMAP|HDI_FORMAT ;
+			hItem.fmt |= HDF_BITMAP | HDF_STRING | HDF_BITMAP_ON_RIGHT;
+			if(sortOrder_[ curSortColumn_ ])
+				hItem.hbm = hbmUp_;
+			else
+				hItem.hbm = hbmDn_;
+			pHeader->SetItem(i, &hItem);
+		}
+		else
+		{
+			hItem.fmt &= ~(HDF_BITMAP |  HDF_BITMAP_ON_RIGHT );
+			hItem.hbm = NULL;
+			pHeader->SetItem(i, &hItem);
+		}
+	}
+	
+
+	int lastIndex = (count - 1);
+	CString str = currentView_.GetItemText(lastIndex, 0);
+	currentView_.DeleteItem(lastIndex);
+
+	// sc의 소멸자를 보장한다.
+	{
+		CListCtrlSortClass sc(&currentView_, curSortColumn_) ;
+		sc.Sort(sortOrder_[curSortColumn_], columnType_[curSortColumn_]);
+	}
+
+	currentView_.InsertItem(lastIndex, str);
 }

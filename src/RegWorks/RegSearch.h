@@ -104,6 +104,10 @@ namespace RegSearch
 
 		bool Search(CAtlString key, SearchOption& option, ISearchNotify* notify)
 		{
+			if ( ! _SearchValue( root_, NULL, key, option, notify ))
+			{
+				return false;
+			}
 			return _Search(root_, key, option, notify);
 		}
 

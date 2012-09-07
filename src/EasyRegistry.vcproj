@@ -344,6 +344,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SearchUI\ListCtrlSortClass.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Toolbar\MenuData.cpp"
 				>
 				<FileConfiguration
@@ -572,6 +576,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SearchUI\ListCtrlSortClass.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Toolbar\MenuData.h"
 				>
 			</File>
@@ -645,6 +653,10 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 			<File
+				RelativePath=".\res\dn.bmp"
+				>
+			</File>
+			<File
 				RelativePath="res\icons.bmp"
 				>
 			</File>
@@ -662,6 +674,10 @@
 			</File>
 			<File
 				RelativePath="res\toolbar1.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\up.bmp"
 				>
 			</File>
 		</Filter>
