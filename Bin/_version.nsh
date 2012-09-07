@@ -1,1 +1,1 @@
-!define ER_VERSION "1.0.0.0"
+!define _APP_VERSION "1.0.0.0"
