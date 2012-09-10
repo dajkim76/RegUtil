@@ -661,6 +661,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\search_result.bmp"
+				>
+			</File>
+			<File
 				RelativePath="res\tcicon.ico"
 				>
 			</File>

@@ -69,8 +69,13 @@ END_MESSAGE_MAP()
 
 
 // CSearchHistoryWnd message handlers
-
-
+const int IL_FOLDER = 2;
+const int IL_REG_SZ = 7;
+const int IL_REG_BIN = 8;
+const int IL_REG_DWORD = 11;
+const int IL_REG_EXPAND_SZ = 12;
+const int IL_REG_MULTI_SZ = 13;
+const int IL_REG_QWORD = 14;
 
 int CSearchHistoryWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
@@ -83,7 +88,7 @@ int CSearchHistoryWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CRect rc;
 	currentView_.Create(WS_VISIBLE | WS_CHILD | LVS_REPORT, rc, this, IDC_LIST1);
 	ASSERT(currentView_.GetSafeHwnd() != NULL);
-	currentView_.InsertColumn(0, L"Registry 키", LVCFMT_LEFT, 500 );
+	currentView_.InsertColumn(0, L"    Registry 키", LVCFMT_LEFT, 500 );
 	currentView_.InsertColumn(1, L"값 이름", LVCFMT_LEFT, 100 );
 	currentView_.InsertColumn(2, L"타입", LVCFMT_LEFT, 60 );
 	currentView_.InsertColumn(3, L"데이타", LVCFMT_LEFT, 500 );
@@ -91,6 +96,18 @@ int CSearchHistoryWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	currentView_.InsertColumn(5, L"길이", LVCFMT_LEFT, 100 );
 	currentView_.SetExtendedStyle(currentView_.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
+	{
+		if (imageList_.Create (16, 16, ILC_COLORDDB| ILC_COLOR32 | ILC_MASK, 2, 2))
+		{
+			HBITMAP hbm = (HBITMAP)::LoadImage (AfxGetResourceHandle(),
+				MAKEINTRESOURCE(IDB_BITMAP_SEARCH),
+				IMAGE_BITMAP, 0, 0, 
+				LR_LOADMAP3DCOLORS);
+			ImageList_AddMasked(imageList_.m_hImageList, hbm, RGB(255,0,255));
+			currentView_.SetImageList(&imageList_, LVSIL_SMALL);
+			DeleteObject(hbm);
+		}
+	}
 	return 0;
 }
 
@@ -117,7 +134,7 @@ void CSearchHistoryWnd::OnNewSearch()
 		text += dlg.option_.keyword_;
 		SetWindowText(text);
 		currentView_.DeleteAllItems();
-		currentView_.InsertItem(0, L"검색중...");
+		currentView_.InsertItem(0, L"검색중...", -1);
 		SetKeyword(dlg.option_.keyword_, option.caseSenstive_ );
 
 		bool preCanceled = false;
@@ -143,7 +160,9 @@ LRESULT CSearchHistoryWnd::OnSearchItem( WPARAM wParam, LPARAM lParam )
 	RegItem* item = (RegItem*) lParam;
 	
 	int index = currentView_.GetItemCount() - 1;
-	currentView_.SetItemText(index, 0, *key);
+	bool isVisible = currentView_.IsItemVisible(index);
+	int iImage = item ? GetImage(item->type_) : IL_FOLDER;
+	currentView_.InsertItem(index, *key, iImage);
 
 	if( item )
 	{
@@ -165,10 +184,10 @@ LRESULT CSearchHistoryWnd::OnSearchItem( WPARAM wParam, LPARAM lParam )
 		}
 	}
 
-	int next = currentView_.GetItemCount();
-	currentView_.InsertItem(next, L"검색중...");
+	int next = currentView_.GetItemCount() - 1;
+	//currentView_.InsertItem(next, L"검색중...");
 
-	if( currentView_.IsItemVisible(next -1 ))
+	if( isVisible )
 	{
 		currentView_.EnsureVisible(next, TRUE);
 	}
@@ -286,7 +305,7 @@ void CSearchHistoryWnd::OnMnuResearch()
 			if( found )
 			{
 				int next = outList.GetItemCount();
-				outList.InsertItem(next, s[0]);
+				outList.InsertItem(next, s[0], GetImage(s[2]));
 				for( int k = 1; k < 6; k ++)
 				{
 					outList.SetItemText(next, k, s[k]);
@@ -455,7 +474,7 @@ void CSearchHistoryWnd::OnColumnclick(NMHDR* pNMHDR, LRESULT* pResult)
 		sc.Sort(sortOrder_[curSortColumn_], columnType_[curSortColumn_]);
 	}
 
-	currentView_.InsertItem(lastIndex, str);
+	currentView_.InsertItem(lastIndex, str, -1);
 }
 void CSearchHistoryWnd::OnSearchStop()
 {
@@ -609,7 +628,19 @@ void CSearchHistoryWnd::OnCustomdrawMyList( NMHDR* pNMHDR, LRESULT* pResult )
 				{
 					pDC = CDC::FromHandle(hdc);
 					pDC->FillSolidRect(&pLVCD->nmcd.rc, RGB(240, 240, 240));
-					DrawHilightText(*pDC, text, keyword_, caseSensitive_, pLVCD->nmcd.rc);
+					CRect rc(pLVCD->nmcd.rc);
+					if( nSubItem == 0 )
+					{						
+						CPoint pt = rc.TopLeft();
+						rc.left += 16 + 1;
+						LVITEM item;
+						ZeroMemory(&item, sizeof(item));
+						item.iItem = nItem;
+						item.mask = LVIF_IMAGE;
+						currentView_.GetItem(&item);
+						imageList_.Draw(pDC, item.iImage, pt, ILD_NORMAL);
+					}
+					DrawHilightText(*pDC, text, keyword_, caseSensitive_, rc);
 					*pResult |= CDRF_SKIPDEFAULT;
 				}
 			}
@@ -621,4 +652,35 @@ void CSearchHistoryWnd::OnCustomdrawMyList( NMHDR* pNMHDR, LRESULT* pResult )
 	{
 		*pResult = CDRF_DODEFAULT;
 	}
+}
+
+int CSearchHistoryWnd::GetImage( const CString type )
+{
+#define  _C(x, r)	if( type == L#x) return r
+	_C(REG_SZ, IL_REG_SZ);
+	_C(REG_EXPAND_SZ, IL_REG_EXPAND_SZ);
+	_C(REG_MULTI_SZ, IL_REG_MULTI_SZ);
+	_C(REG_DWORD, IL_REG_DWORD);
+	_C(REG_QWORD, IL_REG_QWORD);
+	_C(REG_BINARY, IL_REG_BIN);
+	_C(REG_RESOURCE_LIST, IL_REG_BIN);
+	_C(REG_FULL_RESOURCE_DESCRIPTOR, IL_REG_BIN);
+	_C(REG_RESOURCE_REQUIREMENTS_LIST, IL_REG_BIN);
+	return 4;
+}
+
+int CSearchHistoryWnd::GetImage( const DWORD type )
+{
+#undef _C
+#define  _C(x, r)	if( type == x) return r
+	_C(REG_SZ, IL_REG_SZ);
+	_C(REG_EXPAND_SZ, IL_REG_EXPAND_SZ);
+	_C(REG_MULTI_SZ, IL_REG_MULTI_SZ);
+	_C(REG_DWORD, IL_REG_DWORD);
+	_C(REG_QWORD, IL_REG_QWORD);
+	_C(REG_BINARY, IL_REG_BIN);
+	_C(REG_RESOURCE_LIST, IL_REG_BIN);
+	_C(REG_FULL_RESOURCE_DESCRIPTOR, IL_REG_BIN);
+	_C(REG_RESOURCE_REQUIREMENTS_LIST, IL_REG_BIN);
+	return 4;
 }

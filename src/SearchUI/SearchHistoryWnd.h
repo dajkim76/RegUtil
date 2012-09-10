@@ -26,12 +26,16 @@ protected:
 	SearchThread* searchThread_;
 	CString keyword_;
 	bool caseSensitive_;
+	CImageList imageList_;
 
 	CListCtrlSortClass::SortDataType columnType_[MAX_SORT_COLUMN];
 	bool sortOrder_ [MAX_SORT_COLUMN];
 	int curSortColumn_;
 	HBITMAP hbmUp_;
 	HBITMAP hbmDn_;
+
+	int GetImage(const CString type);
+	int GetImage(const DWORD type);
 
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
