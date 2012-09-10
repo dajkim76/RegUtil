@@ -653,6 +653,7 @@ void CSearchHistoryWnd::OnCustomdrawMyList( NMHDR* pNMHDR, LRESULT* pResult )
 					if( nSubItem == 0 )
 					{							
 						rc.right = rc.left + currentView_.GetColumnWidth(0);
+						rc.left += 4;
 					}
 
 					static COLORREF colSelBack = ::GetSysColor(COLOR_HIGHLIGHT);
