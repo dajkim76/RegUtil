@@ -238,6 +238,7 @@ HCURSOR CToolbarDlg::OnQueryDragIcon()
 
 BOOL CToolbarDlg::PreTranslateMessage(MSG* pMsg) 
 {
+#if 0
     /*
      *	사용자 마우스 Ctrl과 마우스 왼쪽을 누르면 창을 움직이게 한다.
      */
@@ -249,7 +250,7 @@ BOOL CToolbarDlg::PreTranslateMessage(MSG* pMsg)
         PostMessage(WM_NCLBUTTONDOWN, HTCAPTION, MAKELPARAM(point.x,point.y));        
         return 1;
     }
-
+#endif
 	return CDialog::PreTranslateMessage(pMsg);
 }
 

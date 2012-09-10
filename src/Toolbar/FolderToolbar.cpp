@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "EasyRegistry.h"
 #include "FolderToolbar.h"
+#include "Dialog\ToolbarDlg.h"
 
 
 #ifdef _DEBUG
@@ -17,6 +18,8 @@ static char THIS_FILE[] = __FILE__;
 
 CFolderToolbar::CFolderToolbar()
 {
+	lbuttonDown_ = false;
+	isCapture_ = false;
 }
 
 CFolderToolbar::~CFolderToolbar()
@@ -30,6 +33,9 @@ BEGIN_MESSAGE_MAP(CFolderToolbar, CToolBar  )
 	ON_WM_RBUTTONDOWN()
 	ON_WM_DROPFILES()
 	//}}AFX_MSG_MAP
+	ON_WM_LBUTTONDOWN()
+	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -114,4 +120,61 @@ void CFolderToolbar::OnDropFiles(HDROP hDropInfo)
     }
 	
 	CToolBar  ::OnDropFiles(hDropInfo);
+}
+
+void CFolderToolbar::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	TRACE(L"OnLButtonDown\n");
+	lbuttonDown_ = true;
+	isCapture_ = false;
+
+	CToolBar::OnLButtonDown(nFlags, point);
+}
+
+void CFolderToolbar::OnMouseMove(UINT nFlags, CPoint point)
+{
+	//TRACE(L"OnMouseMove\n");
+	if( lbuttonDown_ && !isCapture_)
+	{
+		CPoint pt;
+		GetCursorPos(&pt);
+		CRect rc;
+		GetParent()->GetWindowRect(&rc);
+		if( !rc.PtInRect(pt))
+		{
+			TRACE(L"SetCapture\n");
+			isCapture_ = true;
+			leftMargin_ = pt.x - rc.left;
+			topMargin_ = pt.y - rc.top;
+			SetCapture();
+		}
+	}
+	else if( isCapture_ )
+	{
+		CPoint pt;
+		GetCursorPos(&pt);
+		int left = pt.x - leftMargin_;
+		int top = pt.y - topMargin_;
+		GetParent()->SetWindowPos(NULL, left, top, 0, 0, SWP_NOSIZE);
+		((CToolbarDlg*)GetParent())->WriteGluePosition();
+	}
+
+	CToolBar::OnMouseMove(nFlags, point);
+}
+
+void CFolderToolbar::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	TRACE(L"OnLButtonUp\n");
+
+	if ( isCapture_ )
+	{
+		ReleaseCapture();
+	}
+	else
+	{
+		CToolBar::OnLButtonUp(nFlags, point);
+	}
+
+	lbuttonDown_ = false;
+	isCapture_ = false;
 }

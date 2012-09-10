@@ -35,16 +35,23 @@ public:
 public:
 	CImageList m_il;
 	virtual ~CFolderToolbar();
+	bool lbuttonDown_;
+	bool isCapture_;
+	int leftMargin_;
+	int topMargin_;
 
+	DECLARE_MESSAGE_MAP()
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CFolderToolbar)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnDropFiles(HDROP hDropInfo);
+	afx_msg void OnDropFiles(HDROP hDropInfo);	
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	//}}AFX_MSG
-
-	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 };
 
 /////////////////////////////////////////////////////////////////////////////
