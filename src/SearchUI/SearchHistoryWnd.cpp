@@ -204,6 +204,10 @@ LRESULT CSearchHistoryWnd::OnSearchEnd( WPARAM wParam, LPARAM lParam )
 	CString str;
 	str.Format(L"검색 끝: %d 건이 검색되었습니다. %d 초 걸렸습니다.", index, second);
 	currentView_.SetItemText(index, 0, str);
+
+	GetWindowText(str);
+	str += L" > 검색 완료됨";
+	SetWindowText(str);
 	return 0;
 }
 
@@ -639,18 +643,20 @@ void CSearchHistoryWnd::OnCustomdrawMyList( NMHDR* pNMHDR, LRESULT* pResult )
 					// winxp에서 rect가 제대로 넘겨오지 않는다.
 					//CRect rc(pLVCD->nmcd.rc);
 					
+					int State = ListView_GetItemState(currentView_, nItem, LVIS_CUT | LVIS_SELECTED | LVIS_FOCUSED);
+					bool isSelect = ((State & LVIS_SELECTED) == LVIS_SELECTED);
+
 					CRect rc;
-					if(nSubItem>0)
-					{
-						currentView_.GetSubItemRect(nItem, nSubItem, LVIR_BOUNDS, rc);
-						dc.FillSolidRect(&rc, RGB(240, 240, 240));
+					currentView_.GetSubItemRect(nItem, nSubItem, LVIR_BOUNDS, rc);
+					
+					// 바보 콘트롤 
+					if( nSubItem == 0 )
+					{							
+						rc.right = rc.left + currentView_.GetColumnWidth(0);
 					}
-					else
-					{
-						currentView_.GetItemRect(nItem , &rc, LVIR_BOUNDS);
-						dc.FillSolidRect(&rc, RGB(240, 240, 240));
-						rc.left += 4;
-					}
+
+					static COLORREF colSelBack = ::GetSysColor(COLOR_HIGHLIGHT);
+					dc.FillSolidRect(&rc, isSelect? colSelBack : RGB(240, 240, 240));
 
 					if( nSubItem == 0 )
 					{						
