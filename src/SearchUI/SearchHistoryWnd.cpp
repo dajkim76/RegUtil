@@ -63,6 +63,7 @@ BEGIN_MESSAGE_MAP(CSearchHistoryWnd, CFrameWnd)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST1, &CSearchHistoryWnd::OnNMRClickList1)
 	ON_NOTIFY(LVN_COLUMNCLICK, IDC_LIST1, &CSearchHistoryWnd::OnColumnclick)
 	ON_COMMAND(ID_SEARCH_STOP, &CSearchHistoryWnd::OnSearchStop)
+	ON_NOTIFY(NM_CUSTOMDRAW,  IDC_LIST1, OnCustomdrawMyList)
 END_MESSAGE_MAP()
 
 
@@ -117,6 +118,7 @@ void CSearchHistoryWnd::OnNewSearch()
 		SetWindowText(text);
 		currentView_.DeleteAllItems();
 		currentView_.InsertItem(0, L"검색중...");
+		SetKeyword(dlg.option_.keyword_, option.caseSenstive_ );
 
 		bool preCanceled = false;
 		if ( searchThread_ )
@@ -165,7 +167,12 @@ LRESULT CSearchHistoryWnd::OnSearchItem( WPARAM wParam, LPARAM lParam )
 
 	int next = currentView_.GetItemCount();
 	currentView_.InsertItem(next, L"검색중...");
-	currentView_.EnsureVisible(next, TRUE);
+
+	if( currentView_.IsItemVisible(next -1 ))
+	{
+		currentView_.EnsureVisible(next, TRUE);
+	}
+
 	delete key;
 	delete item;
 	return 0;
@@ -249,6 +256,7 @@ void CSearchHistoryWnd::OnMnuResearch()
 		caption += L" > ";
 		caption += option.keyword_;
 		p->SetWindowText(caption);
+		p->SetKeyword(option.keyword_, option.caseSenstive_ );
 
 		CListCtrl& outList = p->GetListCtrl();
 
@@ -459,5 +467,158 @@ void CSearchHistoryWnd::OnSearchStop()
 		{
 			currentView_.SetItemText(lastIndex, 0, L"검색이 취소되었습니다.");
 		}
+	}
+}
+
+
+void DrawHilightText(CDC& dc, const CString text, const CString keyword, bool caseSensitive, const CRect rc)
+{
+	const UINT kDrawTextFlags = DT_LEFT | DT_SINGLELINE | DT_VCENTER;
+	const COLORREF colText = RGB(0, 0, 0);
+	const COLORREF colHighlight = RGB(255, 128, 64);
+	dc.SetBkMode(TRANSPARENT);
+
+	CString textUpper;
+	CString keywordUpper;
+	CString tokenKeyword;
+	if( !caseSensitive )
+	{
+		textUpper = text;
+		textUpper.MakeUpper();
+
+		keywordUpper = keyword;
+		keywordUpper.MakeUpper();
+	}
+
+	int start = 0;
+	int pos = 0;
+	pos = caseSensitive ? text.Find(keyword) : textUpper.Find(keywordUpper);
+	int left = 0;
+	int width = 0;
+	CRect rcCalc;
+	CRect rcDraw;
+	CRect rcItem;
+
+	while(pos >= 0)
+	{
+		if( pos != start )
+		{
+			//키워드 왼쪽
+			CString leftText = text.Mid(start, pos - start);
+			rcCalc.SetRectEmpty();
+			dc.DrawText(leftText, -1, &rcCalc, DT_CALCRECT | DT_LEFT );
+			rcDraw.SetRect(rc.left + width, rc.top, rc.left + width + rcCalc.Width(), rc.bottom );
+
+			dc.SetTextColor(colText);
+			rcItem.IntersectRect(rcDraw, rc);
+			dc.DrawText(leftText, -1, &rcItem, kDrawTextFlags);
+			width += rcDraw.Width();
+			start += leftText.GetLength();
+		}
+	
+		//실제 데이타 키워드
+		tokenKeyword = text.Mid(pos , keyword.GetLength());
+
+		// 키워드
+		rcCalc.SetRectEmpty();
+		dc.DrawText(tokenKeyword, -1, &rcCalc, DT_CALCRECT | DT_LEFT );
+		rcDraw.SetRect(rc.left + width, rc.top, rc.left + width + rcCalc.Width(), rc.bottom );
+
+		dc.SetTextColor(colHighlight);
+		rcItem.IntersectRect(rcDraw, rc);
+		dc.DrawText(tokenKeyword, -1, &rcItem, kDrawTextFlags);
+		width += rcDraw.Width();
+		start += keyword.GetLength();
+
+		if( width > rc.Width() )
+		{
+			break;
+		}
+
+		pos = caseSensitive ? text.Find(keyword, start) : textUpper.Find(keywordUpper, start);
+	}
+
+	CString lastText = text.Mid(start);
+	if( width < rc.Width() && lastText.GetLength())
+	{
+		rcDraw.SetRect(rc.left + width, rc.top, rc.right, rc.bottom );
+		dc.SetTextColor(colText);
+		dc.DrawText(lastText, -1, &rcDraw, kDrawTextFlags);
+	}
+}
+
+void CSearchHistoryWnd::OnCustomdrawMyList( NMHDR* pNMHDR, LRESULT* pResult )
+{
+	NMLVCUSTOMDRAW* pLVCD = reinterpret_cast<NMLVCUSTOMDRAW*>( pNMHDR );
+	*pResult = 0;
+
+
+	HDC hdc = pLVCD->nmcd.hdc;
+	CDC* pDC = NULL;
+
+	// here is the item info
+	// note that we don't get the subitem
+	// number here, as this may not be
+	// valid data except when we are
+	// handling a sub item notification
+	// so we'll do that separately in
+	// the appropriate case statements
+	// below.
+	int nItem = pLVCD->nmcd.dwItemSpec;
+	UINT nState = pLVCD->nmcd.uItemState;
+	LPARAM lParam = pLVCD->nmcd.lItemlParam;
+
+	switch( pLVCD->nmcd.dwDrawStage )
+	{
+		case CDDS_PREPAINT :
+		{
+			*pResult = CDRF_NOTIFYITEMDRAW ;
+		}
+		break;
+	
+		case CDDS_ITEMPREPAINT:
+		{
+			// This is the notification message for an item.  We'll request
+			// notifications before each subitem's prepaint stage.
+
+			*pResult = CDRF_NOTIFYSUBITEMDRAW ;
+		}
+		break;
+
+		
+		case  (CDDS_ITEMPREPAINT | CDDS_SUBITEM):
+		{
+			int nSubItem = pLVCD->iSubItem;
+			if ( keyword_.GetLength() && (nSubItem == 0 || nSubItem == 1 || nSubItem == 3))
+			{
+				CString text = currentView_.GetItemText(nItem, nSubItem);
+
+				CString textUpper;
+				CString keywordUpper;
+				if( !caseSensitive_ )
+				{
+					textUpper = text;
+					textUpper.MakeUpper();
+
+					keywordUpper = keyword_;
+					keywordUpper.MakeUpper();
+				}				
+
+				int pos = caseSensitive_ ? text.Find(keyword_) : textUpper.Find(keywordUpper);
+				if( pos >= 0 )
+				{
+					pDC = CDC::FromHandle(hdc);
+					pDC->FillSolidRect(&pLVCD->nmcd.rc, RGB(240, 240, 240));
+					DrawHilightText(*pDC, text, keyword_, caseSensitive_, pLVCD->nmcd.rc);
+					*pResult |= CDRF_SKIPDEFAULT;
+				}
+			}
+		}
+	}
+
+	// Take the default processing unless we set this to something else below.
+	if ( *pResult == 0 )
+	{
+		*pResult = CDRF_DODEFAULT;
 	}
 }

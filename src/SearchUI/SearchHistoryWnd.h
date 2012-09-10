@@ -16,6 +16,7 @@ public:
 	CSearchHistoryWnd();
 	virtual ~CSearchHistoryWnd();
 	CListCtrl& GetListCtrl() { return currentView_; }
+	void SetKeyword(CString keyword, bool caseSensitive) { keyword_ = keyword; caseSensitive_ = caseSensitive; }
 
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -23,6 +24,8 @@ protected:
 	CMenu menu_;
 	CListCtrl currentView_;	
 	SearchThread* searchThread_;
+	CString keyword_;
+	bool caseSensitive_;
 
 	CListCtrlSortClass::SortDataType columnType_[MAX_SORT_COLUMN];
 	bool sortOrder_ [MAX_SORT_COLUMN];
@@ -42,6 +45,7 @@ public:
 	afx_msg void OnNMRClickList1(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnColumnclick(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnSearchStop();
+	afx_msg void OnCustomdrawMyList( NMHDR* pNMHDR, LRESULT* pResult );
 };
 
 
