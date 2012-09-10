@@ -603,10 +603,13 @@ void CSearchHistoryWnd::OnCustomdrawMyList( NMHDR* pNMHDR, LRESULT* pResult )
 			*pResult = CDRF_NOTIFYSUBITEMDRAW ;
 		}
 		break;
-
 		
 		case  (CDDS_ITEMPREPAINT | CDDS_SUBITEM):
 		{
+			pLVCD->clrTextBk = RGB(255,255,255);           // 해당 행, 열 아이템의 배경색을 지정한다.
+			pLVCD->clrText = RGB(0, 0, 0);                      // 해당 행, 열 아이템의 글자색을 지정한다.
+
+
 			int nSubItem = pLVCD->iSubItem;
 			if ( keyword_.GetLength() && (nSubItem == 0 || nSubItem == 1 || nSubItem == 3))
 			{
@@ -624,15 +627,31 @@ void CSearchHistoryWnd::OnCustomdrawMyList( NMHDR* pNMHDR, LRESULT* pResult )
 				}				
 
 				int pos = caseSensitive_ ? text.Find(keyword_) : textUpper.Find(keywordUpper);
-				if( pos >= 0 )
+				if( pos >= 0 && hdc )
 				{
 					pDC = CDC::FromHandle(hdc);
-					pDC->FillSolidRect(&pLVCD->nmcd.rc, RGB(240, 240, 240));
-					CRect rc(pLVCD->nmcd.rc);
+					
+					
+					//CRect rc(pLVCD->nmcd.rc);
+
+					// winxp에서 rect가 제대로 넘겨오지 않는다.
+					CRect rc;
+					if(nSubItem>0)
+					{
+						currentView_.GetSubItemRect(nItem, nSubItem, LVIR_BOUNDS, rc);
+						pDC->FillSolidRect(&rc, RGB(240, 240, 240));
+					}
+					else
+					{
+						currentView_.GetItemRect(nItem ,&rc, LVIR_BOUNDS);
+						pDC->FillSolidRect(&rc, RGB(240, 240, 240));
+						rc.left += 4;
+					}
+
 					if( nSubItem == 0 )
 					{						
 						CPoint pt = rc.TopLeft();
-						rc.left += 16 + 1;
+						rc.left += 16 + 2;
 						LVITEM item;
 						ZeroMemory(&item, sizeof(item));
 						item.iItem = nItem;
@@ -640,7 +659,7 @@ void CSearchHistoryWnd::OnCustomdrawMyList( NMHDR* pNMHDR, LRESULT* pResult )
 						currentView_.GetItem(&item);
 						imageList_.Draw(pDC, item.iImage, pt, ILD_NORMAL);
 					}
-					DrawHilightText(*pDC, text, keyword_, caseSensitive_, rc);
+					DrawHilightText(*pDC, text, keyword_, caseSensitive_, rc);					
 					*pResult |= CDRF_SKIPDEFAULT;
 				}
 			}
