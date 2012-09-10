@@ -24,7 +24,6 @@
 #define IDR_MENU_SEARCHCONTEXT          145
 #define IDB_BITMAP_UP                   146
 #define IDB_BITMAP_DN                   147
-#define IDB_BITMAP2                     148
 #define IDB_BITMAP_SEARCH               148
 #define CEDIT_TEXT                      1000
 #define CEDIT_ID                        1001
@@ -103,13 +102,15 @@
 #define ID_TRAY_DEVPAGE                 32801
 #define ID_32802                        32802
 #define ID_SEARCH_STOP                  32803
+#define ID_SEACHCONTEXT_32804           32804
+#define ID_SEACHCONTEXT_JUMP            32805
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        149
-#define _APS_NEXT_COMMAND_VALUE         32804
+#define _APS_NEXT_COMMAND_VALUE         32806
 #define _APS_NEXT_CONTROL_VALUE         1029
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

@@ -411,6 +411,7 @@ IDR_MENU_SEARCHCONTEXT MENU
 BEGIN
     POPUP "SeachContext"
     BEGIN
+        MENUITEM "레지스트리 바로가기",                  ID_SEACHCONTEXT_JUMP
         MENUITEM "키 복사",                        ID_SEACHCONTEXT_COPYKEY
         MENUITEM "이름 복사",                       ID_SEACHCONTEXT_COPYNAME
         MENUITEM "데이타 복사",                      ID_SEACHCONTEXT_COPYDATA

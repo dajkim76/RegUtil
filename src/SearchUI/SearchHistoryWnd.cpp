@@ -34,7 +34,7 @@ CSearchHistoryWnd::CSearchHistoryWnd()
 		NULL,
 		kCaption,
 		WS_POPUPWINDOW | WS_CAPTION | WS_VISIBLE | WS_THICKFRAME | WS_MAXIMIZEBOX | WS_MINIMIZEBOX,
-		CRect(100, 180, 1200, 600),
+		CRect(50, 180, 1200, 600),
 		NULL,
 		NULL,
 		0);	
@@ -88,13 +88,13 @@ int CSearchHistoryWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CRect rc;
 	currentView_.Create(WS_VISIBLE | WS_CHILD | LVS_REPORT, rc, this, IDC_LIST1);
 	ASSERT(currentView_.GetSafeHwnd() != NULL);
-	currentView_.InsertColumn(0, L"    Registry 키", LVCFMT_LEFT, 500 );
+	currentView_.InsertColumn(0, L"Registry 키", LVCFMT_LEFT, 500 );
 	currentView_.InsertColumn(1, L"값 이름", LVCFMT_LEFT, 100 );
 	currentView_.InsertColumn(2, L"타입", LVCFMT_LEFT, 60 );
 	currentView_.InsertColumn(3, L"데이타", LVCFMT_LEFT, 500 );
 	currentView_.InsertColumn(4, L"수정된 날짜", LVCFMT_LEFT, 140 );
 	currentView_.InsertColumn(5, L"길이", LVCFMT_LEFT, 100 );
-	currentView_.SetExtendedStyle(currentView_.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	currentView_.SetExtendedStyle(currentView_.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES | LVS_EX_LABELTIP );
 
 	{
 		if (imageList_.Create (16, 16, ILC_COLORDDB| ILC_COLOR32 | ILC_MASK, 2, 2))
@@ -343,6 +343,15 @@ void CSearchHistoryWnd::OnNMRClickList1( NMHDR *pNMHDR, LRESULT *pResult )
 		int cmd = pMenu->TrackPopupMenu(TPM_RETURNCMD | TPM_NONOTIFY | TPM_LEFTBUTTON , pt.x, pt.y, this);
 		switch(cmd)
 		{
+		case ID_SEACHCONTEXT_JUMP:
+			{
+				CString path = currentView_.GetItemText(index, 0);
+				CString name = currentView_.GetItemText(index, 1);
+				CWaitCursor wait;
+				RegWorks::Lookup(path, name);
+			}
+			break;
+
 		case ID_SEACHCONTEXT_COPYKEY:
 			str = currentView_.GetItemText(index, 0);
 			SetClipboardText(m_hWnd, str);
@@ -573,7 +582,6 @@ void CSearchHistoryWnd::OnCustomdrawMyList( NMHDR* pNMHDR, LRESULT* pResult )
 
 
 	HDC hdc = pLVCD->nmcd.hdc;
-	CDC* pDC = NULL;
 
 	// here is the item info
 	// note that we don't get the subitem
@@ -606,10 +614,6 @@ void CSearchHistoryWnd::OnCustomdrawMyList( NMHDR* pNMHDR, LRESULT* pResult )
 		
 		case  (CDDS_ITEMPREPAINT | CDDS_SUBITEM):
 		{
-			pLVCD->clrTextBk = RGB(255,255,255);           // 해당 행, 열 아이템의 배경색을 지정한다.
-			pLVCD->clrText = RGB(0, 0, 0);                      // 해당 행, 열 아이템의 글자색을 지정한다.
-
-
 			int nSubItem = pLVCD->iSubItem;
 			if ( keyword_.GetLength() && (nSubItem == 0 || nSubItem == 1 || nSubItem == 3))
 			{
@@ -629,22 +633,22 @@ void CSearchHistoryWnd::OnCustomdrawMyList( NMHDR* pNMHDR, LRESULT* pResult )
 				int pos = caseSensitive_ ? text.Find(keyword_) : textUpper.Find(keywordUpper);
 				if( pos >= 0 && hdc )
 				{
-					pDC = CDC::FromHandle(hdc);
+					CDC dc ; 
+					dc.Attach(hdc);
 					
-					
-					//CRect rc(pLVCD->nmcd.rc);
-
 					// winxp에서 rect가 제대로 넘겨오지 않는다.
+					//CRect rc(pLVCD->nmcd.rc);
+					
 					CRect rc;
 					if(nSubItem>0)
 					{
 						currentView_.GetSubItemRect(nItem, nSubItem, LVIR_BOUNDS, rc);
-						pDC->FillSolidRect(&rc, RGB(240, 240, 240));
+						dc.FillSolidRect(&rc, RGB(240, 240, 240));
 					}
 					else
 					{
-						currentView_.GetItemRect(nItem ,&rc, LVIR_BOUNDS);
-						pDC->FillSolidRect(&rc, RGB(240, 240, 240));
+						currentView_.GetItemRect(nItem , &rc, LVIR_BOUNDS);
+						dc.FillSolidRect(&rc, RGB(240, 240, 240));
 						rc.left += 4;
 					}
 
@@ -657,10 +661,13 @@ void CSearchHistoryWnd::OnCustomdrawMyList( NMHDR* pNMHDR, LRESULT* pResult )
 						item.iItem = nItem;
 						item.mask = LVIF_IMAGE;
 						currentView_.GetItem(&item);
-						imageList_.Draw(pDC, item.iImage, pt, ILD_NORMAL);
+						imageList_.Draw(&dc, item.iImage, pt, ILD_NORMAL);
 					}
-					DrawHilightText(*pDC, text, keyword_, caseSensitive_, rc);					
+
+					DrawHilightText(dc, text, keyword_, caseSensitive_, rc);					
 					*pResult |= CDRF_SKIPDEFAULT;
+
+					dc.Detach();
 				}
 			}
 		}

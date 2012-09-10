@@ -111,7 +111,7 @@ void    LoadIni(CToolBar * pBar)
     int iSize = _GetInt(L"size", 0);
     if(0 == iSize)
     {
-		LPCWSTR defaultText = L"우클릭으로 수정 혹은 추가하세요, Ctrl + 드래그로 바를 이동 시킵니다.";
+		LPCWSTR defaultText = L"우클릭으로 수정 혹은 추가하세요, 드래그로 바를 이동 시킵니다.";
 		_WriteInt(L"size", 1);
 		CDSIni  ini(L"0", PROFILE_INI);
 		ini.WriteStr(L"text", defaultText);
