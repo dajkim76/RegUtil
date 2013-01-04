@@ -71,7 +71,7 @@ namespace RegSearch
 			}
 		}
 
-		if(hKey)
+		if(hOpenKey)
 		{
 			RegCloseKey( hOpenKey );
 		}
@@ -287,7 +287,7 @@ namespace RegSearch
 			}
 		} // for
 
-		if(hKey)
+		if(hOpenKey)
 		{
 			RegCloseKey( hOpenKey );
 		}		
