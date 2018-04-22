@@ -212,11 +212,11 @@
     <ResourceCompile Include="EasyRegistry.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Dialog\EditSubmenuDlg.h">
+    <ClInclude Include="Dialog\EditSubmenuDlg.h">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">EnableFastChecks</BasicRuntimeChecks>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MaxSpeed</Optimization>
-    </ClCompile>
+    </ClInclude>
     <ClInclude Include="Dialog\JumptoRegDlg.h" />
     <ClInclude Include="Dialog\OptionDlg.h" />
     <ClInclude Include="Dialog\RegistryPathDlg.h" />

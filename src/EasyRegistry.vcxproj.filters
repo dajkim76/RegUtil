@@ -87,9 +87,6 @@
     <ClCompile Include="Util\Tray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dialog\EditSubmenuDlg.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EasyRegistry.rc">
@@ -168,6 +165,9 @@
     </ClInclude>
     <ClInclude Include="Util\Tray.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dialog\EditSubmenuDlg.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
