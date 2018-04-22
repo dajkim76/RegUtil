@@ -1,4 +1,6 @@
-"%VS90COMNTOOLS%/../IDE/devenv" "src/EasyRegistry.sln" /rebuild "Release"
+set VS141COMNTOOLS=c:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools
+
+"%VS141COMNTOOLS%/../IDE/devenv" "src/EasyRegistry.sln" /rebuild "Release"
 if not "%ERRORLEVEL%" == "0" goto ERROR
 
 cd bin

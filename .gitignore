@@ -1,0 +1,14 @@
+/src/Debug
+/src/ipch
+/src/UnitTest/Release
+/src/Release
+
+/src/.vs
+/src/UnitTest/Debug
+/Bin/EasyRegistry.ini
+/Bin/EasyRegistry_D.exe
+/src/UpgradeLog.htm
+/src/Backup/EasyRegistry.sln
+/src/EasyRegistry.VC.db
+/Bin/EasyRegistry.exe
+/Bin/EasyRegistrySetup.exe
